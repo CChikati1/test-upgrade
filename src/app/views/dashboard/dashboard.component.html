@@ -1,0 +1,41 @@
+<div *ngIf="isLoader" class="divloader">
+</div>
+
+<br>
+
+<div class="">
+  <div class="col-md-12">
+    <!--div class="card">
+      <div class="card-header">
+        Hi {{ DisplayName}}!
+      </div-->
+    <tabset type="pills">
+      <tab heading="Dashboard">
+        <div class="card-body tblHtscroll">
+          <form [formGroup]='searchForm'>
+            <div class="row">
+              <div class="col-sm-12 col-md-1">
+                <div class="form-group">
+                  <label style="width:100%" class="control-label">Year</label>
+
+                  <ng-select2 formControlName="year" [width]="'80'" [data]="dataYear" (valueChanged)="changedYear($event)"
+                    [placeholder]="'Please select'">
+                  </ng-select2>
+
+                </div>
+              </div>
+             
+              <div class="col-sm-12 col-md-1">&nbsp;</div>
+            </div>
+          </form>
+         
+        </div>
+      </tab>
+      
+    </tabset>
+
+    <!--/div-->
+  </div>
+  <!--/.col-->
+</div>
+<!--/.row-->
