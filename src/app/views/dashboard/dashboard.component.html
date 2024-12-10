@@ -12,23 +12,302 @@
     <tabset type="pills">
       <tab heading="Dashboard">
         <div class="card-body tblHtscroll">
+          
+
           <form [formGroup]='searchForm'>
             <div class="row">
               <div class="col-sm-12 col-md-1">
                 <div class="form-group">
                   <label style="width:100%" class="control-label">Year</label>
+                  
 
-                  <ng-select2 formControlName="year" [width]="'80'" [data]="dataYear" (valueChanged)="changedYear($event)"
-                    [placeholder]="'Please select'">
-                  </ng-select2>
-
+                    <ng-select
+  [items]="dataYear"
+  bindLabel="text"
+  bindValue="id"
+    bindLabel="text"
+  bindValue="id" formControlName="year"
+  placeholder="Please Select"
+  (change)="changedYear($event)">
+</ng-select>
+                 
                 </div>
               </div>
-             
+              
+              <div class="col-sm-12 col-md-1">
+                <div class="form-group">
+                  <label style="width:100%" class="control-label">Month</label>
+                    <ng-select   bindLabel="text"
+  bindValue="id" formControlName="month" [items]="dataMonth" (change)="changedMonth($event)" placeholder="Please Select">                      
+                    </ng-select>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-3">
+                <div class="form-group">
+                  <label style="width:100%" class="control-label">Department</label>
+                  <ng-select   bindLabel="text"
+  bindValue="id" formControlName="department"  [items]="dataDepartment"
+                    (change)="changedDepartment($event)" placeholder="Please Select">
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-3">
+                <div class="form-group">
+                  <label style="width:100%" class="control-label">Budget Type</label>
+                  <ng-select   bindLabel="text"
+  bindValue="id" formControlName="budgetType"  [items]="dataBudgetType"
+                    (change)="changedBudgetType($event)" placeholder="Please Select">
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-3">
+                <div class="form-group">
+                  <label style="width:100%" class="control-label">Project Category</label>
+                  <ng-select   bindLabel="text"
+  bindValue="id" formControlName="projectCategory"  [items]="dataProjectCategory"
+                    (change)="changedProjectCategory($event)" placeholder="Please Select">
+                  </ng-select>
+                </div>
+              </div>
               <div class="col-sm-12 col-md-1">&nbsp;</div>
             </div>
           </form>
-         
+          <div class="row"  *ngIf="isBrowser">
+            <div class="col-sm-12 col-md-6">
+
+              <!-- <highcharts-chart [Highcharts] = "Highcharts1" [options] = "chartOptions1" style = "width: 100%; height: 400px; display: block;margin:auto">
+              </highcharts-chart> -->
+              <highcharts-chart [Highcharts] = "Highcharts1" [options] = "budgetOverviewOptions" style = "width: 100%; height: 400px; display: block;margin:auto">
+              </highcharts-chart>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <highcharts-chart [Highcharts] = "Highcharts1" [options] = "budgetStatusOptions"  style = "width: 100%; height: 400px; display: block;margin:auto">
+              </highcharts-chart>
+            </div>
+          </div>
+          <div class="row" *ngIf="isBrowser">
+            <div class="col-sm-12 col-md-12">
+              &nbsp;
+            </div>
+          </div>
+          <div class="row" *ngIf="isBrowser">
+            <div class="col-sm-12 col-md-6">
+              <div *ngIf="budgetoverview1" style="width:100%;">
+                <table *ngIf="budgetoverview1"
+                  class="table table-bordered  table-responsive-sm table-hover table-outline"
+                  style="white-space:normal;font-size: 0.70rem !important;">
+                  <thead>
+                    <th colspan="3">
+                      Budget Overview
+                    </th>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th>Total Budget</th>
+                      <td style="text-align: right;">{{TotalAmount| number:'1.2-2'}}</td>
+                      <td style="text-align: right;">100%</td>
+                    </tr>
+                    <tr>
+                      <th>Balance</th>
+                      <td style="text-align: right;">{{BalanceAmount| number:'1.2-2'}}</td>
+                      <td style="text-align: right;"> {{ (BalanceAmount/TotalAmount) * 100 | number:'1.2-2' }} % </td>
+                    </tr>
+                    <tr>
+                      <th>Booked</th>
+                      <td style="text-align: right;">{{BookedAmount| number:'1.2-2'}}</td>
+                      <td style="text-align: right;"> {{ (BookedAmount/TotalAmount) * 100 | number:'1.2-2' }} % </td>
+                    </tr>
+                    <tr>
+                      <th>Spent</th>
+                      <td style="text-align: right;">{{SpentAmount| number:'1.2-2'}}</td>
+                      <td style="text-align: right;"> {{ (SpentAmount/TotalAmount) * 100 | number:'1.2-2' }} % </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div *ngIf="budgetoverview2" style="width:100%;">
+                <table *ngIf="budgetoverview2"
+                  class="table table-bordered  table-responsive-sm table-hover table-outline"
+                  style="white-space:normal;font-size: 0.70rem !important;">
+                  <thead>
+                    <th colspan="8">Summary</th>
+                  </thead>
+                  <thead>
+                    <th>Function</th>
+                    <th>Budget</th>
+                    <th>Balance</th>
+                    <th title="Funds saved as Draft, Approved in BBF. PR & PO Amount Raised ">Booked</th>
+                    <th title="PO Amount Received & Invoiced">Spent</th>
+                    <th>Spent%</th>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of functionOverviewFilter">
+                      <td><b>{{item.totalLevel1}}</b></td>
+                      <td style="text-align: right;">{{item.totalAmount | number:'1.2-2'}}</td>
+                      <td style="text-align: right;">{{item.balance | number:'1.2-2'}}</td>
+                      <td style="text-align: right;">{{item.booked | number:'1.2-2'}}</td>
+                      <td style="text-align: right;">{{item.spent | number:'1.2-2'}}</td>
+                      <td style="text-align: right;"> {{ (item.spent/item.totalAmount) * 100 | number:'1.2-2' }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div *ngIf="budgetoverview3" style="width:100%;">
+                <table *ngIf="budgetoverview3"
+                  class="table table-bordered  table-responsive-sm table-hover table-outline"
+                  style="white-space:normal;font-size: 0.70rem !important;">
+                  <thead>
+                    <th colspan="3">
+                      {{budgetoverviewFunctionname}} - alwar
+                    </th>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th>Total Budget</th>
+                      <td style="text-align: right;">{{ functionOverviewItem[0].totalAmount  | number:'1.2-2'}}</td>
+                      <td style="text-align: right;">100%</td>
+                    </tr>
+                    <tr>
+                      <th>Balance</th>
+                      <td style="text-align: right;">{{ functionOverviewItem[0].balance | number:'1.2-2'}}</td>
+                      <td style="text-align: right;">
+                        {{ (functionOverviewItem[0].balance/functionOverviewItem[0].totalAmount) * 100 | number:'1.2-2' }}
+                        %
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Booked</th>
+                      <td style="text-align: right;">{{ functionOverviewItem[0].booked | number:'1.2-2'}}</td>
+                      <td style="text-align: right;">
+                        {{ (functionOverviewItem[0].booked/functionOverviewItem[0].totalAmount) * 100 | number:'1.2-2' }}
+                        %
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Spent</th>
+                      <td style="text-align: right;">{{ functionOverviewItem[0].spent | number:'1.2-2'}}</td>
+                      <td style="text-align: right;">
+                        {{ (functionOverviewItem[0].spent/functionOverviewItem[0].totalAmount) * 100 | number:'1.2-2' }}
+                        %
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div *ngIf="budgetOverViewStatus1" style="width:100%;">
+                <table *ngIf="budgetOverViewStatus1"
+                  class="table table-bordered  table-responsive-sm table-hover table-outline"
+                  style="white-space:normal;font-size: 0.70rem !important;">
+                  <thead>
+                    <th colspan="8">Summary</th>
+                  </thead>
+                  <thead>
+                    <th>Function</th>
+                    <th>Budget</th>
+                    <th>Balance</th>
+                    <th title="Funds saved as Draft, Approved in BBF. PR & PO Amount Raised ">Booked</th>
+                    <th title="PO Amount Received & Invoiced">Spent</th>
+                    <th>Spent%</th>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of functionOverviewFilter1">
+                      <td><b>{{item.totalLevel1}}</b></td>
+                      <td style="text-align: right;">{{item.totalAmount | number:'1.2-2'}}</td>
+                      <td style="text-align: right;">{{item.balance | number:'1.2-2'}}</td>
+                      <td style="text-align: right;">{{item.booked | number:'1.2-2'}}</td>
+                      <td style="text-align: right;">{{item.spent | number:'1.2-2'}}</td>
+                      <td style="text-align: right;"> {{ (item.spent/item.totalAmount) * 100 | number:'1.2-2' }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div *ngIf="budgetOverViewStatus2" style="width:100%;">
+                <table *ngIf="budgetOverViewStatus2"
+                  class="table table-bordered  table-responsive-sm table-hover table-outline"
+                  style="white-space:normal;font-size: 0.70rem !important;">
+                  <thead>
+                    <th colspan="8">Summary - {{ budgetstatusFunctionname }}</th>
+                  </thead>
+                  <thead>
+                    <th>Function</th>
+                    <th>Budget</th>
+                    <th>Balance</th>
+                    <th title="Funds saved as Draft, Approved in BBF. PR & PO Amount Raised ">Booked</th>
+                    <th title="PO Amount Received & Invoiced">Spent</th>
+                    <th>Spent%</th>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of functionOverviewL2Filter">
+                      <td style="width:100px !important"><b>{{item.totalLevel2}}</b></td>
+                      <td style="text-align: right;">{{item.totalAmount | number:'1.2-2'}}</td>
+                      <td style="text-align: right;">{{item.balance | number:'1.2-2'}}</td>
+                      <td style="text-align: right;">{{item.booked | number:'1.2-2'}}</td>
+                      <td style="text-align: right;">{{item.spent | number:'1.2-2'}}</td>
+                      <td style="text-align: right;"> {{ (item.spent/item.totalAmount) * 100 | number:'1.2-2' }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div *ngIf="budgetOverViewStatus3" style="width:100%;">
+                <table *ngIf="budgetOverViewStatus3"
+                  class="table table-bordered  table-responsive-sm table-hover table-outline"
+                  style="white-space:normal;font-size: 0.70rem !important;">
+                  <thead>
+                    <th colspan="3">
+                      {{ functionOverviewL2Item[0].totalLevel1 }} - {{ functionOverviewL2Item[0].totalLevel2 }}
+                    </th>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th>Total Budget</th>
+                      <td style="text-align: right;">{{ functionOverviewL2Item[0].totalAmount  | number:'1.2-2'}}</td>
+                      <td style="text-align: right;">100%</td>
+                    </tr>
+                    <tr>
+                      <th>Balance</th>
+                      <td style="text-align: right;">{{ functionOverviewL2Item[0].BALANCE | number:'1.2-2'}}</td>
+                      <td style="text-align: right;">
+                        {{ (functionOverviewL2Item[0].balance/functionOverviewL2Item[0].totalAmount) * 100 | number:'1.2-2' }}
+                        %
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Booked</th>
+                      <td style="text-align: right;">{{ functionOverviewL2Item[0].BOOKED | number:'1.2-2'}}</td>
+                      <td style="text-align: right;">
+                        {{ (functionOverviewL2Item[0].booked/functionOverviewL2Item[0].totalAmount) * 100 | number:'1.2-2' }}
+                        %
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Spent</th>
+                      <td style="text-align: right;">{{ functionOverviewL2Item[0].SPENT | number:'1.2-2'}}</td>
+                      <td style="text-align: right;">
+                        {{ (functionOverviewL2Item[0].spent/functionOverviewL2Item[0].totalAmount) * 100 | number:'1.2-2' }}
+                        %
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="isBrowser">
+            <div class="col-sm-12 col-md-12">
+              &nbsp;
+            </div>
+          </div>
+          <div class="row" *ngIf="isBrowser">
+            <div class="col-sm-12 col-md-12">
+              <!--div #budgetChart style="width:100%;margin:auto">
+                &nbsp;
+              </div-->
+              <highcharts-chart [Highcharts] = "Highcharts1" [options] = "budgetChartOptions" style = "width: 100%; height: 400px; display: block;margin:auto">
+              </highcharts-chart>
+            </div>
+          </div>
         </div>
       </tab>
       

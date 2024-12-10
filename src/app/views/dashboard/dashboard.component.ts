@@ -1,14 +1,13 @@
 import { Component, OnInit, AfterViewInit, Injectable, ElementRef, ViewChild, ChangeDetectorRef, asNativeElements, Inject, PLATFORM_ID } from '@angular/core';
-import { ApiService } from '../../../api.service';
+import { ApiService } from '../../api.service';
 import { DecimalPipe, isPlatformBrowser } from '@angular/common';
-import * as Highcharts from 'highcharts';
+// import * as Highcharts from 'highcharts';
 // import More from 'highcharts/highcharts-more';
 // More(Highcharts);
 // import Drilldown from 'highcharts/modules/drilldown';
 // Drilldown(Highcharts);// Load the exporting module.
 // import Exporting from 'highcharts/modules/exporting';
 // Exporting(Highcharts);// Initialize exporting module.
- import { chart } from 'highcharts';
 // import * as moment from 'moment';
  import moment from 'moment';
  import { HighchartsChartModule } from 'highcharts-angular'
@@ -33,14 +32,19 @@ import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { CommonModule } from '@angular/common';
-import  $ from 'jquery';
+import { NgSelectModule } from '@ng-select/ng-select'
+ 
+//  import  $ from 'jquery';
 // import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
 //declare const $:any;
+import * as $ from 'jquery';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import Highcharts from 'highcharts';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [DecimalPipe,AccordionModule,
-    TabsModule,SweetAlert2Module,ReactiveFormsModule,NgSelect2Module,
+    TabsModule,SweetAlert2Module,NgSelectModule,ReactiveFormsModule,
     HighchartsChartModule,CommonModule 
   ],
   providers:[ApiService,ToastrService],
@@ -57,8 +61,9 @@ export class DashboardComponent implements OnInit {
   datacategories!: string[];
   loginUserName: string = "Test@test.com";
   DisplayName: string = "";
-  Highcharts = Highcharts;
-
+  Highcharts1:any;
+  highcharts:any;
+  chartOptions1:any;
   TotalAmount:any
   BookedAmount:any
   SpentAmount:any
@@ -120,16 +125,18 @@ export class DashboardComponent implements OnInit {
   isBtnEnabled: boolean = true;
   approvalView: boolean = false;
   fileURL!: string;
-  
+  isBrowser: boolean;
   constructor(private chRef: ChangeDetectorRef,
     private service: ApiService,
     private toastr: ToastrService,
     private fb: FormBuilder,
+    private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
     this.searchForm = this.fb.group({
       budgetType: [""],
-      year: [null],
+      year: ['2024'],
       month: [""],
       projectCategory: [""],
       department: [""]
@@ -142,12 +149,19 @@ export class DashboardComponent implements OnInit {
       justification: [],
       remarks: []
     });
+
+    
     if (isPlatformBrowser(this.platformId)) {
+      
+    
       import('jquery').then(($) => {
         // jQuery is now available for use in the browser
-        console.log('jQuery loaded in the browser');
+       // //console.log('jQuery loaded in the browser');
       });
+      
+     
     }
+    
     let items:any = [];
     items.push({ id: '2019', text: '2019' });
     items.push({ id: '2020', text: '2020' });
@@ -227,7 +241,7 @@ items.push({id: 'VOC Programme', text: 'VOC Programme'});
     this.searchForm.controls["department"].setValue("ALL");
   }
 
-  highcharts = Highcharts;
+  
   budgetOverviewOptions:any;
   budgetStatusOptions:any;
   budgetChartOptions:any;
@@ -236,18 +250,45 @@ items.push({id: 'VOC Programme', text: 'VOC Programme'});
       // Dynamically import jQuery
       import('jquery').then(($) => {
         // Use jQuery in the browser environment
-        console.log('jQuery is available:', $);
+        //console.log('jQuery is available:', $);
       }).catch(err => {
         console.error('Failed to load jQuery', err);
       });
     }
   }
-  ngOnInit() {
+ async ngOnInit() {
+  
+  if (typeof window !== 'undefined') {
+      // Browser-specific code
+      (window as any).jQuery = $;
+      (window as any).$ = $;
+      const Highcharts =await import('highcharts');
+     // this.highcharts = Highcharts;
+      this.Highcharts1 = Highcharts.default;
+      this.chartOptions1 = {
+        chart: {
+          type: 'line',
+        },
+        title: {
+          text: 'Sample Highcharts in Angular 18',
+        },
+        series: [
+          {
+            name: 'Sample Data',
+            type: 'line',
+            data: [1, 3, 2, 4],
+          },
+        ],
+      };
+      //console.log('Running in browser environment');
+    } else {
+      //console.log('Running in server environment');
+    }
     //alert("hh")
     this.isLoader = true;
-    $('a').removeClass('liactive');
-    $('.lidashboard').addClass('liactive');
-   //this.getUserName();
+    // $('a').removeClass('liactive');
+    // $('.lidashboard').addClass('liactive');
+   this.getUserName();
    // this.budgetOverviewSeries.nativeElement.height = "500px"
   }
   public handleRefusalData(dismissMethod: Event): void {
@@ -276,7 +317,7 @@ items.push({id: 'VOC Programme', text: 'VOC Programme'});
     this.objDashboard.spendType = this.searchForm.controls["budgetType"].value;
     this.objDashboard.projectCategory  = this.searchForm.controls["projectCategory"].value;
     this.objDashboard.department = this.searchForm.controls["department"].value;
-    this.objDashboard.year = e.value;
+    this.objDashboard.year = e.text;
     if( this.searchForm.controls["month"].value == "ALL")
       this.objDashboard.month =  "'JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'";
     else 
@@ -295,7 +336,7 @@ items.push({id: 'VOC Programme', text: 'VOC Programme'});
     if( e.value == "ALL")
       this.objDashboard.month =  "'JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'";
     else 
-      this.objDashboard.month =  e.value;
+      this.objDashboard.month =  e.text;
     this.objDashboard.email = this.loginUserName.toLowerCase();
     this.loadChart();
   }
@@ -310,7 +351,7 @@ items.push({id: 'VOC Programme', text: 'VOC Programme'});
       this.objDashboard.month =  "'JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'";
     else 
         this.objDashboard.month =  this.searchForm.controls["month"].value;
-    this.objDashboard.department = e.value;
+    this.objDashboard.department = e.text;
     this.objDashboard.email = this.loginUserName.toLowerCase();
     this.loadChart();
   }
@@ -319,7 +360,7 @@ items.push({id: 'VOC Programme', text: 'VOC Programme'});
   public changedBudgetType(e: any): void {
     this.isLoader = true;
     this.objDashboard = new Dashboard();
-    this.objDashboard.spendType = e.value;
+    this.objDashboard.spendType = e.text;
     this.objDashboard.year = this.searchForm.controls["year"].value;
     this.objDashboard.projectCategory = this.searchForm.controls["projectCategory"].value;
     this.objDashboard.department = this.searchForm.controls["department"].value;
@@ -336,7 +377,7 @@ items.push({id: 'VOC Programme', text: 'VOC Programme'});
     this.objDashboard = new Dashboard();
     this.objDashboard.spendType = this.searchForm.controls["budgetType"].value;
     this.objDashboard.year = this.searchForm.controls["year"].value;    
-    this.objDashboard.projectCategory = e.value;
+    this.objDashboard.projectCategory = e.text;
     this.objDashboard.department = this.searchForm.controls["department"].value;
     if(this.searchForm.controls["month"].value == "ALL")
     this.objDashboard.month =  "'JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'";
@@ -579,6 +620,29 @@ items.push({id: 'VOC Programme', text: 'VOC Programme'});
   }
 
   budgetOverview() {
+
+    const payload = {
+      year: '2024',
+      spendType: 'ALL',
+      email: 'veerender.kumar-e@maf.ae',
+      month: 'ALL',
+      projectCategory: 'ALL',
+      department: 'ALL'
+    };
+//console.log(payload);
+    const headers = new HttpHeaders({
+      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
+      "X-Requested-With": "XMLHttpRequest",
+      'Content-Type': 'application/json'
+    });
+
+    // this.http
+    //   .post('https://mafhbudgettrackerapi.maf.ae/api/dashboard/v1/budgetBalance', payload, { headers })
+    //   .subscribe(
+    //     (response:any) => //console.log(response),
+    //     (error:any) => console.error(error)
+    //   );
+  
     this.service.budgetBalance(this.objDashboard).subscribe(res => {
       this.service.functionOverview(this.objDashboard).subscribe(functionres => {
         var self = this;
@@ -728,6 +792,7 @@ items.push({id: 'VOC Programme', text: 'VOC Programme'});
   }
 
   budgetStatus() {
+    //console.log(this.objDashboard);
     this.service.functionL2Overview(this.objDashboard).subscribe(res => {
       let response: any = [];
       var self = this;
@@ -861,6 +926,7 @@ items.push({id: 'VOC Programme', text: 'VOC Programme'});
 
 
   budgetChart() {
+    //console.log(this.objDashboard);
     this.service.spendMonthlyWise(this.objDashboard).subscribe(res => {
       let response: any = res
       let spendMonthlyWiseSeries:any = [];
@@ -916,34 +982,33 @@ items.push({id: 'VOC Programme', text: 'VOC Programme'});
   }
 
   getUserName() {
-    debugger;
-    this.service.getUserDetails().subscribe((res) => {
-     // console.log(res);
+   // this.service.getUserDetails().subscribe((res) => {
+     // //console.log(res);
       //if (res != null && res != '') {
-        let user = res as any;
-        this.loginUserName ='Veerender.Kumar-e@maf.ae';// user.d.Email;
+       // let user = res as any;
+        this.loginUserName ='veerender.kumar-e@maf.ae';// user.d.Email;
         this.DisplayName ='Veerender Kumar';// user.d.Title;
         this.objDashboard = new Dashboard();
         this.objDashboard.spendType = this.searchForm.controls["budgetType"].value;
         this.objDashboard.year = this.searchForm.controls["year"].value;
         this.objDashboard.month =  this.searchForm.controls["month"].value;
         this.objDashboard.projectCategory  = this.searchForm.controls["projectCategory"].value;
+        this.objDashboard.department=this.searchForm.controls["department"].value;
         this.objDashboard.email = this.loginUserName.toLowerCase();
-        this.service.getEmployee(this.loginUserName).subscribe((res) => {
-          console.log(res);
-          if (res != null && res != '') {
-            let users = res as any;
-            let c: any = users.d.results as [];
-            if (c[0].Role == "Super Admin")
-              this.isSuperAdmin = true;
-            else
-              this.isSuperAdmin = false;
+       // this.service.getEmployee(this.loginUserName).subscribe((res) => {
+          //if (res != null && res != '') {
+            // let users = res as any;
+            // let c: any = users.d.results as [];
+            // if (c[0].Role == "Super Admin")
+               this.isSuperAdmin = true;
+            // else
+            //   this.isSuperAdmin = false;
             this.loadChart();
             this.getMyPendingApprovals();
-          }
-        });
+         // }
+        //});
     //  }
-    });
+    //});
   }
 
 

@@ -1,0 +1,52 @@
+// If you want to override variables do it here
+@import "variables";
+
+// Import styles
+// @import "~@coreui/coreui/scss/coreui";
+
+// If you want to add something do it here
+@import "custom";
+
+
+.hide{
+    display: none !important;
+}
+
+.border_right{
+    border-right-color: black;
+    border-right-style: solid;
+    border-right-width: 1px;
+}
+
+.footer_text{
+  margin-top: auto;
+  margin-bottom: auto;
+  text-align: center;
+  align-self: center;
+  width: 100%;
+  font-size: 11px;
+}
+
+.ng-select-container{
+  width: 100% !important;
+}
+
+.ng-select {
+  .ng-select-container {
+    background-color: #f9f9f9; /* Set your desired background color */
+    border: 1px solid #ccc; /* Set border style */
+    border-radius: 4px; /* Rounded corners */
+  }
+
+  .ng-select-dropdown {
+    border-color: #007bff; /* Set border color for the dropdown */
+    box-shadow: 0 0 10px rgba(0,0,0,0.2); /* Add shadow for dropdown */
+  }
+
+  .ng-option {
+    color: #333; /* Set the color for the option text */
+    &:hover {
+      background-color: #e9ecef; /* Change background color on hover */
+    }
+  }
+}

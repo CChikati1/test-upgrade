@@ -1,5 +1,7 @@
 export class BudgetBooking {  
-    id:number;   
+    id:number;
+    poNo:string; 
+    prNo:string;  
     bbNumber: string;
     bbStatus:string;
     requestedBy: string;
@@ -41,6 +43,7 @@ export class BudgetBooking {
     projectDetails: string;
     aribaAwardedValue: string;
     aribaAwardedDesc: string;
+    errorDesc:string;
 }
 
 export class BudgetBookingApproval{
@@ -87,8 +90,11 @@ export class BudgetBookingLines {
     chargeAccount: string;
     dummyPoet: string;
     lineDescription: string;
-    YEARLYBUDGET:number;
+    PO_AMOUNT:string;
+    PR_AMOUNT:string;
     BALANCE:number;
+    YEARLYBUDGET:number;
+
 }
 
 export class travelPoet {

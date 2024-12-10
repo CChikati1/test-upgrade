@@ -1,11 +1,10 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
-import { provideHttpClient } from '@angular/common/http';
-
 import { DashboardComponent } from './app/views/dashboard/dashboard.component';
 import { provideRouter } from '@angular/router';
 
 import { appConfig } from './app/app.config';
+
 
 
 bootstrapApplication(AppComponent, appConfig)

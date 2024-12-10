@@ -1,0 +1,110 @@
+<!-- <c-header  style="background-color:rgb(49, 38, 29)">
+  <c-header-brand>
+    <a routerLink="/dashboard">
+      <img [src]="navbarBrandFull.src" [width]="navbarBrandFull.width" [height]="navbarBrandFull.height" [alt]="navbarBrandFull.alt">
+    </a>
+  </c-header-brand>
+  <c-header-nav class="ml-auto">
+    <c-nav-item>
+      <a class="nav-link" routerLink="/dashboard">Dashboard</a>
+    </c-nav-item>
+    <c-nav-item>
+      <a class="nav-link" routerLink="/profile">Profile</a>
+    </c-nav-item>
+    
+    
+  </c-header-nav>
+
+  <ul
+    *ngIf="isSuperAdmin && (router.url == '/dashboard/Setup' || router.url == '/dashboard/Month' || router.url == '/dashboard/Booking'
+  || router.url == '/dashboard/Budgetoverview' || router.url == '/dashboard/admin-approval/AdminApproval'  || router.url == '/dashboard' )"
+    class="nav navbar-nav ml-auto">
+    <li class="nav-item px-3"><a class="nav-link lidashboard" href="#/dashboard">Dashboard</a></li>
+    <li class="nav-item px-3"><a class="nav-link liSetup" href="#/dashboard/Setup">Budget Setup</a></li>
+    <li class="nav-item px-3"><a class="nav-link liMonth" href="#/dashboard/Month">Budget Schedule</a></li>
+    <li class="nav-item px-3"><a class="nav-link liBooking" href="#/dashboard/Booking">Budget Booking</a></li>
+    <li class="nav-item px-3"><a class="nav-link liBudgetoverview" href="#/dashboard/Budgetoverview">Budget Overview</a>
+    </li>
+    <li class="nav-item px-3"><a class="nav-link liAdminApproval" href="#/dashboard/admin-approval/AdminApproval">Admin</a></li>
+  </ul>
+  <ul
+    *ngIf="isAdmin && (router.url == '/dashboard/Setup' || router.url == '/dashboard/Month' || router.url == '/dashboard/Booking'
+  || router.url == '/dashboard/Budgetoverview' || router.url == '/dashboard/AdminApproval'  || router.url == '/dashboard' )"
+    class="nav navbar-nav ml-auto">
+    <li class="nav-item px-3"><a class="nav-link lidashboard" href="#/dashboard">Dashboard</a></li>
+    <li class="nav-item px-3"><a class="nav-link liBooking" href="#/dashboard/Booking">Budget Booking</a></li>
+    <li class="nav-item px-3"><a class="nav-link liBudgetoverview" href="#/dashboard/Budgetoverview">Budget Overview</a>
+    </li>
+  </ul>
+  <ul
+    *ngIf="isUser && (router.url == '/dashboard/Setup' || router.url == '/dashboard/Month' || router.url == '/dashboard/Booking'
+  || router.url == '/dashboard/Budgetoverview' || router.url == '/dashboard/AdminApproval' || router.url == '/dashboard'  )"
+    class="nav navbar-nav ml-auto">
+    <li class="nav-item px-3"><a class="nav-link lidashboard" href="#/dashboard">Dashboard</a></li>
+    <li class="nav-item px-3"><a class="nav-link liBooking" href="#/dashboard/Booking">Budget Booking</a></li>
+    <li class="nav-item px-3"><a class="nav-link liBudgetoverview" href="#/dashboard/Budgetoverview">Budget Overview</a>
+    </li>
+  </ul>
+
+
+
+</c-header>
+<div class="app-body">
+  <main class="main">
+    <ngx-spinner bdOpacity=0.1 bdColor="lightgray" size="large" type="ball-scale-multiple"
+      style="background-color: lightgray;"></ngx-spinner>
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
+<c-footer>
+  <p style="margin-top: auto;margin-bottom: auto;text-align: center;align-self: center;width: 100%;font-size: 11px">
+    &copy; MAJID AL FUTTAIM - ALL RIGHTS RESERVED</p>
+</c-footer> -->
+
+
+<c-header style="background-color: rgb(49, 38, 29);" >
+  <!-- Brand Logo -->
+  <div c-header-brand>
+    <img [src]="navbarBrandFull.src" alt="MAF Logo" width="177" height="35">
+    <span class="ml-2">Dashboard</span>
+  </div>
+
+  <!-- Navigation -->
+  <ul *ngIf="isSuperAdmin && showDashboardLinks()" class="nav navbar-nav ml-auto">
+    <li class="nav-item px-3"><a class="nav-link" routerLink="/dashboard">Dashboard</a></li>
+    <li class="nav-item px-3"><a class="nav-link" routerLink="/dashboard/Setup">Budget Setup</a></li>
+    <li class="nav-item px-3"><a class="nav-link" routerLink="/dashboard/Month">Budget Schedule</a></li>
+    <li class="nav-item px-3"><a class="nav-link" routerLink="/dashboard/Booking">Budget Booking</a></li>
+    <li class="nav-item px-3"><a class="nav-link" routerLink="/dashboard/Budgetoverview">Budget Overview</a></li>
+    <li class="nav-item px-3"><a class="nav-link" routerLink="/dashboard/AdminApproval">Admin</a></li>
+  </ul>
+
+  <ul *ngIf="isAdmin && showDashboardLinks()" class="nav navbar-nav ml-auto">
+    <li class="nav-item px-3"><a class="nav-link" routerLink="/dashboard">Dashboard</a></li>
+    <li class="nav-item px-3"><a class="nav-link" routerLink="/dashboard/Booking">Budget Booking</a></li>
+    <li class="nav-item px-3"><a class="nav-link" routerLink="/dashboard/Budgetoverview">Budget Overview</a></li>
+  </ul>
+
+  <ul *ngIf="isUser && showDashboardLinks()" class="nav navbar-nav ml-auto">
+    <li class="nav-item px-3"><a class="nav-link" routerLink="/dashboard">Dashboard</a></li>
+    <li class="nav-item px-3"><a class="nav-link" routerLink="/dashboard/Booking">Budget Booking</a></li>
+    <li class="nav-item px-3"><a class="nav-link" routerLink="/dashboard/Budgetoverview">Budget Overview</a></li>
+  </ul>
+</c-header>
+
+<div class="app-body">
+  <main class="main">
+    <ngx-spinner bdOpacity="0.1" bdColor="lightgray" size="large" type="ball-scale-multiple" style="background-color: lightgray;"></ngx-spinner>
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
+
+<c-footer>
+  <p style="margin-top: auto; margin-bottom: auto; text-align: center; align-self: center; width: 100%; font-size: 11px;">
+    &copy; MAJID AL FUTTAIM - ALL RIGHTS RESERVED
+  </p>
+</c-footer>

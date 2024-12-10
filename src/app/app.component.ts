@@ -6,13 +6,19 @@ import { delay, filter, map, tap } from 'rxjs/operators';
 
 import { ColorModeService } from '@coreui/angular';
 import { IconSetService } from '@coreui/icons-angular';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { JwtInterceptor } from './views/_helpers';
+
 // import { iconSubset } from './icons/icon-subset';
 
 @Component({
   selector: 'app-root',
   template: '<router-outlet />',
   standalone: true,
-  imports: [RouterOutlet]
+  imports: [RouterOutlet],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+  ],
 })
 export class AppComponent implements OnInit {
   title = 'Budget Tracker';
