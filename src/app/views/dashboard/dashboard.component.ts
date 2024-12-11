@@ -263,23 +263,23 @@ items.push({id: 'VOC Programme', text: 'VOC Programme'});
       (window as any).jQuery = $;
       (window as any).$ = $;
       const Highcharts =await import('highcharts');
-     // this.highcharts = Highcharts;
-      this.Highcharts1 = Highcharts.default;
-      this.chartOptions1 = {
-        chart: {
-          type: 'line',
-        },
-        title: {
-          text: 'Sample Highcharts in Angular 18',
-        },
-        series: [
-          {
-            name: 'Sample Data',
-            type: 'line',
-            data: [1, 3, 2, 4],
-          },
-        ],
-      };
+      this.highcharts = Highcharts;
+       this.Highcharts1 = Highcharts.default;
+      // this.chartOptions1 = {
+      //   chart: {
+      //     type: 'line',
+      //   },
+      //   title: {
+      //     text: 'Sample Highcharts in Angular 18',
+      //   },
+      //   series: [
+      //     {
+      //       name: 'Sample Data',
+      //       type: 'line',
+      //       data: [1, 3, 2, 4],
+      //     },
+      //   ],
+      // };
       //console.log('Running in browser environment');
     } else {
       //console.log('Running in server environment');

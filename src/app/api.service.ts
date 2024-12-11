@@ -132,7 +132,7 @@ export class ApiService {
       "X-Requested-With": "XMLHttpRequest",
       'Content-Type': 'application/json',
     })
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api//budgetBooking/v1/PendingApproval", "",{headers});
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/PendingApproval", "",{headers});
   }
 
   createPR(id:any) {
@@ -589,7 +589,6 @@ export class ApiService {
   }
 
   budgetBalance(objDashboard: Dashboard) {
-    console.log(objDashboard);
     const username = 'BBFApi';
     const password = 'BudgetB00k!ngF0rm';
     const basicAuth = 'Basic ' + btoa(`${username}:${password}`);
