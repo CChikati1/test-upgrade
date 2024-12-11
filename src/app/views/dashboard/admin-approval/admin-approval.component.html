@@ -15,16 +15,10 @@
                     style="border:0px !important;" class="ddlUser"
                     bindLabel="text"
                     bindValue="id"
-                      bindLabel="text"
-                    bindValue="id" formControlName="year"
+                      [items]="dataYear" formControlName="year"
                     placeholder="Please Select"
-                    (change)="changedYear($event)">
-                    <option value="2024">2024</option>
-                    <option value="2023">2023</option>
-                    <option value="2022">2022</option>
-                    <option value="2021">2021</option>
-                    <option value="2020">2020</option>
-                    <option value="2019">2019</option>
+                    (change)="changedYear($event)"
+                    [ngStyle]="{ width: '160px' }">
                   </ng-select>
                   <!-- <ng-select2 style="border:0px !important;" class="ddlUser" id="ddlselectYear" formControlName="year"
                     (valueChanged)="changedYear($event)" [placeholder]="'Please select'" [width]="80px">
@@ -63,6 +57,9 @@
                   <th>Change Year</th>
                 </tr>
               </thead>
+              <tfoot>
+
+              </tfoot>
               <tbody>
                 <tr *ngFor="let poet of objPoets">
                   <td>{{ poet.id }}</td>
@@ -80,6 +77,7 @@
                       (click)="changeYear(poet,changeYearContent)">Change Year</button></td>
                 </tr>
               </tbody>
+              
             </table>
             <div class="row">
               <div class="col-md-12">&nbsp;</div>
@@ -106,6 +104,10 @@
               <div class="col-md-2">
                 <div class="form-group" title="Select budget by Project Name">
                   <label style="width:100%" class="control-label">PROJECT NAME</label>
+                  <ng-select formControlName="projectName" bindLabel="text"
+                  bindValue="id" (change)="changedProject($event)" [ngStyle]="{ width: '160px' }"
+                    [disabled]=true [items]="dataProjects" placeholder="Please select">
+                  </ng-select>
                   <!-- <ng-select2 formControlName="projectName" (valueChanged)="changedProject($event)" [width]="160px"
                     [disabled]=true [data]="dataProjects" [placeholder]="'Please select'">
                   </ng-select2> -->
@@ -114,6 +116,10 @@
               <div class="col-md-2">
                 <div class="form-group" title=" Select budget by POET number ">
                   <label style="width:100%" class="control-label">POET NO.</label>
+                   <ng-select  formControlName="poetNumber" (change)="changedPoet($event)" bindLabel="text"
+                   bindValue="id" [ngStyle]="{ width: '160px' }"
+                    [disabled]=true [items]="dataPOETNumber" placeholder="Please select">
+                  </ng-select>
                   <!-- <ng-select2 formControlName="poetNumber" (valueChanged)="changedPoet($event)" [width]="160px"
                     [disabled]=true [data]="dataPOETNumber" [placeholder]="'Please select'">
                   </ng-select2> -->
@@ -306,6 +312,10 @@
               <div class="col-md-2">
                 <div class="form-group" title="Select budget by Project Name">
                   <label style="width:100%" class="control-label">PROJECT NAME <span style="color:red;">*</span></label>
+                 <ng-select formControlName="projectName"  bindLabel="text"
+                 bindValue="id"  (change)="changedProject($event)" [ngStyle]="{ width: '160px' }"
+                    [items]="dataProjects" placeholder="Please select">
+                  </ng-select>
                   <!-- <ng-select2 formControlName="projectName" (valueChanged)="changedProject($event)" [width]="160px"
                     [data]="dataProjects" [placeholder]="'Please select'">
                   </ng-select2> -->
@@ -314,6 +324,11 @@
               <div class="col-md-2">
                 <div class="form-group" title=" Select budget by POET number ">
                   <label style="width:100%" class="control-label">POET NO. <span style="color:red;">*</span></label>
+                    <ng-select formControlName="poetNumber" (change)="changedPoet($event)" bindLabel="text"
+                    bindValue="id" [ngStyle]="{ width: '160px' }"
+                                        [items]="dataPOETNumber" placeholder="Please select">
+                                    </ng-select>
+
                   <!-- <ng-select2 formControlName="poetNumber" (valueChanged)="changedPoet($event)" [width]="160px"
                     [data]="dataPOETNumber" [placeholder]="'Please select'">
                   </ng-select2> -->
@@ -500,6 +515,11 @@
               <div class="col-md-2">
                 <div class="form-group" >
                   <label style="width:100%" class="control-label">Year</label>
+                  <ng-select
+  formControlName="year"
+  placeholder="Please select Year">
+  <ng-option *ngFor="let year of years" [value]="year">{{ year }}</ng-option>
+</ng-select>
                   <!-- <ng-select2 formControlName="year"  [width]="160px"
                      [placeholder]="'Please select Year'">
                      <option value="2021">2021</option>
@@ -540,6 +560,10 @@
               <label style="width:100%" class="control-label">BBF Number <span style="color:red;">*</span></label>
               <div class="row">
                 <div class="col-sm-12 col-md-2">
+                     <ng-select formControlName="bbHeaderID" (change)="changedbbfNumber($event)" [ngStyle]="{ width: '160px' }"
+                    [items]="dataPendingApproval" bindLabel="text"
+                    bindValue="id"  placeholder="Please select">
+                  </ng-select>
                   <!-- <ng-select2 formControlName="bbHeaderID" (valueChanged)="changedbbfNumber($event)" [width]="160px"
                     [data]="dataPendingApproval" [placeholder]="'Please select'">
                   </ng-select2> -->
@@ -584,6 +608,9 @@
                   <div class="col-sm-12 col-md-3">
                     <div class="form-group">
                       <label style="width:100%" class="control-label">Approval For</label>
+                      <ng-select [ngStyle]="{ width: '240px' }" formControlName="approverID" bindLabel="text"
+                      bindValue="id"  [items]="dataPendingBBApproval"
+                        placeholder="Please select"> </ng-select>
                       <!-- <ng-select2 [width]="240px" formControlName="approverID" [data]="dataPendingBBApproval"
                         [placeholder]="'Please select'"> </ng-select2> -->
                     </div>

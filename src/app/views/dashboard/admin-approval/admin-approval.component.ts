@@ -1,7 +1,7 @@
 import { Component, OnInit, ElementRef, ViewChild, ChangeDetectorRef, Inject, PLATFORM_ID } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { NgbModalConfig, NgbModal, NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
-import { FormBuilder, FormGroup, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NgbModalConfig, NgbModal, NgbDateStruct, NgbCalendar, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../../../api.service'
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
@@ -9,33 +9,33 @@ import { Select2OptionData } from 'ng-select2';
 import { BudgetBookingApproval, BudgetBooking, L2Approval, BudgetBookingLines, BudgetPoetNumber, BudgetAmount } from '../budgetBookingClass';
 import { CurrencyRate } from '../budgetBookingClass';
 
-import { DataTableDirective } from 'angular-datatables';
+import { DataTableDirective, DataTablesModule } from 'angular-datatables';
 import { PoetClass } from '../PoetClass';
 import { PendingApproval } from '../PendingApproval';
 import { PendingApprovalBB } from '../PendingApprovalBB';
 import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { User, cmbUser } from '../../theme/Users';
 import { UpdatePOAmount, AddPOAmount, UpdateChange } from '../masterPoetClass';
-
-
-import * as $$ from 'jquery';
 import { CommonModule, DecimalPipe, isPlatformBrowser } from '@angular/common';
 import { AccordionModule } from '@coreui/angular';
 import { TabsModule } from 'ngx-bootstrap/tabs';
-import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { SweetAlert2LoaderService, SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { HighchartsChartModule } from 'highcharts-angular';
 import { JwtInterceptor } from '../../_helpers';
+import Swal from 'sweetalert2';
+// import 'datatables.net';
+// import 'datatables.net-buttons';
 declare const $:any;
 @Component({
   selector: 'app-admin-approval',
   standalone: true,
   imports: [DecimalPipe,AccordionModule,
     TabsModule,SweetAlert2Module,NgSelectModule,ReactiveFormsModule,
-    HighchartsChartModule,CommonModule],
+    HighchartsChartModule,CommonModule,FormsModule,NgbModule ],
   templateUrl: './admin-approval.component.html',
   styleUrl: './admin-approval.component.scss',
-  providers:[ApiService,ToastrService,NgbModalConfig, NgbModal,{ provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },],
+  providers:[ApiService,ToastrService,NgbModalConfig, NgbModal,{ provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }, {provide:SweetAlert2LoaderService,useClass:SweetAlert2LoaderService } ],
 })
 
 export class AdminApprovalComponent {
@@ -56,6 +56,7 @@ export class AdminApprovalComponent {
   poAdjustmentsForm: FormGroup;
   addPOForm: FormGroup;
   yearForm: FormGroup;
+  years = [2021, 2020, 2019];
   date: { year: number, month: number };
   model: NgbDateStruct;
   minDate = {};
@@ -105,7 +106,7 @@ export class AdminApprovalComponent {
   travelPoet: boolean = false;
   bbLineId: number;
   isBrowser: boolean;
-
+  public dataYear: Array<Select2OptionData>;
   constructor(
     private route: ActivatedRoute, 
     private http: HttpClient, 
@@ -121,6 +122,14 @@ export class AdminApprovalComponent {
     private service:ApiService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
+    let items:any = [];
+    items.push({ id: '2019', text: '2019' });
+    items.push({ id: '2020', text: '2020' });
+    items.push({ id: '2021', text: '2021' });
+    items.push({ id: '2022', text: '2022' });
+    items.push({ id: '2023', text: '2023' });
+    items.push({ id: '2024', text: '2024' })
+    this.dataYear = items;
     this.isBrowser = isPlatformBrowser(this.platformId);
     config.backdrop = 'static';
     config.keyboard = false;
@@ -130,8 +139,13 @@ export class AdminApprovalComponent {
       this.seq = params["seq"];
       this.approvalId = params["approvalId"];
     });
+    
+    this.createForm();
+  }
+
+
+  ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
-      
     
       import('jquery').then(($) => {
         // jQuery is now available for use in the browser
@@ -140,19 +154,20 @@ export class AdminApprovalComponent {
       
      
     }
-    this.createForm();
-  }
-
-
-  ngOnInit() {
+    if (typeof window !== 'undefined') {
+      // Browser-specific code
+      (window as any).jQuery = $;
+      (window as any).$ = $;
+    }
    // $("a").removeClass("liactive");
     //$(".liAdminApproval").addClass("liactive");
+    this.searchYear = this.fb.group({year: ['2024'] });
+    this.searchYear.controls["year"].setValue("2024");
     this.modaltitle = "BBF Admin Approval";
     this.getUserName();
     this.getPendingBBF();
     this.GetUserData(true);
-    this.searchYear = this.fb.group({ year: [""] });
-    this.searchYear.controls["year"].setValue("2024");
+    
   }
 
   fnVisible() {
@@ -517,6 +532,7 @@ export class AdminApprovalComponent {
         let ele1=$("#tblbooking thead tr:eq(1) th") as JQuery<HTMLElement>;
         ele1.each(function (i:any) {
           var title = $(this).text();
+          console.log("title",title);
           if (i == 0 || i == 1 || i == 2 || i == 4 || i == 5 || i == 6) {
             $(this).html(
               '<input type="text" class=""  style="width: 120px;" placeholder="' +
@@ -605,12 +621,14 @@ export class AdminApprovalComponent {
 
 
   changedYear(e: any): void {
+    debugger;
+    console.log(e);
     this.isLoader = true;
     const table: any = $("#tblbooking").DataTable();
     table.destroy();
     this.chRef.detectChanges();
-    this.GetBBData(false, e.value);
-    this.GetPoetData(e.value);
+    this.GetBBData(false, e.text);
+    this.GetPoetData(e.text);
   }
 
   splitPO(item:any, content:any) {
@@ -626,11 +644,13 @@ export class AdminApprovalComponent {
   }
 
   changeYear(item:any, content:any) {
+    alert("hh");
     this.yearForm = this.fb.group({
       year: ["", Validators.required],
       remarks: [""]
     });
     this.poetMasterID = item.id;
+    console.log(content);
     this.modalService.open(content, { size: 'lg', centered: true });
   }
 
@@ -665,14 +685,14 @@ export class AdminApprovalComponent {
   }
 
   changedProject(e: any): void {
-    this.addPOForm.controls["projectName"].setValue(e.value);
-    this.FCdesc = e.value;
+    this.addPOForm.controls["projectName"].setValue(e.text);
+    this.FCdesc = e.text;
 
     let objLevel1:any = [];
     objLevel1 = this.objAccPoets.filter(
       l => l.projectName == this.addPOForm.value.projectName
     );
-    if (e.value == 'Travel CMO' || e.value == 'Travel Loyalty' || e.value == 'Travel Marketing' || e.value == 'Travel Communication' || e.value == 'Travel Brand') {
+    if (e.text == 'Travel CMO' || e.text == 'Travel Loyalty' || e.text == 'Travel Marketing' || e.text == 'Travel Communication' || e.text == 'Travel Brand') {
       this.travelPoet = true;
       this.addPOForm.controls["unitPrice"].setValue(1)
     }
@@ -691,19 +711,19 @@ export class AdminApprovalComponent {
   }
 
   changedPoet(e: any): void {
-    this.addPOForm.controls["poetNumber"].setValue(e.value);
+    this.addPOForm.controls["poetNumber"].setValue(e.text);
     let poetNumber = new BudgetPoetNumber();
-    poetNumber.poetNumber = e.value;
+    poetNumber.poetNumber = e.text;
     poetNumber.year = this.searchYear.controls["year"].value;
     this.getBudgetAmount(poetNumber);
 
-    this.FCdesc = e.value;
+    this.FCdesc = e.text;
     let objLevel1:any = [];
     objLevel1 = this.objAccPoets.filter(
       l => l.poetNumber == this.addPOForm.value.poetNumber
     );
 
-    if (e.value == '80.01' || e.value == '80.02' || e.value == '80.03' || e.value == '80.04' || e.value == '80.05') {
+    if (e.text == '80.01' || e.text == '80.02' || e.text == '80.03' || e.text == '80.04' || e.text == '80.05') {
       this.travelPoet = true;
       this.addPOForm.controls["unitPrice"].setValue(1)
     }
