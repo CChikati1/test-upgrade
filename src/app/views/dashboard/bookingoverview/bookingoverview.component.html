@@ -1,0 +1,582 @@
+<div *ngIf="isLoader" class="divloader">
+</div>
+<br>
+
+<div class="">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-sm-12 col-md-10">
+                        <h4 class="modal-title" id="modal-basic-title">{{modaltitle}}</h4>
+                    </div>
+                    <div class="col-sm-12 col-md-1" style="text-align: right;"> <b>Year</b> </div>
+                    <div class="col-sm-12 col-md-1">
+                        <form [formGroup]='searchYear'>
+
+                            <ng-select style="border:0px !important;"
+                            class="ddlUser" id="ddlselectYear"
+                            [ngStyle]="{ width:'80px' }"
+                            [items]="dataYear"
+                            bindLabel="text"
+                            bindValue="id"
+                            formControlName="year"
+                            placeholder="Please Select"
+                            (change)="changedYear($event)">
+                          </ng-select> 
+
+                            <!-- <ng-select2 style="border:0px !important;" class="ddlUser" id="ddlselectYear"
+                                formControlName="year" (valueChanged)="changedYear($event)"
+                                [placeholder]="'Please select'" [width]="80px">
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                                <option value="2022">2022</option>
+                                <option value="2021">2021</option>
+                                <option value="2020">2020</option>
+                                <option value="2019">2019</option>
+                            </ng-select2> -->
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="divBookingOverview" [class.hide]="applyHideClassForBookingOverview">
+                    <button type="button" (click)="fnAction()" class="btn  btn-outline-primary">Export</button>
+                    <table class="display nowrap table-bordered table-responsive-sm table-hover table-outline mb-0"
+                        id="tblBookingOverview">
+                        <thead>
+                            <tr>
+                                <th>CAPEX/OPEX</th>
+                                <th>Project Name</th>
+                                <th>POET Number</th>
+                                <th>Project category</th>
+                                <th>L1</th>
+                                <th>L2</th>
+                                <th>L3</th>
+                                <th>L4</th>
+                                <th>POET Owner</th>
+                                <th>Period Year</th>
+                                <th>FY Year Original Budget (AED)</th>
+                                <th>FY Year Revised Budget (AED)</th>
+                                <th>Next Year Spent Amount (AED)</th>
+                                <th>Spend To Date (AED)</th>
+                                <th>Balance (AED)</th>
+                                <th>Booked Amount (AED)</th>
+                                <th>Requisition Amount (AED)</th>
+                                <th>PO Amount (AED)</th>
+                                <th>Received Amount (AED)</th>
+                                <th>Invoice Amount (AED)</th>
+                                <!--th>Internal Amount (AED)</th-->
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let poet of objBookingOverview">
+                                <td>{{ poet.spendType }}</td>
+                                <td>{{ poet.projectName }}</td>
+                                <td>{{ poet.poetNumber }}</td>
+                                <td>{{poet.projectCategory}}</td>
+                                <td>{{ poet.level1 }}</td>
+                                <td>{{ poet.level2 }}</td>
+                                <td>{{ poet.level3 }}</td>
+                                <td>{{ poet.level4 }}</td>
+                                <td>{{ poet.knownName }}</td>
+                                <td>{{poet.periodYear}}</td>
+                                <td class="text-right">{{poet.currentYearBudget| number:'1.2-2'}}</td>
+                                <td class="text-right">{{poet.fyBudget| number:'1.2-2'}}</td>
+                                <td class="text-right">{{poet.nextYear| number:'1.2-2'}}</td>
+                                <td class="text-right">{{getSpendBudget(poet)| number:'1.2-2'}}</td>
+                                <td class="text-right">{{getBalance(poet)| number:'1.2-2'}}</td>
+                                <td class="text-right">{{poet.bookedAmt| number:'1.2-2'}}</td>
+                                <td class="text-right">{{poet.prAmount| number:'1.2-2'}}</td>
+                                <td class="text-right">{{poet.poAmount| number:'1.2-2'}}</td>
+                                <td class="text-right">{{poet.rcvdAmount| number:'1.2-2'}}</td>
+                                <td class="text-right">{{poet.invAmount| number:'1.2-2'}}</td>
+                                <!--td class="text-right">{{poet.INT_AMOUNT| number:'1.2-2'}}</td-->
+                                <td style="  white-space: nowrap;"> <button style="width:100px;" type="button"
+                                        (click)="poetHistory(poet,content)"
+                                        class="btn-square btn-block btn-light active">POET History</button></td>
+                                <td style="  white-space: nowrap;"> <button type="button"
+                                        (click)="monthWise(poet,content)"
+                                        class="btn-square btn-block btn-light active">Monthwise</button></td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-right"><span>Total: {{ getBookedAmountTotal() | number:'1.2-2'}}</span>
+                                </td>
+                                <td class="text-right"><span>Total:
+                                        {{ getRequisitionAmountTotal() | number:'1.2-2'}}</span></td>
+                                <td class="text-right"><span>Total: {{ getPOAmountTotal() | number:'1.2-2'}}</span></td>
+                                <td class="text-right"><span>Total: {{ getReceiptAmountTotal() | number:'1.2-2'}}</span>
+                                </td>
+                                <td class="text-right"><span>Total: {{ getInvoceAmountTotal() | number:'1.2-2'}}</span>
+                                </td>
+                                <!--td class="text-right"><span>Total:
+                                        {{ getInternalSpentAmountTotal() | number:'1.2-2'}}</span></td-->
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/.col-->
+</div>
+<!--/.row-->
+<ng-template #content let-c="close" let-d="dismiss" style="width:90% !important;">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">{{modalsubtitle}}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="c('Save click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="divPOETHistory" [class.hide]="applyHideClassForPOETHistory">
+                       <button type="button" (click)="fnPoetAction()" class="btn  btn-outline-primary">Export</button>
+                        <div>
+                            <form [formGroup]="poetForm" novalidate>
+                                <div *ngIf="isBtnApprvEnabled">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-2 ">
+                                            <div class="form-group">
+                                                <label style="width:100%" class="control-label">Requested By</label>
+                                                <input class="form-control  text-left" readonly
+                                                    formControlName="requestedby">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-2">
+                                            <div class="form-group">
+                                                <label style="width:100%" class="control-label">Funds Requested</label>
+                                                <input class="form-control  text-right" readonly
+                                                    formControlName="totalAmount">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-2">
+                                            <div class="form-group">
+                                                <label style="width:100%" class="control-label">Status</label>
+                                                <input class="form-control  text-left" readonly
+                                                    formControlName="bbstatus">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6">
+                                            <div class="form-group">
+                                                <div class="maxwidth"
+                                                    style="max-height:200px; width:100%;overflow:auto;">
+                                                    <table id="tblbookingAttachments"
+                                                        class="table table-bordered table-responsive-sm display nowrap"
+                                                        style="white-space: nowrap">
+                                                        <thead class="thead-light">
+                                                            <tr>
+                                                                <th>Attached File</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr *ngFor="let poet of objBudgetAttachments; index as i">
+                                                                <td>
+                                                                    <a (click)="downloadFile(poet)" style="cursor: pointer;
+                                                                        color: #8a1538 !important;
+                                                                        font-weight: 600;
+                                                                        font-size: 13px;">
+                                                                        {{poet.fileName }}
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-6">
+                                            <div class="form-group">
+                                                <label style="width:100%" class="control-label">Description</label>
+                                                <textarea class="form-control" formControlName="description"
+                                                    name="textarea-input" placeholder="description.." readonly
+                                                    rows="3"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6">
+                                            <div class="form-group">
+                                                <label style="width:100%" class="control-label">Justification</label>
+                                                <textarea class="form-control" formControlName="justification"
+                                                    name="textarea-input" placeholder="justification.." readonly
+                                                    rows="3"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-12">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    SUMMARY
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="maxwidth"
+                                                                style="max-height:200px; width:100%;overflow:auto;">
+                                                                <table id="tblbookinglines"
+                                                                    class="table table-bordered table-responsive-sm display nowrap"
+                                                                    style="white-space: nowrap">
+                                                                    <thead class="thead-light">
+                                                                        <tr>
+                                                                            <th>PROJECT NAME</th>
+                                                                            <th>POET NO.</th>
+                                                                            <th> CURRENT YEAR SPEND</th>
+                                                                            <th>NEXT YEAR SPEND</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr *ngFor="let poet of objPoetUserData">
+                                                                            <td>{{ poet.projectName }}</td>
+                                                                            <td>{{ poet.poetNumber }}</td>
+                                                                            <td class=" text-right">
+                                                                                {{ poet.lineAmount |  number:'1.2-5'  }}
+                                                                            </td>
+                                                                            <td class=" text-right">
+                                                                                {{ poet.nextYearBBAmount  |  number:'1.2-5' }}
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="maxwidth"
+                                                                style="max-height:300px; width:100%;overflow:auto;">
+                                                                <table id="tblbookinglines"
+                                                                    class="table table-bordered table-responsive-sm display nowrap"
+                                                                    style="white-space: nowrap">
+                                                                    <thead class="thead-light">
+                                                                        <tr>
+                                                                            <th>NAME</th>
+                                                                            <th>IS APPROVED ? </th>
+                                                                            <th>Level</th>
+                                                                            <th>Action Date</th>
+                                                                            <th>Comments</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr *ngFor="let poet of objPoetStatusData">
+                                                                            <td>{{ poet.FULL_NAME }}</td>
+                                                                            <td>{{ poet.APPROVED }}</td>
+                                                                            <td> Level {{poet.APPROVAL_SEQUENCE}}</td>
+                                                                            <td>{{ poet.APPROVAL_DATE }}</td>
+                                                                            <td>{{ poet.APPROVAL_Notes }}</td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <table class="display nowrap table table-bordered tblPOETHistory" id="tblPOETHistory">
+                            <thead>
+                                <tr>
+                                    <th>Booking Number</th>
+                                    <th style="width:100px;">Booking Status</th>
+                                    <th>Booking Date</th>
+                                    <th>PO/Internal</th>
+                                    <th style="width:250px;">Description</th>
+                                    <th>Currency</th>
+                                    <th>Requested By</th>
+                                    <th>PR NO</th>
+                                    <th>PO NO</th>
+                                    <th>Unit Price</th>
+                                    <th>Qty</th>
+                                    <th style="width:140px;">Line Amount</th>
+                                    <th>PR Amount</th>
+                                    <th>PO Amount</th>
+                                    <th>Received Amount</th>
+                                    <th>Invoice Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr (click)="openPoet(poet)" *ngFor="let poet of objPOETHistoy">
+                                    <td>{{poet.id}}</td>
+                                    <td style="width:110px;">{{poet.bbStatus}}</td>
+                                    <td>{{poet.creationDate | date}}</td>
+                                    <td>{{poet.poRequired}}</td>
+                                    <td>{{poet.description}}</td>
+                                    <td>{{poet.currency}}</td>
+                                    <td>{{poet.knownName}}</td>                                    
+                                    <td>{{poet.prNo}}</td>
+                                    <td>{{poet.poNo}}</td>
+                                    <td class="text-right">{{poet.unitPrice | number:'1.2-2'}}</td>
+                                    <td>{{poet.quantity}}</td>
+                                    <td class="text-right">{{poet.bbfAmount | number:'1.2-2'}}</td>
+                                    <td class="text-right">{{poet.prAmount | number:'1.2-2'}}</td>                                    
+                                    <td class="text-right">{{poet.poAmount | number:'1.2-2'}}</td>                                    
+                                    <td class="text-right">{{poet.poReceivedAmount | number:'1.2-2'}}</td>                                    
+                                    <td class="text-right">{{poet.poBilledAmount | number:'1.2-2'}}</td>                                    
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td style="width:120px;"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td style="width:250px;"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td style="width:140px;" class="text-right"><span>Total:
+                                            {{ getPoetHistoryResevedAmountAEDTotal() | number:'1.2-2'}}</span></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="divMonthOverview" [class.hide]="applyHideClassForMonthWise"
+                        style="width:100%;overflow:auto;">
+                        <!-- <button type="button" (click)="fnAction()" class="btn  btn-outline-primary">Export</button> -->
+                        <table
+                            class="display nowrap table-bordered table-responsive-sm table-hover table-outline mb-0 tblMonthOverview"
+                            style="white-space:nowrap" id="tblMonthOverview">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>POET No:- {{selectedPOETNumber}}</th>
+                                    <th>Jan {{selectedPeriodYear}}</th>
+                                    <th>Feb {{selectedPeriodYear}}</th>
+                                    <th>Mar {{selectedPeriodYear}}</th>
+                                    <th>Apr {{selectedPeriodYear}}</th>
+                                    <th>May {{selectedPeriodYear}}</th>
+                                    <th>Jun {{selectedPeriodYear}}</th>
+                                    <th>Jul {{selectedPeriodYear}}</th>
+                                    <th>Aug {{selectedPeriodYear}}</th>
+                                    <th>Sep {{selectedPeriodYear}}</th>
+                                    <th>Oct {{selectedPeriodYear}}</th>
+                                    <th>Nov {{selectedPeriodYear}}</th>
+                                    <th>Dec {{selectedPeriodYear}}</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody class="tblMonthOverviewBody">
+                                <tr *ngFor="let poet of objMonthWise">
+                                    <!--span *ngIf="poet.JAN>0" class="text-right"
+                                            (click)="monthWiseHistory(poet,content)">
+                                            {{poet.JAN| number:'1.2-2'}}</span-->
+                                    <td>{{ poet.ALLOCATEDBUDGET }}</td>
+                                    <td class="text-right"> <span *ngIf="poet.JAN!=0"
+                                            (click)="monthWiseHistory(poet,content,'jan')">
+                                            {{poet.JAN| number:'1.2-2'}}</span><span *ngIf="poet.JAN==0">
+                                            {{poet.JAN| number:'1.2-2'}}</span></td>
+                                    <td class="text-right"> <span *ngIf="poet.FEB!=0"
+                                            (click)="monthWiseHistory(poet,content,'feb')">
+                                            {{poet.FEB| number:'1.2-2'}}</span><span *ngIf="poet.FEB==0">
+                                            {{poet.FEB| number:'1.2-2'}}</span></td>
+                                    <td class="text-right"> <span *ngIf="poet.MAR!=0"
+                                            (click)="monthWiseHistory(poet,content,'mar')">
+                                            {{poet.MAR| number:'1.2-2'}}</span>
+                                        <span *ngIf="poet.MAR==0">
+                                            {{poet.MAR| number:'1.2-2'}}</span></td>
+                                    <td class="text-right"> <span *ngIf="poet.APR!=0"
+                                            (click)="monthWiseHistory(poet,content,'apr')">
+                                            {{poet.APR| number:'1.2-2'}}</span><span *ngIf="poet.APR==0">
+                                            {{poet.APR| number:'1.2-2'}}</span></td>
+                                    <td class="text-right"> <span *ngIf="poet.MAY!=0"
+                                            (click)="monthWiseHistory(poet,content,'may')">
+                                            {{poet.MAY| number:'1.2-2'}}</span><span *ngIf="poet.MAY==0">
+                                            {{poet.MAY| number:'1.2-2'}}</span></td>
+                                    <td class="text-right"> <span *ngIf="poet.JUN!=0"
+                                            (click)="monthWiseHistory(poet,content,'jun')">
+                                            {{poet.JUN| number:'1.2-2'}}</span><span *ngIf="poet.JUN==0">
+                                            {{poet.JUN| number:'1.2-2'}}</span></td>
+                                    <td class="text-right"> <span *ngIf="poet.JUL!=0"
+                                            (click)="monthWiseHistory(poet,content,'jul')">
+                                            {{poet.JUL| number:'1.2-2'}}</span><span *ngIf="poet.JUL==0">
+                                            {{poet.JUL| number:'1.2-2'}}</span></td>
+                                    <td class="text-right"> <span *ngIf="poet.AUG!=0"
+                                            (click)="monthWiseHistory(poet,content,'aug')">
+                                            {{poet.AUG| number:'1.2-2'}}</span><span *ngIf="poet.AUG==0">
+                                            {{poet.AUG| number:'1.2-2'}}</span></td>
+                                    <td class="text-right"> <span *ngIf="poet.SEP!=0"
+                                            (click)="monthWiseHistory(poet,content,'sep')">
+                                            {{poet.SEP| number:'1.2-2'}}</span><span *ngIf="poet.SEP==0">
+                                            {{poet.SEP| number:'1.2-2'}}</span></td>
+                                    <td class="text-right"> <span *ngIf="poet.OCT!=0"
+                                            (click)="monthWiseHistory(poet,content,'oct')">
+                                            {{poet.OCT| number:'1.2-2'}}</span><span *ngIf="poet.OCT==0">
+                                            {{poet.OCT| number:'1.2-2'}}</span></td>
+                                    <td class="text-right"> <span *ngIf="poet.NOV!=0"
+                                            (click)="monthWiseHistory(poet,content,'nov')">
+                                            {{poet.NOV| number:'1.2-2'}}</span><span *ngIf="poet.NOV==0">
+                                            {{poet.NOV| number:'1.2-2'}}</span></td>
+                                    <td class="text-right"> <span *ngIf="poet.DEC!=0"
+                                            (click)="monthWiseHistory(poet,content,'dec')">
+                                            {{poet.DEC| number:'1.2-2'}}</span><span *ngIf="poet.DEC==0">
+                                            {{poet.DEC| number:'1.2-2'}}</span></td>
+                                    <td class="text-right"> <span
+                                            *ngIf="getMonthwiseToatl(poet,content)>0">{{getMonthwiseToatl(poet,content)| number:'1.2-2'}}</span>
+                                        <span
+                                            *ngIf="getMonthwiseToatl(poet,content) == 0">{{getMonthwiseToatl(poet,content)| number:'1.2-2'}}</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td>Balance</td>
+                                    <td class="text-right"><span [ngClass]="{redClass: getMonthwiseBalance('JAN')<0}"
+                                            *ngIf="getMonthwiseBalance('JAN')!=0">
+                                            {{ getMonthwiseBalance('JAN') | number:'1.2-2'}}</span>
+                                        <span *ngIf="getMonthwiseBalance('JAN')==0">
+                                            {{ getMonthwiseBalance('JAN') | number:'1.2-2'}}</span>
+                                    </td>
+                                    <td class="text-right"><span [ngClass]="{redClass: getMonthwiseBalance('FEB')<0}"
+                                            *ngIf="getMonthwiseBalance('FEB')!=0" ng-style="{color: 'blue'}">
+                                            {{ getMonthwiseBalance('FEB') | number:'1.2-2'}}</span>
+                                        <span *ngIf="getMonthwiseBalance('FEB')==0">
+                                            {{ getMonthwiseBalance('FEB') | number:'1.2-2'}}</span>
+                                    </td>
+                                    <td class="text-right"><span [ngClass]="{redClass: getMonthwiseBalance('MAR')<0}"
+                                            *ngIf="getMonthwiseBalance('MAR')!=0">
+                                            {{ getMonthwiseBalance('MAR') | number:'1.2-2'}}</span>
+                                        <span *ngIf="getMonthwiseBalance('MAR')==0">
+                                            {{ getMonthwiseBalance('MAR') | number:'1.2-2'}}</span>
+                                    </td>
+                                    <td class="text-right"><span [ngClass]="{redClass: getMonthwiseBalance('APR')<0}"
+                                            *ngIf="getMonthwiseBalance('APR')!=0">
+                                            {{ getMonthwiseBalance('APR') | number:'1.2-2'}}</span>
+                                        <span *ngIf="getMonthwiseBalance('APR')==0">
+                                            {{ getMonthwiseBalance('APR') | number:'1.2-2'}}</span>
+                                    </td>
+                                    <td class="text-right"><span [ngClass]="{redClass: getMonthwiseBalance('MAY')<0}"
+                                            *ngIf="getMonthwiseBalance('MAY')!=0">
+                                            {{ getMonthwiseBalance('MAY') | number:'1.2-2'}}</span>
+                                        <span *ngIf="getMonthwiseBalance('MAY')==0">
+                                            {{ getMonthwiseBalance('MAY') | number:'1.2-2'}}</span></td>
+                                    <td class="text-right"><span [ngClass]="{redClass: getMonthwiseBalance('JUN')<0}"
+                                            *ngIf="getMonthwiseBalance('JUN')!=0">
+                                            {{ getMonthwiseBalance('JUN') | number:'1.2-2'}}</span>
+                                        <span *ngIf="getMonthwiseBalance('JUN')==0">
+                                            {{ getMonthwiseBalance('JUN') | number:'1.2-2'}}</span></td>
+                                    <td class="text-right"><span [ngClass]="{redClass: getMonthwiseBalance('JUL')<0}"
+                                            *ngIf="getMonthwiseBalance('JUL')!=0">
+                                            {{ getMonthwiseBalance('JUL') | number:'1.2-2'}}</span>
+                                        <span *ngIf="getMonthwiseBalance('JUL')==0">
+                                            {{ getMonthwiseBalance('JUL') | number:'1.2-2'}}</span></td>
+                                    <td class="text-right"><span [ngClass]="{redClass: getMonthwiseBalance('AUG')<0}"
+                                            *ngIf="getMonthwiseBalance('AUG')!=0">
+                                            {{ getMonthwiseBalance('AUG') | number:'1.2-2'}}</span>
+                                        <span *ngIf="getMonthwiseBalance('AUG')==0">
+                                            {{ getMonthwiseBalance('AUG') | number:'1.2-2'}}</span></td>
+                                    <td class="text-right"><span [ngClass]="{redClass: getMonthwiseBalance('SEP')<0}"
+                                            *ngIf="getMonthwiseBalance('SEP')!=0">
+                                            {{ getMonthwiseBalance('SEP') | number:'1.2-2'}}</span>
+                                        <span *ngIf="getMonthwiseBalance('SEP')==0">
+                                            {{ getMonthwiseBalance('SEP') | number:'1.2-2'}}</span></td>
+                                    <td class="text-right"><span [ngClass]="{redClass: getMonthwiseBalance('OCT')<0}"
+                                            *ngIf="getMonthwiseBalance('OCT')!=0">
+                                            {{ getMonthwiseBalance('OCT') | number:'1.2-2'}}</span>
+                                        <span *ngIf="getMonthwiseBalance('OCT')==0">
+                                            {{ getMonthwiseBalance('OCT') | number:'1.2-2'}}</span></td>
+                                    <td class="text-right"><span [ngClass]="{redClass: getMonthwiseBalance('NOV')<0}"
+                                            *ngIf="getMonthwiseBalance('NOV')!=0">
+                                            {{ getMonthwiseBalance('NOV') | number:'1.2-2'}}</span>
+                                        <span *ngIf="getMonthwiseBalance('NOV')==0">
+                                            {{ getMonthwiseBalance('NOV') | number:'1.2-2'}}</span></td>
+                                    <td class="text-right"><span [ngClass]="{redClass: getMonthwiseBalance('DEC')<0}"
+                                            *ngIf="getMonthwiseBalance('DEC')!=0">
+                                            {{ getMonthwiseBalance('DEC') | number:'1.2-2'}}</span>
+                                        <span *ngIf="getMonthwiseBalance('DEC')==0">
+                                            {{ getMonthwiseBalance('DEC') | number:'1.2-2'}}</span></td>
+                                    <td class="text-right"><span [ngClass]="{redClass: getMonthwiseBalance('TOTAL')<0}"
+                                            *ngIf="getMonthwiseBalance('TOTAL')!=0">
+                                            {{ getMonthwiseBalance('TOTAL') | number:'1.2-2'}}</span>
+                                        <span *ngIf="getMonthwiseBalance('TOTAL')==0">
+                                            {{ getMonthwiseBalance('TOTAL') | number:'1.2-2'}}</span></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="divMonthOverviewHistory" [class.hide]="applyHideClassForMonthwiseHistory">
+                        <!-- <button type="button" (click)="fnAction()" class="btn  btn-outline-primary">Export</button> -->
+                        <br />
+                        <table
+                            class="display nowrap table-bordered table-responsive-sm table-hover table-outline mb-0 tblMonthOverviewHistory"
+                            id="tblMonthOverviewHistory">
+                            <thead>
+                                <tr>
+                                    <th>Booking Number</th>
+                                    <th>Booking Status</th>
+                                    <th>Booking Date</th>
+                                    <th>PO/Internal</th>
+                                    <th>Description</th>
+                                    <th>Currency </th>
+                                    <th>Requested By</th>
+                                    <th>PR No</th>
+                                    <th>PO No</th>
+                                    <th>Unit Price</th>
+                                    <th>QTY</th>
+                                    <th>Line Amount</th>
+                                    <th>PR Amount</th>
+                                    <th>PO Amount</th>
+                                    <th>Received Amount</th>
+                                    <th>Invoice Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let poet of objMonthwiseHistory">
+                                    <td>{{poet.BB_HEADER_ID}}</td>
+                                    <td style="width:120px;">{{poet.BB_STATUS}}</td>
+                                    <td>{{poet.CREATION_DATE | date}}</td>
+                                    <td>{{poet.PO_REQUIRED}}</td>
+                                    <td>{{poet.DESCRIPTION}}</td>
+                                    <td>{{poet.CURRENCY}}</td>
+                                    <td>{{poet.KNOWN_NAME}}</td>                                    
+                                    <td>{{poet.PR_NO}}</td>
+                                    <td>{{poet.PO_NO}}</td>
+                                    <td class="text-right">{{poet.UNIT_PRICE | number:'1.2-2'}}</td>
+                                    <td>{{poet.QUANTITY}}</td>
+                                    <td class="text-right">{{poet.LINE_AMOUNT | number:'1.2-2'}}</td>
+                                    <td class="text-right">{{poet.PR_AMOUNT | number:'1.2-2'}}</td>
+                                    <td class="text-right">{{poet.PO_AMOUNT | number:'1.2-2'}}</td>
+                                    <td class="text-right">{{poet.PO_RECEIVED_AMOUNT | number:'1.2-2'}}</td>
+                                    <td class="text-right">{{poet.PO_BILLED_AMOUNT | number:'1.2-2'}}</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="c('Save click')">Close</button>
+    </div>
+</ng-template>

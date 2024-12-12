@@ -1,7 +1,7 @@
-import { Component, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, Inject, PLATFORM_ID  } from '@angular/core';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { ApiService } from '../../api.service';
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { navItems } from '../../_nav';
 import {  FooterModule,HeaderModule,SidebarModule,BreadcrumbModule,NavModule } from '@coreui/angular';
 
@@ -16,7 +16,8 @@ import { NgxSpinnerModule } from 'ngx-spinner';
   templateUrl: './default-layout.component.html',
   styleUrl: './default-layout.component.scss'
 })
-export class DefaultLayoutComponent {
+export class DefaultLayoutComponent implements OnDestroy {
+
   navbarBrandFull = {
     
     src: 'assets/Majid Al Futtaim Logo.png',
@@ -25,32 +26,39 @@ export class DefaultLayoutComponent {
     alt: 'MAF Logo'
   };
   public navItems = navItems;
-  public sidebarMinimized = true;
-  private changes: MutationObserver;
+  public sidebarMinimized = false;
+  private changes: MutationObserver | null = null;
   public element: HTMLElement;
   loginUserName: string;
   isAdmin: boolean = false;
   isSuperAdmin: boolean = false;
   isUser: boolean = false;
 
-  constructor( public router: Router, private service: ApiService,@Inject(DOCUMENT) _document?: any) {
+  constructor(public router: Router, private service: ApiService,@Inject(DOCUMENT) private document: Document, @Inject(PLATFORM_ID) private platformId: Object
+) {
+    
+   
+  }
 
+  ngOnDestroy(): void {
+    if (this.changes) {
+      this.changes.disconnect();
+    }
+  }
+
+  
+  ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+    this.element = this.document.body;
     this.changes = new MutationObserver((mutations) => {
-      this.sidebarMinimized = _document.body.classList.contains('sidebar-minimized');
+      this.sidebarMinimized = this.document.body.classList.contains('sidebar-minimized');
     });
-    this.element = _document.body;
-    this.changes.observe(<Element>this.element, {
+    this.changes.observe(this.element, {
       attributes: true,
       attributeFilter: ['class']
     });
   }
 
-  ngOnDestroy(): void {
-    this.changes.disconnect();
-  }
-
-  
-  ngOnInit() {
     console.log("Layout");
     // this.service.getUserName().subscribe((res:any) => {
     //   if (res != null && res != '') {

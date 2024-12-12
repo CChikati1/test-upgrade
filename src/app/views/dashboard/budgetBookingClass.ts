@@ -26,7 +26,9 @@ export class BudgetBooking {
     description: string;  
     attachment: string;  
     TOTAL:number;
+    total:number;
     KNOWN_NAME: string;
+    knownName:string;
     procurementSourcing: string;
     buyerValue: string;
     buyerDesc: string;

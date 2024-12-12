@@ -621,14 +621,6 @@ items.push({id: 'VOC Programme', text: 'VOC Programme'});
 
   budgetOverview() {
 
-    const payload = {
-      year: '2024',
-      spendType: 'ALL',
-      email: 'veerender.kumar-e@maf.ae',
-      month: 'ALL',
-      projectCategory: 'ALL',
-      department: 'ALL'
-    };
 //console.log(payload);
     const headers = new HttpHeaders({
       "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',

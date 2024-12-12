@@ -1,0 +1,652 @@
+<div *ngIf="isLoader" class="divloader">
+</div>
+
+<br>
+
+<div class="">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-sm-12 col-md-10">
+            <h4 class="modal-title" id="modal-basic-title">Budget Setup</h4>
+          </div>
+          <div class="col-sm-12 col-md-1" style="text-align: right;"> <b>Year</b> </div>
+          <div class="col-sm-12 col-md-1">
+            <form [formGroup]='searchYear'>
+              <ng-select
+                [items]="dataYear"
+                bindLabel="text"
+                bindValue="id"
+                 formControlName="year"
+                placeholder="Please Select"
+                (change)="changedYear($event)">
+              </ng-select>
+
+              
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="card-body tblHtscroll">
+
+        <br>
+        <button class="btn  btn-outline-primary" (click)="open(content)">Create New</button> &nbsp; <button
+          type="button" (click)="fnAction()" class="btn  btn-outline-primary">Export</button>
+        &nbsp; <button type="button" (click)="fnVisible()" class="btn hide  btn-outline-primary">Column
+          Visibility</button>
+
+          <!-- <button class="btn  btn-outline-primary" >Create New</button> &nbsp; <button
+          type="button" (click)="fnAction()" class="btn  btn-outline-primary">Export</button>
+        &nbsp; <button type="button" (click)="fnVisible()" class="btn hide  btn-outline-primary">Column
+          Visibility</button>          <br> -->
+        <table id="poetMaster"
+          class="display nowrap table-bordered table-responsive-sm table-hover table-outline mb-0 ">
+
+          <thead>
+            <tr>
+              <th style="color:white">Edit</th>
+              <th>Year</th>              
+              <th>Project Name</th>
+              <th>POET Number</th>
+              <th>Project Cateogry</th>
+              <th>L1</th>
+              <th>L2</th>
+              <th>L3</th>
+              <th>L4</th>
+              <th>Project Type</th>          
+              <th>Finance Category</th>
+              <th>Finance Category Type</th>
+              <!-- <th>Future1 Segment</th> -->
+              <th>Charge Account</th>
+              <th>Owner Name</th>
+              <th>Reviewer 1</th>
+              <th>Reviewer 2</th>
+              <th>Start Date</th>
+              <th>End Date</th>              
+              <th>Holding %</th>
+              <th>Ventures %</th>
+              <th>Properties %</th>
+              <th>Retail %</th>
+              <th>Others %</th>
+            </tr>
+          </thead>
+          <tfoot>
+
+          </tfoot>
+          <tbody>
+            <tr *ngFor="let poet of objPoets"> 
+              <td> <a (click)="editPoet(poet,content)"> <i class="fa fa-edit"></i> View / Edit
+                </a></td>
+                <!-- <td> <a> <i class="fa fa-edit"></i> View / Edit
+                </a></td> -->
+              <td>{{ poet.financialYear }}</td>
+              <td>{{ poet.projectName }}</td>
+              <td>{{ poet.poetNumber }}</td>
+              <td>{{poet.projectCategory}}</td>
+              <td>{{ poet.level1 }}</td>
+              <td>{{ poet.level2 }}</td>
+              <td>{{ poet.level3 }}</td>
+              <td>{{ poet.level4 }}</td>              
+              <td>{{ poet.projectType }}</td>              
+              <td>{{ poet.itemCategoryName }}</td>
+              <td>{{ poet.spendType }}</td>
+              <!-- <td>{{ poet.future1Segment }}</td> -->
+              <td>{{ poet.chargeAccount }}</td>
+              <td>{{ poet.ownerKnownName }}</td>
+              <td>{{ poet.reviewer1Name }}</td>
+              <td>{{ poet.reviewer2Name }}</td>
+              <td>{{ poet.startDate | date  }}</td>
+              <td>{{ poet.endDate | date  }}</td>              
+              <td class="text-right">{{ poet.holdingPercentage  }}</td>
+              <td class="text-right">{{ poet.venturesPercentage  }}</td>
+              <td class="text-right">{{ poet.propertiesPercentage  }}</td>
+              <td class="text-right">{{ poet.retailPercentage }}</td>
+              <td class="text-right">{{ poet.othersPercentage }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{modaltitle}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="c('Save click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+
+    <div class="container">
+      <form [formGroup]="poetForm" novalidate>
+
+        <div class="row">
+
+          <div class="col-sm-12 col-md-3 ">
+
+            <div class="form-group">
+              <label style="width:100%" class="control-label">Year</label>
+              <input class="form-control" readonly formControlName="FiscalYear">
+              <div
+                *ngIf="poetForm.controls['FiscalYear'].invalid && (poetForm.controls['FiscalYear'].dirty || poetForm.controls['FiscalYear'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="poetForm.controls['FiscalYear']?.errors?.['required']">
+                  Year is required.
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">L1</label>              
+              <select formControlName="Level1" class="form-control">
+                <option value="" disabled selected>Select</option>
+                <option *ngFor="let p of objLevel1" [value]="p.flexValue">{{p.description}}</option>
+              </select>
+              <div
+                *ngIf="poetForm.controls['Level1'].invalid && (poetForm.controls['Level1'].dirty || poetForm.controls['Level1'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="poetForm.controls['Level1']?.errors?.['required']">
+                  L1 is required.
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">L2</label>
+              <select formControlName="Level2" class="form-control" (change)="onChangeLevel2($event)">
+                <option value="" disabled selected>Select</option>
+                <option *ngFor="let p of objLevel2Data" [value]="p.flexValue">{{p.description}}</option>
+              </select>
+              <div
+                *ngIf="poetForm.controls['Level2'].invalid && (poetForm.controls['Level2'].dirty || poetForm.controls['Level2'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="poetForm.controls['Level2']?.errors?.['required']">
+                  L2 is required.
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">L3</label>
+              <!-- <select formControlName="Level3" class="form-control" (change)="onChangeLevel3($event)">
+                <option value="" disabled selected>Select</option>
+                <option *ngFor="let p of objLevel3Data" [value]="p.flexValue">{{p.description}}</option>
+              </select> -->
+
+              <ng-select 
+                [items]="objLevel3Data"
+                bindLabel="description"
+                bindValue="flexValue"
+                [clearable]="false"
+                placeholder="Select"
+                formControlName="Level3"
+                (change)="onChangeLevel3($event)">
+             </ng-select>
+              <div
+                *ngIf="poetForm.controls['Level3'].invalid && (poetForm.controls['Level3'].dirty || poetForm.controls['Level3'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="poetForm.controls['Level3']?.errors?.['required']">
+                  L3 is required.
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">L4</label>
+              <!-- <select formControlName="Level4" class="form-control">
+                <option value="" disabled selected>Select</option>
+                <option *ngFor="let p of objLevel4Data" [value]="p.flexValue">{{p.description}}</option>
+              </select> -->
+              <ng-select 
+                [items]="objLevel4Data"
+                bindLabel="description"
+                bindValue="flexValue"
+                placeholder="Select"
+                [clearable]="false"
+                formControlName="Level4">
+              </ng-select>
+              <div
+                *ngIf="poetForm.controls['Level4'].invalid && (poetForm.controls['Level4'].dirty || poetForm.controls['Level4'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="poetForm.controls['Level4']?.errors?.['required']">
+                  L4 is required.
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">Project Type</label>
+              <!-- <select formControlName="ProjectType" class="form-control">
+                <option value="" disabled selected>Select</option>
+                <option value="BAU">BAU</option>
+                <option value="NI">NI</option>
+
+              </select> -->
+
+              <ng-select 
+                [items]="projectTypes"
+                bindLabel="text"
+                bindValue="id"
+                placeholder="Select"
+                [clearable]="false"
+                formControlName="ProjectType">
+              </ng-select>
+              <div
+                *ngIf="poetForm.controls['ProjectType'].invalid && (poetForm.controls['ProjectType'].dirty || poetForm.controls['ProjectType'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="poetForm.controls['ProjectType']?.errors?.['required']">
+                  Project Type is required.
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">POET Number</label>
+              <input class="form-control" formControlName="POETNumber">
+              <div
+                *ngIf="poetForm.controls['POETNumber'].invalid && (poetForm.controls['POETNumber'].dirty || poetForm.controls['POETNumber'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="poetForm.controls['POETNumber']?.errors?.['required']">
+                  POET Number is required.
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">Project Name</label>
+              <input class="form-control" formControlName="ProjectName">
+              <div
+                *ngIf="poetForm.controls['ProjectName'].invalid && (poetForm.controls['ProjectName'].dirty || poetForm.controls['ProjectName'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="poetForm.controls['ProjectName']?.errors?.['required']">
+                  Project Name is required.
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="row">
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">Future Segment</label>
+              <input class="form-control" formControlName="FutureSegment1">
+              <div
+                *ngIf="poetForm.controls['FutureSegment1'].invalid && (poetForm.controls['FutureSegment1'].dirty || poetForm.controls['FutureSegment1'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="poetForm.controls['FutureSegment1']?.errors?.['required']">
+                  Future Segement 1 is required.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">Finance Category</label>
+              <!-- <ng-select2 formControlName="FinanceCategory" (valueChanged)="changed($event)" [width]="160"
+                [data]="dataFCategory" [placeholder]="'Please select'">
+              </ng-select2> -->
+              <ng-select 
+              [items]="dataFCategory"
+              bindLabel="text"
+              bindValue="id"
+              placeholder="Please select"
+              [clearable]="true"
+              [searchable]="false"
+              [dropdownPosition]="'auto'"
+              [style]="{ width: '160px' }"
+              formControlName="FinanceCategory"
+              (change)="changed($event)">
+            </ng-select>
+              <div
+                *ngIf="poetForm.controls['FinanceCategory'].invalid && (poetForm.controls['FinanceCategory'].dirty || poetForm.controls['FinanceCategory'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="poetForm.controls['FinanceCategory']?.errors?.['required']">
+                  Finance Category is required.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">Capex/Opex</label>
+              <!-- <select formControlName="FinanceCategoryType" class="form-control">
+                <option value="" disabled selected>Select</option>
+                <option value="Capex">Capex</option>
+                <option value="Opex">Opex</option>
+              </select> -->
+              <ng-select 
+                [items]="financeCategoryTypes"
+                bindLabel="label"
+                bindValue="value"
+                placeholder="Select"
+                [clearable]="false"
+                formControlName="FinanceCategoryType">
+              </ng-select>
+              <div
+                *ngIf="poetForm.controls['FinanceCategoryType'].invalid && (poetForm.controls['FinanceCategoryType'].dirty || poetForm.controls['FinanceCategoryType'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="poetForm.controls['FinanceCategoryType']?.errors?.['required']">
+                  Finance Category Type is required.
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">Owner Name</label>
+              <!-- <ng-select2 formControlName="OwnerName" [width]="160" [data]="dataUsers" [placeholder]="'Please select'">
+              </ng-select2> -->
+
+              <ng-select 
+                [items]="dataUsers"
+                bindLabel="text"
+                bindValue="id"
+                placeholder="Please select"
+                [clearable]="true"
+                [searchable]="true"
+                [style]="{ width: '160px' }"
+                formControlName="OwnerName">
+              </ng-select>
+
+              <div
+                *ngIf="poetForm.controls['OwnerName'].invalid && (poetForm.controls['OwnerName'].dirty || poetForm.controls['OwnerName'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="poetForm.controls['OwnerName']?.errors?.['required']">
+                  Owner Name is required.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">Reviewer 1</label>
+              <!-- <ng-select2 formControlName="Reviewer1" [width]="160" [data]="dataUsers" [placeholder]="'Please select'">
+              </ng-select2> -->
+              <ng-select 
+                [items]="dataUsers"
+                bindLabel="text"
+                bindValue="id"
+                placeholder="Please select"
+                [clearable]="true"
+                [searchable]="true"
+                [style]="{ width: '160px' }"
+                formControlName="Reviewer1">
+              </ng-select>
+              <div
+                *ngIf="poetForm.controls['Reviewer1'].invalid && (poetForm.controls['Reviewer1'].dirty || poetForm.controls['Reviewer1'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="poetForm.controls['Reviewer1']?.errors?.['required']">
+                  Reviewer 1 is required.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">Reviewer 2</label>
+              <!-- <ng-select2 formControlName="Reviewer2" [width]="160" [data]="dataUsers" [placeholder]="'Please select'">
+              </ng-select2> -->
+              <ng-select 
+                [items]="dataUsers"
+                bindLabel="text"
+                bindValue="id"
+                placeholder="Please select"
+                [clearable]="true"
+                [searchable]="true"
+                [style]="{ width: '160px' }"
+                formControlName="Reviewer2">
+              </ng-select>
+              <div
+                *ngIf="poetForm.controls['Reviewer2'].invalid && (poetForm.controls['Reviewer2'].dirty || poetForm.controls['Reviewer2'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="poetForm.controls['Reviewer2']?.errors?.['required']">
+                  Reviewer 2 is required.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">Start Date</label>
+              <input class="form-control" readonly formControlName="StartDate">
+              <div
+                *ngIf="poetForm.controls['StartDate'].invalid && (poetForm.controls['StartDate'].dirty || poetForm.controls['StartDate'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="poetForm.controls['StartDate']?.errors?.['required']">
+                  Start Date is required.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 col-md-3" style="text-align: center;margin-top: 1.7rem;">
+            <div class="form-group">
+              <input class="form-check-input" type="checkbox" [checked]="dummyCheckBox"
+                formControlName="dummyPoetCheck" id="dummyPoet">
+              <label class="form-check-label" for="dummyPoet">Dummy Poet</label>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">Charge Account</label>
+              <input class="form-control" formControlName="ChargeAccount">
+                <div *ngIf="poetForm.controls['ChargeAccount'].invalid && (poetForm.controls['ChargeAccount'].dirty || poetForm.controls['ChargeAccount'].touched)"
+                class="alert alert-danger">
+                  <div *ngIf="poetForm.controls['ChargeAccount']?.errors?.['required']">Charge Account is required.</div>
+                </div>
+              </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">End Date</label>
+              <div class="input-group">
+                <!-- <input class="form-control" readonly placeholder="yyyy-mm-dd" name="dp" [minDate]="minDate"
+                  ngbDatepicker formControlName="EndDate1" #d1="ngbDatepicker"> -->
+                <div class="input-group-append">
+                  <!-- <button class="btn btn-outline-secondary calendar fa fa-calendar" (click)="d1.toggle()"
+                    type="button"></button> -->
+                </div>
+              </div>
+            </div>
+          </div>
+         </div>
+
+        <div class="row">
+          <div class="col-sm-12 col-md-12 ">
+            <accordion>
+              <accordion-group heading="OPCO in Percentage">
+                <div class="row">
+                  <div class="col-sm-12 col-md-1">&nbsp;</div>
+                  <div class="col-sm-12 col-md-2 ">
+                    <div class="form-group">
+                      <label style="width:100%" class="control-label">Holding</label>
+                      <input class="form-control text-right" type="number" min="0" formControlName="HoldingPercentage">
+                    </div>
+                  </div>
+                  <div class="col-sm-12 col-md-2 ">
+                    <div class="form-group">
+                      <label style="width:100%" class="control-label">Properties</label>
+                      <input class="form-control text-right" type="number" min="0"
+                        formControlName="PropertiestPercentage">
+                    </div>
+                  </div>
+                  <div class="col-sm-12 col-md-2 ">
+                    <div class="form-group">
+                      <label style="width:100%" class="control-label">Retail</label>
+                      <input class="form-control text-right" type="number" min="0" formControlName="RetailPercentage">
+                    </div>
+                  </div>
+                  <div class="col-sm-12 col-md-2 ">
+                    <div class="form-group">
+                      <label style="width:100%" class="control-label">Ventures</label>
+                      <input class="form-control text-right" type="number" min="0" formControlName="VenturesPercentage">
+                    </div>
+                  </div>
+                  <div class="col-sm-12 col-md-2 ">
+                    <div class="form-group">
+                      <label style="width:100%" class="control-label">Others</label>
+                      <input class="form-control text-right" type="number" min="0" formControlName="OtherPercentage">
+                    </div>
+                  </div>
+                  <div class="col-sm-12 col-md-1">&nbsp;</div>
+                </div>
+              </accordion-group>
+            </accordion>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <i class="icon-people"></i> Users List
+        <div class="form-group" style="position: absolute;right: 10px;top: 5px;width: 140px;">
+          <label class="control-label" for="postal-code"><br /></label>
+          <button type="submit" (click)="AddUsersToTable(signupForm)" [disabled]="signupForm.invalid"
+            class="btn btn-success">
+            {{enableUserAdd}}
+          </button>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <form [formGroup]='signupForm'>
+          <div class="row">
+            <div class="col-sm-12 col-md-3 ">
+              <div class="form-group">
+                <label style="width:100%" class="control-label" for="city">User</label>
+                <!-- <ng-select2 style="border:0px !important;" formControlName="SelectedUser" class="ddlUser" id="ddlUser"
+                  name="select1" [data]="dataUsers" [placeholder]="'Please select'" [width]="160">
+                </ng-select2> -->
+                <ng-select
+                formControlName="SelectedUser"
+                [items]="dataUsers"
+                bindLabel="text"
+                bindValue="id"
+                placeholder="Please select"
+                [clearable]="true"
+                [searchable]="true"
+                [style]="{ width: '160px', border: '0px !important' }">
+              </ng-select>
+
+                <div
+                  *ngIf="signupForm.controls['SelectedUser'].invalid && (signupForm.controls['SelectedUser'].dirty || signupForm.controls['SelectedUser'].touched)"
+                  class="alert alert-danger">
+                  <div *ngIf="signupForm.controls['SelectedUser']?.errors?.['required']">
+                    User is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-3 ">
+              <div class="form-group">
+                <label style="width:100%" class="control-label" for="city">Team Name</label>
+                <!-- <ng-select2 style="border:0px !important;" formControlName="SelectedTeam" class="ddlTeam" id="ddlTeam"
+                  name="select1" [data]="TeamData" [placeholder]="'Please select'" [width]="160">
+                </ng-select2> -->
+                <ng-select
+                  formControlName="SelectedTeam"
+                  class="ddlTeam"
+                  id="ddlTeam"
+                  name="select1"
+                  [items]="TeamData"
+                  bindLabel="text"
+                  bindValue="id"
+                  placeholder="Please select"
+                  [clearable]="true"
+                  [searchable]="true"
+                  [style]="{ width: '160px', border: '0px !important' }">
+                </ng-select>
+                <div
+                  *ngIf="signupForm.controls['SelectedTeam'].invalid && (signupForm.controls['SelectedTeam'].dirty || signupForm.controls['SelectedTeam'].touched)"
+                  class="alert alert-danger">
+                  <div *ngIf="signupForm.controls['SelectedTeam']?.errors?.['required']">
+                    Team is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-3 ">
+              <div class="form-group ">
+                <label class="control-label" for="postal-code">Start Date</label>
+                <input class="form-control" readonly formControlName="UserStartDate">
+                <div
+                  *ngIf="signupForm.controls['UserStartDate'].invalid && (signupForm.controls['UserStartDate'].dirty || signupForm.controls['UserStartDate'].touched)"
+                  class="alert alert-danger">
+                  <div *ngIf="signupForm.controls['UserStartDate']?.errors?.['required']">
+                    Start Date is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="">
+              <table class="table table-responsive-sm table-hover table-outline mb-0">
+                <thead class="thead-light">
+                  <tr>
+                    <th>User</th>
+                    <th>Team</th>
+                    <th>Start Date</th>
+                    <th>Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let poet of objPoetUserData">
+                    <td>{{ poet.userName }}</td>
+                    <td>{{ poet.teamName }}</td>
+                    <td>{{ poet.startDate | date }}</td>
+                    <td><button type="button" class=" btn-light active" [swal]="{ title: 'Are you sure?',
+                      text: 'You want to delete the User!',
+                      allowOutsideClick:false, 
+                      icon: 'warning',
+                      showConfirmButton:true,
+                      showCancelButton:true  }" (confirm)="deletePoetUser(poet)" (cancel)="handleRefusalData($event)">
+                        <i class="fa fa-trash-o"></i></button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" [disabled]="poetForm.invalid " class="btn btn-success" [swal]="{ title: 'Are you sure?',
+    text: 'You want to Save the data!',
+    allowOutsideClick:false, 
+    icon: 'warning',
+    showConfirmButton:true,
+    showCancelButton:true  }" (confirm)="saveData(poetForm)" (cancel)="handleRefusalData($event)">
+      Save
+      <!-- <i class="fa fa-spinner fa-spin fa-fw" *ngIf="loading"></i> -->
+    </button>
+    <button type="button" class="btn btn-outline-dark" (click)="c('Save click')">Close</button>
+  </div>
+</ng-template>

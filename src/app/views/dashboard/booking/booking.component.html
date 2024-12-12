@@ -1,0 +1,1101 @@
+<div *ngIf="isLoader" class="divloader">
+</div>
+<br>
+<div class="">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-sm-12 col-md-10">
+            <h4 class="modal-title" id="modal-basic-title">Budget Booking</h4>
+          </div>
+          <div class="col-sm-12 col-md-1" style="text-align: right;"> <b>Year</b> </div>
+          <div class="col-sm-12 col-md-1">
+            <form [formGroup]='searchYear'>
+                <ng-select style="border:0px !important;"
+                [items]="dataYear"
+                class="ddlUser" 
+                id="ddlselectYear"
+                bindLabel="text"
+                bindValue="id"
+                formControlName="year"
+                placeholder="Please Select"
+                (change)="changedYear($event)"
+                [ngStyle]="{ width: '80px' }">
+                          </ng-select>
+              <!-- <ng-select2 style="border:0px !important;" class="ddlUser" id="ddlselectYear" formControlName="year"
+                (valueChanged)="changedYear($event)" [placeholder]="'Please select'" [width]="''80px'">
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+                <option value="2021">2021</option>
+                <option value="2020">2020</option>
+                <option value="2019">2019</option>
+              </ng-select2> -->
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="card-body  tblHtscroll">
+        <button class="btn  btn-outline-primary" (click)="open(content,StopCreatingBBF)">Create New</button> &nbsp;
+        <button type="button" (click)="fnAction()" class="btn  btn-outline-primary">Export</button>
+        <br />
+        <table id="tblbooking" class="table table-bordered table-responsive-sm display">
+          <thead>
+            <tr>
+              <th style="color:white;" title="Edit Booking" text="Edit or View the saved or submitted Booking">Edit</th>
+              <th title="Booking number is unique reference number generated when you create a new booking "
+                text="Search Booking Number">Booking Number</th>
+              <th title="	Draft = budget booking created but not submitted but funds are ‘blocked’
+              	Pending approved = budget booking created and submitted for approval
+                Approved = budget booking approved and ready to be submitted for PO creation
+                PR Initiated	= PR has been Created for this budget booking
+              " text="search the Status">Booking Status</th>
+              <th title="Booking Date" text="search the Booking Date">Booking Date</th>
+              <th title="Currency" text="search the Currency">Currency</th>
+              <th title="Requestor Name" text="search the Requestor Name">Requestor Name</th>
+              <th title="	Yes = PO can be generated upon approval of budget booking
+              	Internal Recharge  = PO not to be generated but amount to be blocked to account for inter-company recharges 
+              " text="search the PO Required">PO / Internal ? </th>
+              <th title="Description" text="search with the Description">PR number</th>
+              <th title="Description" text="search with the Description">PO number</th>
+              <th title="Description" text="search with the Description">Description</th>
+              <th title="Total Amount">Total Amount (AED) </th>
+              <th style="color:white" title="Initiate Approval" text="click here to Initiate Approval">Edit</th>
+              <th style="color:white" title="Initiate Approval" text="click here to Initiate Approval">Edit</th>
+              <th style="color:white" title="Initiate Approval" text="click here to Initiate Approval">Edit</th>
+              <th title="Error Description">Error Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let poet of objPoets">
+              <td>
+                <a style="cursor: pointer;" *ngIf="poet.bbStatus == 'PR Created' || poet.bbStatus == 'Pending Approval'"
+                  (click)="editPoet(poet,content,true)">
+                  <i class="cui-speech"></i> View </a>
+                <a style="cursor: pointer;" *ngIf="poet.bbStatus != 'Pending Approval' && poet.bbStatus != 'PR Created'"
+                  (click)="editPoet(poet,content,false)">
+                  <i class="fa fa-edit"></i> Edit </a>
+              </td>
+              <td>{{ poet.id }}</td>
+              <td>
+                <div *ngIf="poet.bbStatus == 'Pending Approval'" (click)="showStatus(poet,content1)" class="">
+                  <i class="fa  fa-info-circle"></i>
+                </div>{{ poet.bbStatus }}
+              </td>
+              <td>{{ poet.createdOn | date }}</td>
+              <td>{{ poet.currency }}</td>
+              <td>{{ poet.knownName }}</td>
+              <td>{{ poet.poRequired }}</td>
+              <td>{{ poet.prNo }} </td>
+              <td>{{ poet.poNo }} </td>
+              <td>{{ poet.description }}</td>
+              <td class=" text-right">{{ poet.total | number:'1.2-3' }}</td>
+              <td class=" text-center">
+                <button *ngIf="poet.bbStatus == 'Draft' &&  poet.total != null && 
+                  poet.vendorId != 0 && 
+                  toNumber(poet.attachment) > 0 && 
+                  poet.procurementSourcing != ' ' &&
+                  poet.buyerValue != ' ' &&
+                  poet.projectValue != ' ' &&
+                  poet.projectTypesValue != ' ' &&
+                  poet.justifySSEmergency != ' ' &&
+                  poet.goodServicesDelivered != ' ' &&
+                  poet.invoiceReceived != ' ' &&
+                  poet.paymentTermsValue != ' ' &&
+                  poet.justifyDeviationPymtTerms != ' ' &&
+                  poet.aribaAwardedValue!= ' '" tooltip="Initate Booking " style="width: 130px;margin: auto"
+                  type="button" class="btn-square btn-block btn-light active" [swal]="{
+                     title: 'Please verify the below before SUBMIT BOOKING?',                  
+                  html:'Correct POET  <br/>
+                  Correct Amount (Excluding VAT)<br/>
+                  Signed & Stamped quote<br/>
+                  Suffucient Spend Description<br/>
+                  Correct Chargeback (If Relevant) <br/>
+                  Check If Additional Procurement Related Processess will be triggered E.G. RFP !',
+                  allowOutsideClick:false, 
+                  icon: 'warning',
+                  showConfirmButton:true,
+                  showCancelButton:true  }" (confirm)="InitiateApproval(poet)"
+                  (cancel)="handleRefusalData($event)">SUBMIT BOOKING</button>
+
+                <button *ngIf="(poet.bbStatus == 'Approved' || poet.bbStatus == 'PR Error') && (isAdmin || isSuperAdmin)"
+                  tooltip="Create PR for this Booking" style="width: 90px;margin: auto" type="button"
+                  class="btn-square btn-block btn-light active" [swal]="{ title: 'Are you sure?',
+                  text: 'You want to Create PR!',
+                  allowOutsideClick:false, 
+                  icon: 'warning',
+                  showConfirmButton:true,
+                  showCancelButton:true  }" (confirm)="CreatePR(poet)" (cancel)="handleRefusalData($event)">CREATE
+                  PR</button>
+              </td>
+              <td>
+                <button *ngIf="poet.bbStatus == 'Draft' " style="width: 30px;margin: auto;"
+                  tooltip="Delete this Booking" type="button" class="btn-square btn-block btn-light active" [swal]="{ title: 'Are you sure?',
+                  text: 'You want to Delete this Booking!',
+                  allowOutsideClick:false, 
+                  icon: 'warning',
+                  showConfirmButton:true,
+                  showCancelButton:true  }" (confirm)="Delete(poet,'')" (cancel)="handleRefusalData($event)">
+                  <i _ngcontent-c2="" class="fa fa-trash-o"></i>
+                </button>
+                <button *ngIf="poet.bbStatus == 'Pending Approval' || poet.bbStatus == 'Approved' "
+                  tooltip="Cancel this Booking" style="width: 30px;margin: auto" type="button"
+                  class="btn-square btn-block btn-light active" [swal]="{ title: 'Are you sure?',
+                  text: 'You want to Cancel this Booking!',
+                  input:'text',
+                  inputPlaceholder: 'Enter the Comments',
+                  allowOutsideClick:false, 
+                  icon: 'warning',
+                  showConfirmButton:true,
+                  showCancelButton:true  }" (confirm)="handleConfirm($event,poet)"
+                  (cancel)="handleRefusalData($event)">
+                  <i _ngcontent-c2="" class="fa fa-trash-o"></i>
+                </button>
+              </td>
+              <td>
+                <button *ngIf="(poet.bbStatus == 'Pending Approval' || poet.bbStatus == 'Approved') && isSuperAdmin  "
+                  style="width: 30px;margin: auto;" tooltip="Resend Email" type="button"
+                  class="btn-square btn-block btn-light active" [swal]="{ title: 'Are you sure?',
+                  text: 'You want to Resend the email',
+                  allowOutsideClick:false, 
+                  icon: 'warning',
+                  showConfirmButton:true,
+                  showCancelButton:true  }" (confirm)="Resend(poet)" (cancel)="handleRefusalData($event)">
+                  <i _ngcontent-c2="" class="cui-action-redo"></i>
+                </button>
+              </td>
+              <td>{{ poet.errorDesc }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!--/.col-->
+</div>
+<!--/.row-->
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title"></h4>
+    <button type="button" class="close" aria-label="Close" (click)="c('Save click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="card">
+      <div class="card-header">
+        {{modaltitle}}
+      </div>
+      <div class="card-body">
+        <div class="container">
+          <form [formGroup]="bbfForm" novalidate>
+            <div class="row">
+              <div class="col-sm-12 col-md-2 hide">
+                <div class="form-group">
+                  <label style="width:100%" class="control-label">Booking Number</label>
+                  <input class="form-control" readonly formControlName="bbNumber">
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-2 hide">
+                <div class="form-group">
+                  <label style="width:100%" class="control-label">Booking Status</label>
+                  <input class="form-control" readonly formControlName="bbStatus">
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-2  hide">
+                <div class="form-group">
+                  <label style="width:100%" class="control-label">Booking Date</label>
+                  <input class="form-control" readonly formControlName="bbDate">
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-2">
+                <div class="form-group"
+                  title="Must select name of person requested to spend funds. Their assigned DOA will be implemented.">
+                  <label style="width:100%" class="control-label">REQUESTED BY <span style="color:red;">*</span></label>
+                  <ng-select formControlName="requestedBy"  [ngStyle]="{ width: '160px' }"
+                  bindLabel="text"
+                  bindValue="id" [items]="dataUsers" placeholder="Please select">
+                  </ng-select>  
+                  <!-- <ng-select2 formControlName="requestedBy" [width]="'160px'" [data]="dataUsers"
+                    [placeholder]="'Please select'">
+                  </ng-select2> -->
+                  <div
+                    *ngIf="bbfForm.controls['requestedBy'].invalid && (bbfForm.controls['requestedBy'].dirty || bbfForm.controls['requestedBy'].touched)"
+                    class="alert alert-danger">
+                    <div *ngIf="bbfForm.controls['requestedBy']?.errors?.['required']">
+                      Requested By is required.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-4">
+                <div class="form-group" title="Provide a short name/title for this job">
+                  <label style="width:100%" class="control-label"> JOB NAME <span
+                      style="color:red;">*</span></label>
+                  <textarea class="form-control"  maxlength="60" formControlName="justification" name="textarea-input"
+                    placeholder="Job Name.." rows="2"></textarea>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-2">
+                <div class="form-group" title="PO = request to block funds and generate a PO for an external vendor 
+                Internal Recharge = is to block funds in the event that you are expecting an inter-company recharge against a specific POET
+                ">
+                  <label style="width:100%" class="control-label">PO/INTERNAL? </label>
+                  <select formControlName="poRequired" class="form-control">
+                    <option value="" disabled>Select</option>
+                    <option value="PO">PO</option>
+                    <option value="INTERNAL RECHARGE">INTERNAL RECHARGE</option>
+                  </select>
+                  <div
+                    *ngIf="bbfForm.controls['poRequired'].invalid && (bbfForm.controls['poRequired'].dirty || bbfForm.controls['poRequired'].touched)"
+                    class="alert alert-danger">
+                    <div *ngIf="bbfForm.controls['poRequired']?.errors?.['required']">
+                      Requested By is required.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-3 ">
+                <div class="form-group">
+                  <label style="width:100%" class="control-label">TOTAL AMOUNT (AED)</label>
+                  <input class="form-control  text-right" [value]="bbfForm.get('totalAmount')?.value |  number:'1.2-5'"
+                    readonly formControlName="totalAmount">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 col-md-2">
+                <div class="form-group">
+                  <label style="width:100%" class="control-label">NEED BY DATE</label>
+                  <div class="input-group">
+                    <input class="form-control" style="background-color: white !important;" readonly
+                      placeholder="yyyy-mm-dd" name="dp" [minDate]="minDate" ngbDatepicker formControlName="needByDate"
+                      #d2="ngbDatepicker">
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-secondary calendar fa fa-calendar" (click)="d2.toggle()"
+                        type="button"></button>
+                    </div>
+                  </div>
+                  <div
+                    *ngIf="bbfForm.controls['needByDate'].invalid && (bbfForm.controls['needByDate'].dirty || bbfForm.controls['needByDate'].touched)"
+                    class="alert alert-danger">
+                    <div *ngIf="bbfForm.controls['needByDate']?.errors?.['required']">
+                      Need By Date is required.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-2">
+                <div class="form-group" title=" Budgeted = this is planned spend 
+                 Unbudgeted = unplanned spend that is not in accordance with approved annual budget
+                ">
+                  <label style="width:100%" class="control-label">BUDGET STATUS </label>
+                  <select formControlName="budgetStatus" class="form-control">
+                    <option value="" disabled>Select</option>
+                    <option value="BUDGETED">BUDGETED</option>
+                    <option value="UNBUDGETED">UNBUDGETED</option>
+                  </select>
+                  <div
+                    *ngIf="bbfForm.controls['budgetStatus'].invalid && (bbfForm.controls['budgetStatus'].dirty || bbfForm.controls['budgetStatus'].touched)"
+                    class="alert alert-danger">
+                    <div *ngIf="bbfForm.controls['budgetStatus']?.errors?.['required']">
+                      Budget Status is required.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-3">
+                <div class="form-group" title=" Business as usual = a type of spend that is normally incurred 
+                 New Initiative = entirely new initiative and is not identified in the approved annual budget 
+                ">
+                  <label style="width:100%" class="control-label">PROJECT STATUS </label>
+                  <select formControlName="projectType" class="form-control">
+                    <option value="" disabled>Select</option>
+                    <option value="BUSINESS AS USUAL">BUSINESS AS USUAL</option>
+                    <option value="NEW INITIATIVE">NEW INITIATIVE</option>
+                  </select>
+                  <div
+                    *ngIf="bbfForm.controls['projectType'].invalid && (bbfForm.controls['projectType'].dirty || bbfForm.controls['projectType'].touched)"
+                    class="alert alert-danger">
+                    <div *ngIf="bbfForm.controls['projectType']?.errors?.['required']">
+                      Project Type is required.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-3">
+                <div class="form-group">
+                  <label style="width:100%" class="control-label">PROCUREMENT TYPE <span style="color:red;">*</span></label>
+                  <select formControlName="lineType" class="form-control">
+                    <option value="" disabled>Select</option>
+                    <option value="Goods">GOODS</option>
+                    <option value="Fixed Price Services">SERVICES</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 col-md-2  hide">
+                <div class="form-group">
+                  <label style="width:100%" class="control-label">Rate Type</label>
+                  <input class="form-control" readonly formControlName="exchangeRateType" value="Corporate">
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-2">
+                <div class="form-group">
+                  <label style="width:100%" class="control-label">CURRENCY</label>
+                  <ng-select formControlName="currency" (change)="changed($event)" [ngStyle]="{ width: '160px' }"
+              bindLabel="text"
+              bindValue="id" [items]="dataCurrency" placeholder="Please select">
+              </ng-select>  
+                  <!-- <ng-select2 formControlName="currency" (valueChanged)="changed($event)" [width]="'160px'"
+                    [data]="dataCurrency" [placeholder]="'Please select'">
+                  </ng-select2> -->
+                  <div
+                    *ngIf="bbfForm.controls['currency'].invalid && (bbfForm.controls['currency'].dirty || bbfForm.controls['currency'].touched)"
+                    class="alert alert-danger">
+                    <div *ngIf="bbfForm.controls['currency']?.errors?.['required']">
+                      Currency is required.
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-2">
+                <div class="form-group">
+                  <label style="width:100%" class="control-label">RATE DATE</label>
+                  <div class="input-group">
+                    <input class="form-control" style="background-color: white !important;"
+                      (dateSelect)="ChangeDate($event)" readonly placeholder="yyyy-mm-dd" name="dp" [minDate]="minDate"
+                      ngbDatepicker formControlName="exchangeRateDate" #d1="ngbDatepicker">
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-secondary calendar fa fa-calendar" (click)="d1.toggle()"
+                        type="button"></button>
+                    </div>
+                  </div>
+                  <div
+                    *ngIf="bbfForm.controls['exchangeRateDate'].invalid && (bbfForm.controls['exchangeRateDate'].dirty || bbfForm.controls['exchangeRateDate'].touched)"
+                    class="alert alert-danger">
+                    <div *ngIf="bbfForm.controls['exchangeRateDate']?.errors?.['required']">
+                      exchange Rate Date is required.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-2">
+                <div class="form-group">
+                  <label style="width:100%" class="control-label">RATE</label>
+                  <input class="form-control  text-right" readonly formControlName="exchangeRate">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 col-md-4">
+                <div class="form-group">
+                  <label style="width:100%" class="control-label">VENDOR <span style="color:red;">*</span></label>
+                  <ng-select formControlName="vendorId" (change)="changedvendor($event)" [ngStyle]="{ width: '320px' }"
+                  bindLabel="text"
+                  bindValue="id" [items]="dataVendor" placeholder="Please select">
+                  </ng-select>  
+                  <!-- <ng-select2 formControlName="vendorId" (valueChanged)="changedvendor($event)" [width]="'320px'"
+                    [data]="dataVendor" [placeholder]="'Please select'">
+                  </ng-select2> -->
+                  <input formControlName="vendorName" class="hide">
+                  <div
+                    *ngIf="bbfForm.controls['vendorId'].invalid && (bbfForm.controls['vendorId'].dirty || bbfForm.controls['vendorId'].touched)"
+                    class="alert alert-danger">
+                    <div *ngIf="bbfForm.controls['vendorId']?.errors?.['required']">
+                      Vendor is required.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-4">
+                <div class="form-group">
+                  <label style="width:100%" class="control-label">VENDOR ADDRESS <span style="color:red;">*</span></label>
+                  <select formControlName="vendorSiteId" class="form-control">
+                    <option value="Select" disabled selected>Select</option>
+                    <option *ngFor="let p of dataVendorSite" [value]="p.id">{{p.text}}</option>
+                  </select>
+                  <input formControlName="vendorSiteName" class="hide">
+                  <div
+                    *ngIf="bbfForm.controls['vendorSiteId'].invalid && (bbfForm.controls['vendorSiteId'].dirty || bbfForm.controls['vendorSiteId'].touched)"
+                    class="alert alert-danger">
+                    <div *ngIf="bbfForm.controls['vendorSiteId']?.errors?.['required']">
+                      Vendor Address is required.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <ng-template #goodServicesDeliveredtemplate>
+                <div [innerHtml]="goodServicesDeliveredhtml"></div>
+              </ng-template>
+              <ng-template #invoiceReceivedtemplate>
+                <div [innerHtml]="invoiceReceivedhtml"></div>
+              </ng-template>
+              <ng-template #procrumentSourcingtemplate>
+                <div [innerHtml]="procrumentSourcinghtml"></div>
+              </ng-template>
+              <ng-template #buyertemplate>
+                <div [innerHtml]="buyerhtml"></div>
+              </ng-template>
+              <ng-template #projectValuetemplate>
+                <div [innerHtml]="projectValuehtml"></div>
+              </ng-template>
+              <ng-template #projectTypestemplate>
+                <div [innerHtml]="projectTypeshtml"></div>
+              </ng-template>
+              <ng-template #paymentTermstemplate>
+                <div [innerHtml]="paymentTermshtml"></div>
+              </ng-template>
+              <ng-template #aribaAwardedtemplate>
+                <div [innerHtml]="aribaAwardedhtml"></div>
+              </ng-template>
+              <ng-template #justifySSEmergencytemplate>
+                <div [innerHtml]="justifySSEmergencyhtml"></div>
+              </ng-template>
+              <ng-template #justifyDeviationTermstemplate>
+                <div [innerHtml]="justifyDeviationTermshtml"></div>
+              </ng-template>
+              <ng-template #projectDetailstemplate>
+                <div [innerHtml]="projectDetailshtml"></div>
+              </ng-template>
+              <div class="col-sm-12 col-md-3 ">
+                <div class="form-group">
+                  <label [tooltip]="goodServicesDeliveredtemplate" style="width:100%"
+                    class="control-label">GOODS/SERVICES DELIVERED<span
+                      style="color:red;">*</span>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa  fa-info-circle"></i></label>
+                  <select formControlName="goodsServicesDelivered" class="form-control">
+                    <option value="" disabled>Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-3 ">
+                <div class="form-group">
+                  <label [tooltip]="invoiceReceivedtemplate" style="width:100%" class="control-label">INVOICE
+                    RECEIVED<span style="color:red;">*</span>&nbsp;&nbsp;&nbsp;&nbsp;<i
+                      class="fa  fa-info-circle"></i></label>
+                  <select formControlName="invoiceReceived" class="form-control">
+                    <option value="" disabled>Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-3 ">
+                <div class="form-group">
+                  <label [tooltip]="procrumentSourcingtemplate" style="width:100%" class="control-label">PROCUREMENT
+                    SOURCING<span style="color:red;">*</span>&nbsp;&nbsp;&nbsp;&nbsp;<i
+                      class="fa  fa-info-circle"></i></label>
+                  <select formControlName="procurementSourcing" (change)="changeBuyer($event)"
+                    class="form-control">
+                    <option value="" disabled>Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-3 ">
+                <div class="form-group">
+                  <label [tooltip]="aribaAwardedtemplate" style="width:100%" class="control-label">ARIBA AWARDED<span
+                      style="color:red;">*</span>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa  fa-info-circle"></i></label>
+                      <ng-select formControlName="aribaAwarded" [ngStyle]="{ width: '160px' }"
+                      bindLabel="text"
+                      bindValue="id" [items]="dataAribaAwarded" placeholder="Please select">
+                      </ng-select>  
+<!--                  
+                      <ng-select2 formControlName="aribaAwarded" [width]="'160px'" [data]="dataAribaAwarded"
+                    [placeholder]="'Please select'"> 
+                  </ng-select2>-->
+
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 col-md-3">
+                <div class="form-group">
+                  <label [tooltip]="buyertemplate" style="width:100%" class="control-label">BUYER<span
+                      style="color:red;">*</span>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa  fa-info-circle"></i></label>
+                      <ng-select formControlName="buyer" [disabled]="buyerDisabled" [ngStyle]="{ width: '160px' }"
+                      bindLabel="text"
+                      bindValue="id" [items]="databuyer" placeholder="Please select">
+                      </ng-select>  
+                      <!-- <ng-select2 formControlName="buyer" [width]="'160px'" [data]="databuyer" [disabled]="buyerDisabled"
+                    [placeholder]="'Please select'">
+                  </ng-select2> -->
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-3 ">
+                <div class="form-group">
+                  <label [tooltip]="projectValuetemplate" style="width:100%" class="control-label">PROJECT VALUE<span
+                      style="color:red;">*</span>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa  fa-info-circle"></i></label>
+                      <ng-select formControlName="projectValue" (change)="changedProjectValue($event)" [ngStyle]="{ width: '160px' }"
+                      bindLabel="text"
+                      bindValue="id" [items]="dataProjectValue" placeholder="Please select">
+                      </ng-select>  
+                      <!-- <ng-select2 formControlName="projectValue" (valueChanged)="changedProjectValue($event)" [width]="'160px'"
+                    [data]="dataProjectValue" [placeholder]="'Please select'">
+                  </ng-select2> -->
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-3 ">
+                <div class="form-group">
+                  <label [tooltip]="projectTypestemplate" style="width:100%" class="control-label">PROJECT TYPE<span
+                      style="color:red;">*</span>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa  fa-info-circle"></i></label>
+                      <ng-select formControlName="projectTypes" [ngStyle]="{ width: '160px' }"
+                      bindLabel="text"
+                      bindValue="id" [items]="dataProjectTypes" [disabled]="projectTypeDisabled"  placeholder="Please select">
+                      </ng-select>  
+                      <!-- <ng-select2 formControlName="projectTypes" [width]="'160px'" [data]="dataProjectTypes"
+                    [disabled]="projectTypeDisabled" [placeholder]="'Please select'">
+                  </ng-select2> -->
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-3 ">
+                <div class="form-group">
+                  <label [tooltip]="paymentTermstemplate" style="width:100%" class="control-label">PAYMENT TERMS<span
+                      style="color:red;">*</span>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa  fa-info-circle"></i></label>
+                      <ng-select formControlName="paymentTerms" [ngStyle]="{ width: '160px' }"
+                      bindLabel="text"
+                      bindValue="id" [items]="dataPaymentTerms" placeholder="Please select">
+                      </ng-select>  
+                      <!-- <ng-select2 formControlName="paymentTerms" [width]="'160px'" [data]="dataPaymentTerms"
+                    [placeholder]="'Please select'">
+                  </ng-select2> -->
+                </div>
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col-sm-12 col-md-6">
+                <div class="form-group">
+                  <label [tooltip]="justifySSEmergencytemplate" style="width:100%"
+                    class="control-label">JUSTIFY(SS/Emergency)<span
+                      style="color:red;">*</span>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa  fa-info-circle"></i></label>
+                  <textarea class="form-control" formControlName="JustifyEmergency" name="textarea-input"
+                    placeholder="Content.." rows="2"></textarea>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-6">
+                <div class="form-group">
+                  <label [tooltip]="justifyDeviationTermstemplate" style="width:100%"
+                    class="control-label">JUSTIFY(Deviation Pymt Terms)<span
+                      style="color:red;">*</span>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa  fa-info-circle"></i></label>
+                  <textarea class="form-control" formControlName="justificationPaymentTerms" name="textarea-input"
+                    placeholder="Content.." rows="2"></textarea>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        BUDGET DETAILS
+        <div class="form-group" style="position: absolute;right: 10px;top: 5px;">
+          <label class="control-label" for="postal-code"><br /></label>
+          <button type="submit" (click)="addBudgetLines(bbLinesForm)"
+            [disabled]="bbLinesForm.invalid || bbLinesForm.value.unitPrice == 0" class="btn btn-success">
+            {{enableUserAdd}}
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <form [formGroup]='bbLinesForm'>
+          <div class="row">
+            <div class="col-sm-12 col-md-2 ">
+              <div class="form-group" title="Select budget by Project Name">
+                <label style="width:100%" class="control-label">PROJECT NAME <span style="color:red;">*</span></label>
+                <ng-select formControlName="ProjectName" (change)="changedProject($event)" [ngStyle]="{ width: '160px' }"
+              bindLabel="text"
+              bindValue="id" [items]="dataProjects" placeholder="Please select">
+              </ng-select>  
+                <!-- <ng-select2 formControlName="projectName" (valueChanged)="changedProject($event)" [width]="'160px'"
+                  [data]="dataProjects" [placeholder]="'Please select'">
+                </ng-select2> -->
+                <div
+                  *ngIf="bbLinesForm.controls['projectName'].invalid && (bbLinesForm.controls['projectName'].dirty || bbLinesForm.controls['projectName'].touched)"
+                  class="alert alert-danger">
+                  <div *ngIf="bbLinesForm.controls['projectName']?.errors?.['required']">
+                    Project Name is required.
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-2 ">
+              <div class="form-group" title=" Select budget by POET number ">
+                <label style="width:100%" class="control-label">POET NO.<span style="color:red;">*</span></label>
+                <ng-select formControlName="poetNumber" (change)="changedPoet($event)" [ngStyle]="{ width: '160px' }"
+              bindLabel="text"
+              bindValue="id" [items]="dataPOETNumber" placeholder="Please select">
+              </ng-select>  
+                <!-- <ng-select2 formControlName="poetNumber" (valueChanged)="changedPoet($event)" [width]="'160px'"
+                  [data]="dataPOETNumber" [placeholder]="'Please select'">
+                </ng-select2> -->
+                <div
+                  *ngIf="bbLinesForm.controls['poetNumber'].invalid && (bbLinesForm.controls['poetNumber'].dirty || bbLinesForm.controls['poetNumber'].touched)"
+                  class="alert alert-danger">
+                  <div *ngIf="bbLinesForm.controls['poetNumber']?.errors?.['required']">
+                    POET Number is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-1 ">
+              &nbsp;
+            </div>
+            <div class="col-sm-12 col-md-7 ">
+              <table>
+                <tr>
+                  <td title="Holding Percentage">
+                    <div class="form-group">
+                      <label style="width:100%" class="control-label" title="Holding Percentage">H</label>
+                      <input class="form-control text-right"
+                        [value]="bbLinesForm.get('HoldingPercentage')?.value |  number:'1.2-5'"
+                        formControlName="HoldingPercentage" appTwoDigitDecimaNumber readonly>
+                    </div>
+                  </td>
+                  <td>&nbsp;</td>
+                  <td title="Properties Percentage">
+                    <div class="form-group">
+                      <label style="width:100%" class="control-label" title="Properties Percentage">P</label>
+                      <input class="form-control text-right"
+                        [value]="bbLinesForm.get('PropertiesPercentage')?.value |  number:'1.2-5'"
+                        formControlName="PropertiesPercentage" appTwoDigitDecimaNumber readonly>
+                    </div>
+                  </td>
+                  <td>&nbsp;</td>
+                  <td title="Retail Percentage">
+                    <div class="form-group">
+                      <label style="width:100%" class="control-label" title="Retail Percentage">R</label>
+                      <input class="form-control text-right"
+                        [value]="bbLinesForm.get('RetailPercentage')?.value |  number:'1.2-5'"
+                        formControlName="RetailPercentage" appTwoDigitDecimaNumber readonly>
+                    </div>
+                  </td>
+                  <td>&nbsp;</td>
+                  <td title="Ventures Percentage">
+                    <div class="form-group">
+                      <label style="width:100%" class="control-label" title="Ventures Percentage">V</label>
+                      <input class="form-control text-right"
+                        [value]="bbLinesForm.get('VenturesPercentage')?.value |  number:'1.2-5'"
+                        formControlName="VenturesPercentage" appTwoDigitDecimaNumber readonly>
+                    </div>
+                  </td>
+                  <td>&nbsp;</td>
+                  <td title="Other Percentage">
+                    <div class="form-group">
+                      <label style="width:100%" class="control-label" title="Other Percentage">O</label>
+                      <input class="form-control text-right"
+                        [value]="bbLinesForm.get('OtherPercentage')?.value |  number:'1.2-5'"
+                        formControlName="OtherPercentage" appTwoDigitDecimaNumber readonly>
+                    </div>
+                  </td>
+                  <td>&nbsp;</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12 col-md-3 ">
+              <div class="form-group" title=" Budget agreed as per approved annual budget ">
+                <label style="width:100%" class="control-label">TOTAL BUDGET (AED)</label>
+                <input class="form-control text-right"
+                  [value]="bbLinesForm.get('allocatedBudget')?.value |  number:'1.2-5'" formControlName="allocatedBudget"
+                  appTwoDigitDecimaNumber readonly>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-3 ">
+              <div class="form-group" title=" Amount available for spend i.e. not committed ">
+                <label style="width:100%" class="control-label">AVAILABLE BUDGET (AED)</label>
+                <input class="form-control text-right"
+                  [value]="bbLinesForm.get('availableBudget')?.value |  number:'1.2-5'" formControlName="availableBudget"
+                  appTwoDigitDecimaNumber readonly>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-3 ">
+              <div class="form-group">
+                <label style="width:100%" class="control-label">BALANCE (AED)</label>
+                <input class="form-control text-right"
+                  [value]="bbLinesForm.get('availableActual')?.value |  number:'1.2-5'" formControlName="availableActual"
+                  appTwoDigitDecimaNumber readonly>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12 col-md-2 hide">
+              <div class="form-group">
+                <label style="width:100%" class="control-label">UNIT of MEASURE</label>
+                <input class="form-control" formControlName="uom" readonly>
+                <div
+                  *ngIf="bbLinesForm.controls['uom'].invalid && (bbLinesForm.controls['uom'].dirty || bbLinesForm.controls['uom'].touched)"
+                  class="alert alert-danger">
+                  <div *ngIf="bbLinesForm.controls['uom']?.errors?.['required']">
+                    Unit of Measure is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-3 ">
+              <div class="form-group">
+                <label class="control-label" for="city">UNIT PRICE ({{selectedCurreny}}) <span
+                    style="color:red;">*</span></label>
+                <input class="form-control text-right" [value]="bbLinesForm.get('unitPrice')?.value"
+                  (change)="onChangeCalAmount()" type="number" min="0" formControlName="unitPrice">
+                <div
+                  *ngIf="bbLinesForm.controls['unitPrice'].invalid && (bbLinesForm.controls['unitPrice'].dirty || bbLinesForm.controls['unitPrice'].touched)"
+                  class="alert alert-danger">
+                  <div *ngIf="bbLinesForm.controls['unitPrice']?.errors?.['required']">
+                    Unit Price is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-2 ">
+              <div class="form-group ">
+                <label class="control-label" for="postal-code">QTY <span style="color:red;">*</span></label>
+                <input class="form-control text-right" (change)="onChangeCalAmount()"
+                  oninput="this.value = Math.abs(this.value)" type="number" min="0" formControlName="quantity">
+                <div
+                  *ngIf="bbLinesForm.controls['quantity'].invalid && (bbLinesForm.controls['quantity'].dirty || bbLinesForm.controls['quantity'].touched)"
+                  class="alert alert-danger">
+                  <div *ngIf="bbLinesForm.controls['quantity']?.errors?.['required']">
+                    Quantity is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-4 ">
+              <div class="form-group" title=" Spend from current approved annual budget ">
+                <label style="width:100%" class="control-label">CURRENT YEAR SPEND AMOUNT (AED)</label>
+                <input class="form-control  text-right" [value]="bbLinesForm.get('lineAmount')?.value |  number:'1.2-5'"
+                  readonly formControlName="lineAmount" appTwoDigitDecimaNumber readonly>
+                <div
+                  *ngIf="bbLinesForm.controls['lineAmount'].invalid && (bbLinesForm.controls['lineAmount'].dirty || bbLinesForm.controls['lineAmount'].touched)"
+                  class="alert alert-danger">
+                  <div *ngIf="bbLinesForm.controls['lineAmount']?.errors?.['required']">
+                    Amount is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-3 ">
+              <div class="form-group"
+                title=" Spend from next year’s budget. Applicable in certain circumstances. This spend does not reflect on current year’s budget. ">
+                <label style="width:100%" class="control-label">NEXT YEAR SPEND (AED)</label>
+                <input class="form-control text-right" type="number" min="0" formControlName="nextYearBBAmount"
+                  appTwoDigitDecimaNumber>
+                <div
+                  *ngIf="bbLinesForm.controls['nextYearBBAmount'].invalid && (bbLinesForm.controls['nextYearBBAmount'].dirty || bbLinesForm.controls['nextYearBBAmount'].touched)"
+                  class="alert alert-danger">
+                  <div *ngIf="bbLinesForm.controls['nextYearBBAmount']?.errors?.['required']">
+                    NEXT Year Amount is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="travelPoet">
+            <div class="col-sm-12 col-md-3 ">
+              <div class="form-group">
+                <label style="width:100%" class="control-label">HOTEL</label>
+                <input class="form-control text-right" type="number" min="0" formControlName="hotel"
+                  appTwoDigitDecimaNumber>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-3 ">
+              <div class="form-group">
+                <label style="width:100%" class="control-label">AIR TICKET</label>
+                <input class="form-control text-right" type="number" min="0" formControlName="airTicket"
+                  appTwoDigitDecimaNumber>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-3 ">
+              <div class="form-group">
+                <label style="width:100%" class="control-label">MEALS & ENTERTAINMENT</label>
+                <input class="form-control text-right" type="number" min="0" formControlName="mealsEntertainment"
+                  appTwoDigitDecimaNumber>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-3 ">
+              <div class="form-group">
+                <label style="width:100%" class="control-label">GENERAL EXPENSES</label>
+                <input class="form-control text-right" type="number" min="0" formControlName="generalExpenses"
+                  appTwoDigitDecimaNumber>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12 col-md-12">
+              <div class="form-group">
+                <label style="width:100%" class="control-label">LINE DESCRIPTION</label>
+                <textarea class="form-control" name="textarea-input" formControlName="lineDescription"
+                placeholder="Line Description.." rows="2" maxlength="149"></textarea>
+                </div>
+            </div>
+          </div>
+          <!--div class="row">
+            <div class="col-sm-12 col-md-2" style="text-align: center;">
+              <div class="form-group">
+                <input class="form-check-input" type="checkbox" [checked]="dummyCheckBox"
+                  formControlName="dummyPoetCheck" id="dummyPoet">
+                <label class="form-check-label" for="dummyPoet">CHARGE ACCOUNT</label>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-3 ">
+              <div class="form-group">
+                <ng-select2 style="border:0px !important;" class="ddlUser" id="ddlselectYear"
+                  formControlName="chargeAccount" [placeholder]="'Please select'"
+                  *ngIf="bbLinesForm.value.dummyPoetCheck || dummyCheckBox" [width]="'180">
+                  <option value="NA">Select Charge Account</option>
+                  <option value="9911.000000.101.51950003.0000.0000.0000.0000">LEC</option>
+                  <option value="9911.000000.101.51950003.0000.0000.0000.0000">Lifestyle</option>
+                  <option value="9911.000000.101.51950003.0000.0000.0000.0000">Najm Finance</option>
+                  <option value="9911.000000.101.51950003.0000.0000.0000.0000">Properties</option>
+                  <option value="9911.000000.101.51950003.0000.0000.0000.0000">Retail</option>
+                  <option value="9911.000000.101.51950003.0000.0000.0000.0000">Trust</option>
+                </ng-select2>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-7">&nbsp;</div>
+          </div-->
+        </form>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        ADDITIONAL INFORMATION
+      </div>
+      <div class="card-body">
+        <form [formGroup]='additionalInfoForm'>
+          <div class="col-sm-12 col-md-12 ">
+            <div class="form-group" title=" Provide clear and detailed information about the job and the cost breakdown.">
+              <label style="width:100%" [tooltip]="projectDetailstemplate" placement="left"
+                class="control-label">JOB DESCRIPTION/JUSTIFICATION/DETAILS
+                <span style="color:red;">*</span>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa  fa-info-circle"></i></label>
+              <textarea class="form-control" name="textarea-input" formControlName="lineJustification"
+                placeholder="Job Description/Justification/Details.." rows="2" maxlength="149"></textarea>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12 col-md-4  ">
+              <label style="width:100%" for="dailyfile" class="col-sm-12  control-label required">ATTACHMENT</label>
+              <div class="input-group" data-toggle="tooltip" title="File Upload">
+                <input type="file" [disabled]="isUploadEnabled" name="End" class="form-control" id="dailyfile"
+                  name="fileupload" (change)="onFileChangeDaily($event)" #assetInput>
+                <span class="input-group-addon">
+                  <button type="button" (click)="clearFileDaily()">
+                    <i class="fa fa-refresh"></i>
+                  </button>
+                </span>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6  ">
+              <div class="col-md-12">
+                <div class="maxwidth" style="max-height:200px; width:100%;overflow:auto;">
+                  <table id="tblbookingAttachments" class="table table-bordered table-responsive-sm display nowrap"
+                    style="white-space: nowrap">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>Attached File</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let poet of objBudgetAttachments; index as i">
+                        <td>
+                          <a (click)="downloadFile(poet)" style="cursor: pointer;
+                                        color: #8a1538 !important;
+                                        font-weight: 600;
+                                        font-size: 13px;">
+                            {{poet.fileName }}
+                          </a>
+                        </td>
+                        <td> <button *ngIf="isBtnEnabled" type="button" class=" btn-light active" [swal]="{ title: 'Are you sure?',
+                          text: 'You want to delete the uploaded file!',
+                          allowOutsideClick:false, 
+                          icon: 'warning',
+                          showConfirmButton:true,
+                          showCancelButton:true  }" (confirm)="DeleteFile(poet)" (cancel)="handleRefusalData($event)">
+                            <i class="fa fa-trash-o"></i></button></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        SUMMARY
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="maxwidth" style="max-height:200px; width:100%;overflow:auto;">
+              <table id="tblbookinglines" class="table table-bordered table-responsive-sm display nowrap"
+                style="white-space: nowrap">
+                <thead class="thead-light">
+                  <tr>
+                    <th></th>
+                    <th>PROJECT NAME</th>
+                    <th>POET NO.</th>
+                    <!--th>Charge Account</th-->
+                    <th> CURRENT YEAR SPEND</th>
+                    <th>NEXT YEAR SPEND</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let poet of objPoetUserData">
+                    <td> <a (click)="editBookingLines(poet)"> <i class="fa fa-edit"></i> Edit
+                      </a></td>
+                    <td>{{ poet.projectName }}</td>
+                    <td>{{ poet.poetNumber }}</td>
+                    <!--td>{{ poet.chargeAccount }}</td-->
+                    <td class=" text-right">{{ poet.lineAmount | number:'1.2-5' }}</td>
+                    <td class=" text-right">{{ poet.nextYearBBAmount | number:'1.2-5' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 col-md-7 "></div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">TOTAL AMOUNT (AED)</label>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-2 ">
+            <div class="form-group">
+              <input class="form-control  text-right" [value]="bbfForm.get('totalAmount')?.value |  number:'1.2-5'"
+                readonly >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="submit" *ngIf="isBtnLater" [disabled]="isDisabled()" class="btn btn-success"
+      title=" Submit budget booking form for approval " [swal]="{      
+      title: 'Please verify the below before SUBMIT BOOKING?',
+      html:'Correct POET  <br/>
+      Correct Amount (Excluding VAT)<br/>
+      Signed & Stamped quote<br/>
+      Suffucient Spend Description<br/>
+      Correct Chargeback (If Relevant) <br/>
+      Check If Additional Procurement Related Processess will be triggered E.G. RFP !',
+      allowOutsideClick:false, 
+      icon: 'warning',
+      showConfirmButton:true,
+      showCancelButton:true  }" (confirm)="saveData(bbfForm,true)" (cancel)="handleRefusalData($event)">
+      SUBMIT BOOKING
+      <!-- <i class="fa fa-spinner fa-spin fa-fw" *ngIf="loading"></i> -->
+    </button>
+
+    <button type="submit" *ngIf="isBtnEnabled"
+      [disabled]="bbfForm.invalid || isDisabled() || additionalInfoForm.invalid || isLaterDisabled() "
+      class="btn btn-success" title=" Allows you to block funds but submit details for approval later " [swal]="{ title: 'Are you sure?',
+    text: 'You want to save the data for later!',
+    allowOutsideClick:false, 
+    icon: 'warning',
+    showConfirmButton:true,
+    showCancelButton:true  }" (confirm)="saveData(bbfForm.value,false)" (cancel)="handleRefusalData($event)">
+      SAVE FOR LATER
+      <!-- <i class="fa fa-spinner fa-spin fa-fw" *ngIf="loading"></i> -->
+    </button>
+    <button type="button" *ngIf="isBtnSave" class="btn btn-outline-dark"
+      title=" Allows you to Update your BBF after it is approved" [swal]="{ title: 'Are you sure?',
+    text: 'You want to save the data!',
+    allowOutsideClick:false, 
+    icon: 'warning',
+    showConfirmButton:true,
+    showCancelButton:true  }" (confirm)="ReSaveData(bbfForm.value,false)" (cancel)="handleRefusalData($event)">SAVE</button>
+    <button type="button" class="btn btn-outline-dark" (click)="c('Save click')">CANCEL</button>
+  </div>
+</ng-template>
+
+<ng-template #StopCreatingBBF let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Booking Form</h4>
+    <button type="button" class="close" aria-label="Close" (click)="c('Save click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="maxwidth" style="max-height:400px; width:100%;overflow:auto;">
+              <p>You won't able to raise an Budget Booking, please get in touch with IT Support</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="c('Save click')">CLOSE</button>
+  </div>
+</ng-template>
+
+<ng-template #content1 let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Booking Status</h4>
+    <button type="button" class="close" aria-label="Close" (click)="c('Save click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="maxwidth" style="max-height:400px; width:100%;overflow:auto;">
+              <table id="tblbookinglines" class="table table-bordered table-responsive-sm display nowrap"
+                style="white-space: nowrap">
+                <thead class="thead-light">
+                  <tr>
+                    <th>NAME</th>
+                    <th>IS APPROVED ? </th>
+                    <th>Level</th>
+                    <th>Action Date</th>
+                    <th>Comments</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let poet of objPoetStatusData">
+                    <td>{{ poet.approvalName }}</td>
+                    <td>{{ poet.approved }}</td>
+                    <td> Level {{poet.approvalSequence}}</td>
+                    <td>{{ poet.approvalDate | date }}</td>
+                    <td>{{ poet.approvalNotes }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="c('Save click')">CLOSE</button>
+  </div>
+</ng-template>
