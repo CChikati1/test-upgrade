@@ -1,0 +1,432 @@
+<div *ngIf="isLoader" class="divloader">
+</div>
+<br>
+
+<div class="">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-sm-12 col-md-10">
+            <h4 class="modal-title" id="modal-basic-title">Budget Schedule</h4>
+          </div>
+          <div class="col-sm-12 col-md-1" style="text-align: right;"> <b>Year</b> </div>
+          <div class="col-sm-12 col-md-1">
+            <form [formGroup]='searchYear'>
+                <ng-select
+                [items]="dataYear"
+                bindLabel="text"
+                bindValue="id"
+                  bindLabel="text"
+                bindValue="id" formControlName="year"
+                placeholder="Please Select"
+                (change)="changedYear($event)">
+              </ng-select>
+
+              <!-- <ng-select2 style="border:0px !important;" class="ddlUser" id="ddlselectYear" formControlName="year"
+                (valueChanged)="changedYear($event)" [placeholder]="'Please select'" [width]="80">
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+                <option value="2021">2021</option>
+                <option value="2020">2020</option>
+                <option value="2019">2019</option>
+              </ng-select2> -->
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="card-body tblHtscroll">
+
+        <br>
+        <button class="btn  btn-outline-primary" (click)="open(content)">Create New</button> &nbsp; <button
+          type="button" (click)="fnAction()" class="btn  btn-outline-primary">Export</button>
+        <br>
+        <table id="monthTable" class="display nowrap table-bordered table-responsive-sm table-hover table-outline mb-0">
+          <thead>
+            <tr>
+              <th style="color: white">Edit</th>
+              <th>Year</th>
+              <th>POET Number</th>
+              <th>Project Category</th>
+              <th>L1</th>
+              <th>L2</th>
+              <th>L3</th>
+              <th>L4</th>
+              <th>Available System Budget</th>
+              <th>Yearly Budget</th>
+              <th>Difference</th>
+              <th>January</th>
+              <th>February</th>
+              <th>March</th>
+              <th>April</th>
+              <th>May</th>
+              <th>June</th>
+              <th>July</th>
+              <th>August</th>
+              <th>September</th>
+              <th>October</th>
+              <th>November</th>
+              <th>December</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let poet of objMonthPoets">
+              <td> <a (click)="editPoet(poet,content)"> <i class="fa fa-edit"></i> Edit
+                </a></td>
+              <td>{{ poet.fyYear }}</td>              
+              <td>{{ poet.poetNumber }}</td>
+              <td>{{poet.projectCategory}}</td>
+              <td>{{ poet.level1 }}</td>
+              <td>{{ poet.level2 }}</td>
+              <td>{{ poet.level3 }}</td>
+              <td>{{ poet.level4 }}</td>              
+              <td style="text-align: right">{{poet.fyBudget| number:'1.2-2'}}</td>
+              <td style="text-align: right">{{poet.yearlyBudget| number:'1.2-2'}}</td>
+              <td style="text-align: right">{{getDifference(poet,content)| number:'1.2-2'}}</td>
+              <td style="text-align: right">{{poet.janBudget| number:'1.2-2'}}</td>
+              <td style="text-align: right">{{poet.febBudget| number:'1.2-2'}}</td>
+              <td style="text-align: right">{{poet.marBudget| number:'1.2-2'}}</td>
+              <td style="text-align: right">{{poet.aprBudget| number:'1.2-2'}}</td>
+              <td style="text-align: right">{{poet.mayBudget| number:'1.2-2'}}</td>
+              <td style="text-align: right">{{poet.junBudget| number:'1.2-2'}}</td>
+              <td style="text-align: right">{{poet.julBudget| number:'1.2-2'}}</td>
+              <td style="text-align: right">{{poet.augBudget| number:'1.2-2'}}</td>
+              <td style="text-align: right">{{poet.sepBudget| number:'1.2-2'}}</td>
+              <td style="text-align: right">{{poet.octBudget| number:'1.2-2'}}</td>
+              <td style="text-align: right">{{poet.novBudget| number:'1.2-2'}}</td>
+              <td style="text-align: right">{{poet.decBudget| number:'1.2-2'}}</td>
+              <td>{{getTotal(poet,content)| number:'1.2-2'}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!--/.col-->
+</div>
+<!--/.row-->
+
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{modaltitle}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="c('Save click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+
+    <div class="container">
+      <form [formGroup]="angForm" novalidate>
+
+        <div class="row">
+
+          <div class="col-sm-12 col-md-3 ">
+
+            <div class="form-group">
+              <label style="width:100%" class="control-label">Year</label>
+              <input class="form-control" formControlName="FiscalYear">
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">Project Name</label> 
+              <ng-select formControlName="ProjectName" (change)="changedProject($event)" [ngStyle]="{ width: '160px' }"
+              bindLabel="text"
+              bindValue="id" [items]="dataProjects" placeholder="Please select">
+              </ng-select>           
+              <!-- <ng-select2 formControlName="ProjectName" (valueChanged)="changedProject($event)" [width]="160"
+                [data]="dataProjects" [placeholder]="'Please select'">
+              </ng-select2> -->
+              <div
+                *ngIf="angForm.controls['ProjectName'].invalid && (angForm.controls['ProjectName'].dirty || angForm.controls['ProjectName'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['ProjectName']?.errors?.['required']">
+                  Project Name is required.
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">POET Number</label>
+              <ng-select formControlName="POETNumber" (change)="changedPoet($event)" [ngStyle]="{ width: '160px' }"
+              bindLabel="text"
+              bindValue="id" 
+                [items]="dataPOETNumber" placeholder="Please select">
+              </ng-select>
+              <!-- <ng-select2 formControlName="POETNumber" (valueChanged)="changedPoet($event)" [width]="160"
+                [data]="dataPOETNumber" [placeholder]="'Please select'">
+              </ng-select2> -->
+              <div
+                *ngIf="angForm.controls['POETNumber'].invalid && (angForm.controls['POETNumber'].dirty || angForm.controls['POETNumber'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['POETNumber']?.errors?.['required']">
+                  POET Number is required.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">L1</label>
+              <input class="form-control" formControlName="Level1" readonly>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">L2</label>
+              <input class="form-control" formControlName="Level2" readonly>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">L3</label>
+              <input class="form-control" formControlName="Level3" readonly>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">L4</label>
+              <input class="form-control" formControlName="Level4" readonly>
+            </div>
+          </div>
+
+        </div>
+        <div class="row">
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">Available System Budget</label>
+              <input class="form-control text-right" [value]="angForm.get('YearlyBudget')?.value |  number:'1.2-5'"
+                formControlName="YearlyBudget" readonly>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">Yearly Budget</label>
+              <input class="form-control text-right" type="number" min="0" onCopy="return false" onDrag="return false"
+                onDrop="return false" onPaste="return false" formControlName="YearlyBudget">
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">Difference</label>
+              <input class="form-control text-right" formControlName="Difference" readonly
+                [value]="angForm.get('Difference')?.value |  number:'1.2-5'">
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">Total</label>
+              <input class="form-control text-right" formControlName="Total" readonly
+                [value]="angForm.get('Total')?.value |  number:'1.2-5'">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+
+          <div class="col-sm-12 col-md-3 ">
+
+            <div class="form-group">
+              <label style="width:100%" class="control-label">January</label>
+              <input class="form-control text-right" formControlName="January" (input)="onChangeNumber(angForm)">
+
+              <div
+                *ngIf="angForm.controls['January'].invalid && (angForm.controls['January'].dirty || angForm.controls['January'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['January']?.errors?.['required']">
+                  January value is required.
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">February</label>
+              <input class="form-control text-right" formControlName="February" (input)="onChangeNumber(angForm)">
+              <div
+                *ngIf="angForm.controls['February'].invalid && (angForm.controls['February'].dirty || angForm.controls['February'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['February']?.errors?.['required']">
+                  February value is required.
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">March</label>
+              <input class="form-control text-right" formControlName="March" (input)="onChangeNumber(angForm)">
+
+              <div
+                *ngIf="angForm.controls['March'].invalid && (angForm.controls['March'].dirty || angForm.controls['March'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['March']?.errors?.['required']">
+                  March value is required.
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">April</label>
+              <input class="form-control text-right" formControlName="April" (input)="onChangeNumber(angForm)">
+              <div
+                *ngIf="angForm.controls['April'].invalid && (angForm.controls['April'].dirty || angForm.controls['April'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['April']?.errors?.['required']">
+                  April value is required.
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="row">
+
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">May</label>
+              <input class="form-control text-right" formControlName="May" (input)="onChangeNumber(angForm)">
+              <div
+                *ngIf="angForm.controls['May'].invalid && (angForm.controls['May'].dirty || angForm.controls['May'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['May']?.errors?.['required']">
+                  May value is required.
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">June</label>
+              <input class="form-control text-right" formControlName="June" (input)="onChangeNumber(angForm)">
+
+              <div
+                *ngIf="angForm.controls['June'].invalid && (angForm.controls['June'].dirty || angForm.controls['June'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['June']?.errors?.['required']">
+                  June value is required.
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">July</label>
+              <input class="form-control text-right" formControlName="July" (input)="onChangeNumber(angForm)">
+
+              <div
+                *ngIf="angForm.controls['July'].invalid && (angForm.controls['July'].dirty || angForm.controls['July'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['July']?.errors?.['required']">
+                  July value is required.
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">August</label>
+              <input class="form-control text-right" formControlName="August" (input)="onChangeNumber(angForm)">
+              <div
+                *ngIf="angForm.controls['August'].invalid && (angForm.controls['August'].dirty || angForm.controls['August'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['August']?.errors?.['required']">
+                  August value is required.
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">September</label>
+              <input class="form-control text-right" formControlName="September" (input)="onChangeNumber(angForm)">
+              <div
+                *ngIf="angForm.controls['September'].invalid && (angForm.controls['September'].dirty || angForm.controls['September'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['September']?.errors?.['required']">
+                  September value is required.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">October</label>
+              <div class="input-group">
+                <input class="form-control text-right" formControlName="October" (input)="onChangeNumber(angForm)">
+                <div
+                  *ngIf="angForm.controls['October'].invalid && (angForm.controls['October'].dirty || angForm.controls['October'].touched)"
+                  class="alert alert-danger">
+                  <div *ngIf="angForm.controls['October']?.errors?.['required']">
+                    October value is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">November</label>
+              <input class="form-control text-right" formControlName="November" (input)="onChangeNumber(angForm)">
+              <div
+                *ngIf="angForm.controls['November'].invalid && (angForm.controls['November'].dirty || angForm.controls['November'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['November']?.errors?.['required']">
+                  November value is required.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 ">
+            <div class="form-group">
+              <label style="width:100%" class="control-label">December</label>
+              <div class="input-group">
+                <input class="form-control text-right" formControlName="December" (input)="onChangeNumber(angForm)">
+                <div
+                  *ngIf="angForm.controls['December'].invalid && (angForm.controls['December'].dirty || angForm.controls['December'].touched)"
+                  class="alert alert-danger">
+                  <div *ngIf="angForm.controls['December']?.errors?.['required']">
+                    December value is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+      </form>
+    </div>
+  </div>
+  <div class="modal-footer">
+
+    <button type="submit" [disabled]="angForm.invalid " class="btn btn-success" [swal]="{ title: 'Are you sure?',
+    text: 'You want to save the data!',
+    allowOutsideClick:false, 
+    icon: 'warning',
+    showConfirmButton:true,
+    showCancelButton:true  }" (confirm)="saveData(angForm.value)" (cancel)="handleRefusalData($event)">
+
+      Save
+      <!-- <i class="fa fa-spinner fa-spin fa-fw" *ngIf="loading"></i> -->
+    </button>
+    <button type="button" class="btn btn-outline-dark" (click)="c('Save click')">Close</button>
+  </div>
+</ng-template>

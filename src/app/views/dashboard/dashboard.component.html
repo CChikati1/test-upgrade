@@ -310,7 +310,192 @@
           </div>
         </div>
       </tab>
-      
+      <tab heading="My Approvals">
+        <div class="tblHtscroll">
+          <div class="row">
+            <div class="col-md-12">
+              <accordion>
+                <accordion-group heading="Pending Approvals"  [isOpen]=true>
+                  <table id="tblPendingAttachements" class="table table-bordered">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>Select</th>
+                        <th>Booking Number</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of objPendingApproval">
+                        <td>
+                          <a style="cursor: pointer;" (click)="bbfPendingApproval(item)"> <i class="cui-speech"></i>
+                            View </a>
+                        </td>
+                        <td>{{item.bbHeaderId}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </accordion-group>
+              </accordion>
+            </div>
+          </div>
+          <div class="row" *ngIf="approvalView">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-header">{{modaltitle}} - <b>{{BBFNo}}</b></div>
+                <div class="card-body" [class.hide]="applyHideClassForBooking">
+                  <form [formGroup]="angForm" novalidate>
+                    <!--div class="row">
+                      <div class="col-sm-12 col-md-12" style="text-align: right !important;">
+                        <h6>Welcome : {{userName}}</h6>
+                      </div>
+                    </div-->
+                    <div class="row" *ngIf="isBtnApprvEnabled">
+                      <div class="col-sm-12 col-md-2 ">
+                        <div class="form-group">
+                          <label style="width:100%" class="control-label">Requested By</label>
+                          <input class="form-control  text-left" readonly formControlName="requestedby">
+                        </div>
+                      </div>
+                      <div class="col-sm-12 col-md-2">
+                        <div class="form-group">
+                          <label style="width:100%" class="control-label">Funds Requested</label>
+                          <input class="form-control  text-right" readonly
+                            [value]="angForm.get('totalAmount')?.value |  number:'1.2-5'" formControlName="totalAmount">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row" *ngIf="isBtnApprvEnabled">
+                      <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                          <label style="width:100%" class="control-label">Description</label>
+                          <textarea class="form-control" formControlName="description" name="textarea-input"
+                            placeholder="description.." readonly rows="3"></textarea>
+                        </div>
+                      </div>
+                      <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                          <label style="width:100%" class="control-label">Justification</label>
+                          <textarea class="form-control" formControlName="justification" name="textarea-input"
+                            placeholder="justification.." readonly rows="3"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row" *ngIf="isBtnApprvEnabled">
+                      <div class="col-sm-12 col-md-12">
+                        <div class="form-group">
+                          <label style="width:100%" class="control-label">Remarks</label>
+                          <textarea class="form-control" formControlName="remarks" name="textarea-input"
+                            placeholder="Content.." rows="3"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row" *ngIf="isBtnApprvEnabled">
+                      <div class="col-md-8">
+                        <div class="maxwidth" style="max-height:200px; width:100%;overflow:auto;">
+                          <table id="tblbookinglines" class="table table-bordered table-responsive-sm display">
+                            <thead class="thead-light">
+                              <tr>
+                                <th>PROJECT NAME</th>
+                                <th>POET NO.</th>
+                                <th>SPEND</th>
+                                <th>BALANCE</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let poet of objPoetUserData">
+                                <td>{{ poet.projectName }}</td>
+                                <td>{{ poet.poetNumber }}</td>
+                                <td class=" text-right">{{ poet.lineAmount |  number:'1.2-5'  }}</td>
+                                <td class=" text-right">{{ poet.YEARLYBUDGET - poet.BALANCE  |  number:'1.2-5' }}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <div class="maxwidth" style="max-height:200px; width:100%;overflow:auto;">
+                            <table id="tblbookingAttachments"
+                              class="table table-bordered table-responsive-sm display nowrap"
+                              style="white-space: nowrap">
+                              <thead class="thead-light">
+                                <tr>
+                                  <th>Attached File</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let poet of objBudgetAttachments; index as i">
+                                  <td>
+                                    <a (click)="downloadFile(poet)" style="cursor: pointer;
+                                                color: #8a1538 !important;
+                                                font-weight: 600;
+                                                font-size: 13px;">
+                                      {{poet.fileName }}
+                                    </a>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="!isBtnApprvEnabled">
+                      <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                          <h5>{{message}}</h5>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-12 col-md-12">&nbsp;</div>
+                      </div>
+                    </div>
+                  </form>
+                  <div class="modal-footer" *ngIf="isBtnApprvEnabled">
+                    <button type="submit" *ngIf="isBtnEnabled" class="btn btn-success" [swal]="{ title: 'Are you sure?',
+          text: 'You want to Initiate Approval!',
+          allowOutsideClick:false, 
+          icon: 'warning',
+          showConfirmButton:true,
+          showCancelButton:true  }" (confirm)="saveDatatoDB(angForm,true)" (cancel)="handleRefusalData($event)">
+                      Approve
+                      <!-- <i class="fa fa-spinner fa-spin fa-fw" *ngIf="loading"></i> -->
+                    </button>
+                    <button type="submit" *ngIf="isBtnEnabled" [disabled]="angForm.value.remarks === ''"
+                      class="btn btn-success" [swal]="{ title: 'Are you sure?',
+        text: 'You want to save the data!',
+        allowOutsideClick:false, 
+        icon: 'warning',
+        showConfirmButton:true,
+        showCancelButton:true  }" (confirm)="saveDatatoDB(angForm,false)" (cancel)="handleRefusalData($event)">
+                      Reject
+                      <!-- <i class="fa fa-spinner fa-spin fa-fw" *ngIf="loading"></i> -->
+                    </button>
+                    <button type="button" class="btn btn-outline-dark hide">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">&nbsp;</div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">&nbsp;</div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">&nbsp;</div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">&nbsp;</div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">&nbsp;</div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">&nbsp;</div>
+          </div>
+        </div>
+      </tab>
     </tabset>
 
     <!--/div-->

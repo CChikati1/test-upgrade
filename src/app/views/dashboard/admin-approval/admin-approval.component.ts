@@ -532,7 +532,6 @@ export class AdminApprovalComponent {
         let ele1=$("#tblbooking thead tr:eq(1) th") as JQuery<HTMLElement>;
         ele1.each(function (i:any) {
           var title = $(this).text();
-          console.log("title",title);
           if (i == 0 || i == 1 || i == 2 || i == 4 || i == 5 || i == 6) {
             $(this).html(
               '<input type="text" class=""  style="width: 120px;" placeholder="' +
@@ -557,12 +556,17 @@ export class AdminApprovalComponent {
         });
       }
       else {
-        const tblbooking: any = $("#tblbooking").DataTable();
-        tblbooking.destroy();
+        const tableElement = $('#tblbooking');
+    if ($.fn.DataTable.isDataTable(tableElement)) {
+      tableElement.DataTable().destroy();
+    }
+        // const tblbooking: any = $("#tblbooking").DataTable();
+        // tblbooking.destroy();
         this.objPoets = [];
         this.chRef.detectChanges();
         this.objPoets = res as BudgetBooking[];
         this.objPoets = this.objPoets.filter(l => l.bbStatus == "PR Created");
+        console.log(this.objPoets);
         this.chRef.detectChanges();
       }
       let ele=$("#tblbooking thead tr:eq(0) th") as JQuery<HTMLElement>;
@@ -573,7 +577,8 @@ export class AdminApprovalComponent {
           }
         });
       });
-      let table = $("#tblbooking").DataTable({
+      this.chRef.detectChanges(); 
+      const table = $("#tblbooking").DataTable({
         dom: "Blfrtip",
         destroy: true,
         pageLength: 100,
@@ -597,36 +602,54 @@ export class AdminApprovalComponent {
           { width: "70px", targets: 3 },
           { width: "70px", targets: 4 },
           { width: "70px", targets: 5 }
-        ],
-        initComplete: function () {
-          this.api()
-            .columns()
-            .every( ()=> {
-              var column = this;
-              var select = $('<select><option value=""></option></select>')
-                .appendTo($(column.footer()).empty())
-                .on("change",  (event:any)=> {
-                  var val = $.fn.dataTable.util.escapeRegex($(event.target).val());
-                  column.search(val ? "^" + val + "$" : "", true, false).draw();
-                });
-              column.data().unique().sort().each(function (d:any, j:any) {
-                select.append('<option value="' + d + '">' + d + "</option>");
-              });
-            });
-        }
-      });
-      this.isLoader = false;
+        ]
+        // initComplete: function (this: AdminApprovalComponent) {
+        //   this.initColumnSearch(table); // Pass the initialized table
+        // }.bind(this)
+        // initComplete: function () {
+        //   this.api()
+        //     .columns()
+        //     .every( ()=> {
+        //       var column = this;
+        //       var select = $('<select><option value=""></option></select>')
+        //         .appendTo($(column.footer()).empty())
+        //         .on("change",  (event:any)=> {
+        //           var val = $.fn.dataTable.util.escapeRegex($(event.target).val());
+        //           column.search(val ? "^" + val + "$" : "", true, false).draw();
+        //         });
+        //       column.data().unique().sort().each(function (d:any, j:any) {
+        //         select.append('<option value="' + d + '">' + d + "</option>");
+        //       });
+        //     });
+        // }
+      })
+       this.isLoader = false;
     });
+    this.chRef.detectChanges();
   }
 
-
+  private initColumnSearch(table: any): void {
+    table.columns().every((index: number) => {
+      const column = table.column(index);
+      const footer = $(column.footer());
+      if (footer.length) {
+        const select = $('<select><option value=""></option></select>')
+          .appendTo(footer.empty())
+          .on('change', (event: any) => {
+            const val = $.fn.dataTable.util.escapeRegex($(event.target).val());
+            column.search(val ? `^${val}$` : '', true, false).draw();
+          });
+        column.data().unique().sort().each((d: any) => {
+          select.append(`<option value="${d}">${d}</option>`);
+        });
+      }
+    });
+  }
   changedYear(e: any): void {
-    debugger;
-    console.log(e);
     this.isLoader = true;
-    const table: any = $("#tblbooking").DataTable();
-    table.destroy();
-    this.chRef.detectChanges();
+    // const table: any = $("#tblbooking").DataTable();
+    // table.destroy();
+    // this.chRef.detectChanges();
     this.GetBBData(false, e.text);
     this.GetPoetData(e.text);
   }
@@ -650,7 +673,6 @@ export class AdminApprovalComponent {
       remarks: [""]
     });
     this.poetMasterID = item.id;
-    console.log(content);
     this.modalService.open(content, { size: 'lg', centered: true });
   }
 
