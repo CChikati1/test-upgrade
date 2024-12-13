@@ -53,7 +53,7 @@ declare const $:any;
     HighchartsChartModule,CommonModule,FormsModule,NgbModule ],
   templateUrl: './month.component.html',
   styleUrl: './month.component.scss',
-  providers:[ApiService,ExcelService,ToastrService,NgbModalConfig, NgbModal,{ provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }, {provide:SweetAlert2LoaderService,useClass:SweetAlert2LoaderService } ],
+  providers:[ApiService,ExcelService,ToastrService,NgbModalConfig, NgbModal, {provide:SweetAlert2LoaderService,useClass:SweetAlert2LoaderService } ],
 })
 export class MonthComponent {
 
@@ -133,13 +133,14 @@ export class MonthComponent {
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
     
-      import('jquery').then(($) => {
-        
+      import('jquery').then((jQueryModule) => {
+        const $=jQueryModule.default;
+        $('a').removeClass('liactive');
+       $('.liMonth').addClass('liactive');
+      
         // jQuery is now available for use in the browser
        // //console.log('jQuery loaded in the browser');
       });
-      $('a').removeClass('liactive');
-    $('.liMonth').addClass('liactive');
       
      
     }

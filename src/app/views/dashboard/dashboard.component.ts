@@ -621,20 +621,6 @@ items.push({id: 'VOC Programme', text: 'VOC Programme'});
 
   budgetOverview() {
 
-//console.log(payload);
-    const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json'
-    });
-
-    // this.http
-    //   .post('https://mafhbudgettrackerapi.maf.ae/api/dashboard/v1/budgetBalance', payload, { headers })
-    //   .subscribe(
-    //     (response:any) => //console.log(response),
-    //     (error:any) => console.error(error)
-    //   );
-  
     this.service.budgetBalance(this.objDashboard).subscribe(res => {
       this.service.functionOverview(this.objDashboard).subscribe(functionres => {
         var self = this;

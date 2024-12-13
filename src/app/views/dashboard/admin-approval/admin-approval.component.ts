@@ -35,7 +35,7 @@ declare const $:any;
     HighchartsChartModule,CommonModule,FormsModule,NgbModule ],
   templateUrl: './admin-approval.component.html',
   styleUrl: './admin-approval.component.scss',
-  providers:[ApiService,ToastrService,NgbModalConfig, NgbModal,{ provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }, {provide:SweetAlert2LoaderService,useClass:SweetAlert2LoaderService } ],
+  providers:[ApiService,ToastrService,NgbModalConfig, NgbModal, {provide:SweetAlert2LoaderService,useClass:SweetAlert2LoaderService } ],
 })
 
 export class AdminApprovalComponent {

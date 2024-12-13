@@ -17,7 +17,7 @@ import { JwtInterceptor } from './views/_helpers';
   standalone: true,
   imports: [RouterOutlet],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+   
   ],
 })
 export class AppComponent implements OnInit {

@@ -38,7 +38,7 @@ import { TabsModule } from "ngx-bootstrap/tabs";
     TabsModule,SweetAlert2Module,NgSelectModule,ReactiveFormsModule,
     HighchartsChartModule,CommonModule 
   ],
-  providers:[ApiService,ExcelService,ToastrService,NgbModalConfig,NgbdDatepickerPopup, NgbModal,{ provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }, {provide:SweetAlert2LoaderService,useClass:SweetAlert2LoaderService },RoundPipe],
+  providers:[ApiService,ExcelService,ToastrService,NgbModalConfig,NgbdDatepickerPopup, NgbModal, {provide:SweetAlert2LoaderService,useClass:SweetAlert2LoaderService },RoundPipe],
    templateUrl: './budget-setup.component.html'
 })
 export class BudgetSetupComponent implements OnInit {

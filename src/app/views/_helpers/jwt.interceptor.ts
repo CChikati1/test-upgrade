@@ -6,19 +6,17 @@ import {
     HttpHandler,
     HttpEvent,
     HttpHeaders,
-    HttpInterceptor
+    HttpInterceptor,
+    HttpInterceptorFn
 } from '@angular/common/http';
 import {
     Observable
 } from 'rxjs';
-@Injectable()
-export class JwtInterceptor implements HttpInterceptor {
-    constructor() {}
-    intercept(request: HttpRequest < any > , 
-        next: HttpHandler): Observable < HttpEvent < any >> {
-        if(request.url.toString().indexOf("https://mafptawasul.maf.ae") == -1 )
+export const JwtInterceptor: HttpInterceptorFn = (req, next) => {
+   
+        if(req.url.toString().indexOf("https://mafptawasul.maf.ae") == -1 )
         {    
-                request = request.clone({
+                req = req.clone({
                     headers: new HttpHeaders({
                         Authorization: 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
                         "X-Requested-With": "XMLHttpRequest",
@@ -26,6 +24,6 @@ export class JwtInterceptor implements HttpInterceptor {
                     })
                 });
         }
-        return next.handle(request);
-    }
+        return next(req);
+    
 }

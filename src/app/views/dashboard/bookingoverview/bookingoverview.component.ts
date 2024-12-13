@@ -31,7 +31,7 @@ declare const $:any;
     HighchartsChartModule,CommonModule,FormsModule,NgbModule,TooltipModule],
   templateUrl: './bookingoverview.component.html',
   styleUrl: './bookingoverview.component.scss',
-  providers: [ApiService,ExcelService,ToastrService,NgbModalConfig,NgbdDatepickerPopup, NgbModal,{ provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }, {provide:SweetAlert2LoaderService,useClass:SweetAlert2LoaderService },RoundPipe],
+  providers: [ApiService,ExcelService,ToastrService,NgbModalConfig,NgbdDatepickerPopup, NgbModal, {provide:SweetAlert2LoaderService,useClass:SweetAlert2LoaderService },RoundPipe],
   styles: [`
   .modal-lg{
       max-width: 1000px !important;
@@ -127,7 +127,8 @@ export class BookingoverviewComponent {
   fileURL: string;
   public objPoetStatusData: any = [];
   public dataYear: Array<Select2OptionData>;
-  @Inject(PLATFORM_ID) private platformId: Object
+  @Inject(PLATFORM_ID) private platformId: Object;
+  table1: any;
   constructor(private chRef: ChangeDetectorRef, private fb: FormBuilder, config: NgbModalConfig,
     private modalService: NgbModal, private service: ApiService, private excelService: ExcelService) {
       let items:any = [];
@@ -164,16 +165,18 @@ export class BookingoverviewComponent {
   ngOnInit() {
     this.isLoader = true;
     if (isPlatformBrowser(this.platformId)) {
-      // Dynamically import jQuery
-      import('jquery').then(($) => {
-        // Use jQuery in the browser environment
-        //console.log('jQuery is available:', $);
-      }).catch(err => {
-        console.error('Failed to load jQuery', err);
+      import('jquery').then((jQueryModule) => {
+        const $ = jQueryModule.default; // jQuery is loaded
+
+        // Execute jQuery code after it is loaded
+        $('a').removeClass('liactive');
+        $('.liBudgetoverview').addClass('liactive');
+        
+      }).catch((err) => {
+        console.error('Error loading jQuery:', err);
       });
     }
-    $('a').removeClass('liactive');
-    $('.liBudgetoverview').addClass('liactive');
+   
     this.getUserName();
     this.modaltitle = 'Budget Overview';
     this.objPOETHistoyHeader = new MonthClass;
@@ -194,7 +197,7 @@ export class BookingoverviewComponent {
 
   changedYear(e: any): void {
     this.isLoader = true;
-    this.GetBudgetTrackingData(false, e.value)
+    this.GetBudgetTrackingData(false, e.text)
   }
 
   downloadFile(poet:any) {
@@ -334,6 +337,7 @@ export class BookingoverviewComponent {
       setTimeout(() => { this.isLoader = false; }, 1000);
     };
   }
+
 
   fnPoetAction(): void {
     this.datas = [];

@@ -14,12 +14,10 @@ import { PoetClass } from "../PoetClass";
 import { DomSanitizer } from '@angular/platform-browser';
 import { AccordionModule } from "@coreui/angular";
 import { TabsModule } from "ngx-bootstrap/tabs";
-import { SweetAlert2LoaderService, SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
+import { SweetAlert2Module  } from "@sweetalert2/ngx-sweetalert2";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { HighchartsChartModule } from "highcharts-angular";
 import { ExcelService } from "../../../excel.service";
-import { HTTP_INTERCEPTORS } from "@angular/common/http";
-import { JwtInterceptor } from "../../_helpers/jwt.interceptor";
 import { NgbdDatepickerPopup} from '../datepicker-popup';
 import { TooltipModule  } from 'ngx-bootstrap/tooltip';
 
@@ -28,10 +26,10 @@ declare const $:any;
   selector: 'app-booking',
   standalone: true,
   imports: [DecimalPipe,AccordionModule,DatePipe,
-    TabsModule,SweetAlert2Module,NgSelectModule,ReactiveFormsModule,
+    TabsModule,SweetAlert2Module, NgSelectModule,ReactiveFormsModule,
     HighchartsChartModule,CommonModule,FormsModule,NgbModule,TooltipModule],
   templateUrl: './booking.component.html',
-  providers:[ApiService,ExcelService,ToastrService,NgbModalConfig,NgbdDatepickerPopup, NgbModal,{ provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }, {provide:SweetAlert2LoaderService,useClass:SweetAlert2LoaderService }],
+  providers:[ApiService,ExcelService,ToastrService,NgbModalConfig,NgbdDatepickerPopup, NgbModal],
   styleUrl: './booking.component.scss'
 })
 export class BookingComponent {
@@ -141,7 +139,8 @@ export class BookingComponent {
   dataProjectTypes: any = [];
   databuyer: any = [];
   public dataYear: Array<Select2OptionData>;
-  @Inject(PLATFORM_ID) private platformId: Object
+  @Inject(PLATFORM_ID) private platformId: Object;
+  
   constructor(
     private router: Router,
     private frmbuilder: FormBuilder,
@@ -152,7 +151,8 @@ export class BookingComponent {
     private modalService: NgbModal,
     private service: ApiService,
     private sanitizer: DomSanitizer,
-    private excelService: ExcelService
+    private excelService: ExcelService,
+    
   ) {
     let items:any = [];
     items.push({ id: '2019', text: '2019' });
@@ -188,22 +188,21 @@ export class BookingComponent {
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
     
-      import('jquery').then(($) => {
-        // jQuery is now available for use in the browser
-       // //console.log('jQuery loaded in the browser');
+      import('jquery').then((jQueryModule) => {
+        const $ = jQueryModule.default; 
+        $("a").removeClass("liactive");
+        $(".liBooking").addClass("liactive");
+        $('.modal').css('overflow-y', 'auto');
+      }).catch((err) => {
+        console.error('Error loading jQuery:', err);
       });
-      
      
     }
-    if (typeof window !== 'undefined') {
-      // Browser-specific code
-      (window as any).jQuery = $;
-      (window as any).$ = $;
-    }
+   
     this.isLoader = true;
-    $("a").removeClass("liactive");
-    $(".liBooking").addClass("liactive");
-    $('.modal').css('overflow-y', 'auto');
+    // $("a").removeClass("liactive");
+    // $(".liBooking").addClass("liactive");
+    // $('.modal').css('overflow-y', 'auto');
     this.getUserName();
   }
 

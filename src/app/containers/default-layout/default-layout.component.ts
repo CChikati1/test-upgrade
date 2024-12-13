@@ -36,7 +36,16 @@ export class DefaultLayoutComponent implements OnDestroy {
 
   constructor(public router: Router, private service: ApiService,@Inject(DOCUMENT) private document: Document, @Inject(PLATFORM_ID) private platformId: Object
 ) {
-    
+  if (isPlatformBrowser(this.platformId)) {
+    this.element = this.document.body;
+    this.changes = new MutationObserver((mutations) => {
+      this.sidebarMinimized = this.document.body.classList.contains('sidebar-minimized');
+    });
+    this.changes.observe(this.element, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+  }
    
   }
 
@@ -62,11 +71,13 @@ export class DefaultLayoutComponent implements OnDestroy {
     console.log("Layout");
     // this.service.getUserName().subscribe((res:any) => {
     //   if (res != null && res != '') {
+        
     //     let user = res as any;
+       // alert(user.d.Email);
         this.loginUserName ='veerender.kumar-e@maf.ae';// user.d.Email;
-       // this.DisplayName ='Veerender Kumar';// user.d.Title;
-       // this.loginUserName = user.d.Email;
-      //}
+      // this.DisplayName ='Veerender Kumar';// user.d.Title;
+      // this.loginUserName = user.d.Email;
+     // }
 
       this.isAdmin = false;
       this.isSuperAdmin = true;
@@ -101,7 +112,7 @@ export class DefaultLayoutComponent implements OnDestroy {
       // };
     // }), (err:any) => {
     //   console.log("Error Occured " + err);
-    // };
+    //  };
     // this.showSuccess();
   }
   showDashboardLinks(): boolean {

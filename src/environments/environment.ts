@@ -5,6 +5,6 @@
 
 export const environment = {
   production: false,
-  Root_URL: 'http://mafhbudgettrackerapi.maf.ae/api/',
+  Root_URL: 'http://mafhbudgettrackerapidev.maf.ae/api/',
   sp_URL: 'https://mafptawasul.maf.ae/Holding/'
 };

@@ -10,6 +10,15 @@ import { BudgetBookingLines } from "./views/dashboard/budgetBookingClass";
 import { environment } from "../environments/environment";
 import { of } from "rxjs";
 
+import {sp, spPost, SharePointQueryable} from '@pnp/sp/presets/all';
+sp.setup({
+  sp: {
+    headers: {
+      Accept: "application/json;odata=verbose",
+    },
+    baseUrl:environment.sp_URL 
+  },
+});
 
 
 @Injectable({
@@ -68,6 +77,9 @@ export class ApiService {
     // Return the hardcoded response as an observable
     return of(mockResponse); // of() is an RxJS function that wraps the response in an observable
   }
+  getUserName_online() {
+    return sp.web.currentUser.get();
+  }
   getUserName() {
     return this.http.get(this.sp_URL + "_api/Web/CurrentUser", { headers: { Accept: "application/json;odata=verbose" } });
   }
@@ -88,186 +100,115 @@ export class ApiService {
     objGetPoetDTO = new GetPoetDTO()
     objGetPoetDTO.year = year;
     objGetPoetDTO.email = email;
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/POET/v1/get", objGetPoetDTO,{headers});
+     
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/POET/v1/get", objGetPoetDTO);
   }
 
   savecmbUsers(cmbUser: cmbUser) {
-    const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+    
     if (cmbUser.userID > 0)
-      return this.http.post<PoetClass>("https://mafhbudgettrackerapi.maf.ae/api/cmbUsers/v1/updateCMBUsers", cmbUser,{headers});
+      return this.http.post<PoetClass>("https://mafhbudgettrackerapi.maf.ae/api/cmbUsers/v1/updateCMBUsers", cmbUser);
     else
-      return this.http.post<PoetClass>("https://mafhbudgettrackerapi.maf.ae/api/cmbUsers/v1/insertCMBUsers", cmbUser,{headers});
+      return this.http.post<PoetClass>("https://mafhbudgettrackerapi.maf.ae/api/cmbUsers/v1/insertCMBUsers", cmbUser);
   }
 
   getcmbUsers() {
-    const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
-    return this.http.get("https://mafhbudgettrackerapi.maf.ae/api/cmbUsers/v1/getCMBUsers",{headers});
+    
+    return this.http.get("https://mafhbudgettrackerapi.maf.ae/api/cmbUsers/v1/getCMBUsers");
   }
 
   getBudget(year: String) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/getAllBB", year,{headers});
+     
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/getAllBB", year);
   }
 
   getPendingApproval() {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/PendingApproval", "",{headers});
+     
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/PendingApproval", "");
   }
 
   createPR(id:any) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/createPR", id,{headers});
+     
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/createPR", id);
   }
 
   getBBPendingApproval(id:any) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/BBPendingApproval", id,{headers});
+     
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/BBPendingApproval", id);
   }
 
   getBudgetbyUser(user:any, isAdmin: boolean, year: string) {
     if (isAdmin) {
-       const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/getAllBB", year,{headers});
+       
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/getAllBB", year);
     } else {
       let objBudgetUserYear: BudgetUserYear = new BudgetUserYear();
       objBudgetUserYear.year = year
       objBudgetUserYear.userName = user
-       const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/getAllBBbyUser", objBudgetUserYear,{headers});
+       
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/getAllBBbyUser", objBudgetUserYear);
     }
   }
 
   getBBbyId(bbheaderID:any) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/getBBbyId", bbheaderID,{headers});
+     
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/getBBbyId", bbheaderID);
   }
 
   getCMBUser(emailAddress:any){
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/common/v1/getCMBUser", emailAddress,{headers});
+     
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/common/v1/getCMBUser", emailAddress);
   }
 
   getApprovalDetails(id:any) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/getApprovalDetails", id,{headers});
+     
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/getApprovalDetails", id);
   }
 
 
   getCancellationDetails(id:any) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/getCancellationDetails", id,{headers});
+     
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/getCancellationDetails", id);
   }
 
 
   getBudgetLines(BudgetBooking:any) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/getBBlines", BudgetBooking,{headers});
+     
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/getBBlines", BudgetBooking);
   }
 
   public saveBudget(BudgetBooking: BudgetBooking) {
-    const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+    
     if (BudgetBooking.id > 0)
       
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/UpdateDataBB", BudgetBooking,{headers});
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/UpdateDataBB", BudgetBooking);
     else
        
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/SaveDataBB", BudgetBooking,{headers});
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/SaveDataBB", BudgetBooking);
   }
 
   public sendApproval(budget:any) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/sendApproval", budget,{headers});
+     
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/sendApproval", budget);
   }
 
   public getApprovalList(id:any) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/getApprovalList", id,{headers});
+     
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/getApprovalList", id);
   }
 
   public saveBudgetLines(BudgetBookingLines: BudgetBookingLines) {
-    const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+    
     if (BudgetBookingLines.id > 0)
       
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/UpdateDataBBLines", BudgetBookingLines,{headers});
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/UpdateDataBBLines", BudgetBookingLines);
     else
     
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/SaveDataBBLines", BudgetBookingLines,{headers});
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/SaveDataBBLines", BudgetBookingLines);
   }
 
   public getTeams() {
+    
     return this.http.get("https://mafhbudgettrackerapi.maf.ae/api/common/v1/getTeamName");
   }
 
@@ -288,38 +229,22 @@ export class ApiService {
   }
 
   public getProjectTypes(projectValue: string) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/common/v1/getProjectTypes", projectValue,{headers});
+     
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/common/v1/getProjectTypes", projectValue);
   }
 
   public getBuyer(procrumentValue: string) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/common/v1/getBuyer", procrumentValue,{headers});
+     
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/common/v1/getBuyer", procrumentValue);
   }
 
   public getVendorsSites(VendorSite:any) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/common/v1/getVendorSite", VendorSite,{headers});
+     
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/common/v1/getVendorSite", VendorSite);
   }
 
   public getBudgetAmount(BudgetPoetNumber:any) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+     
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/common/v1/getBudgetAmount", BudgetPoetNumber);
   }
 
@@ -328,21 +253,13 @@ export class ApiService {
   }
 
   public getCurrencyRate(CurrencyRate:any) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+     
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/common/v1/getRate", CurrencyRate);
   }
 
   public saveUserData(user: User) {
     //if (user.id > 0)
-       const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+       
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/POET/v1/UpdatePoetUserAssignment", user);
     //else
        
@@ -350,47 +267,27 @@ export class ApiService {
   }
 
   public deleteUserData(user: User) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+     
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/POET/v1/deletePoetUserAssignment", user);
   }
 
   public fileUpload(BudgetAttachment:any) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+     
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/UploadDocument", BudgetAttachment);
   }
 
   public getPoetUserData(user:any) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+     
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/POET/v1/getPoetUserAssignment", user);
   }
 
   public getUserBudgetData(user:any) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+     
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/dashboard/v1/showUserBudgetData", user);
   }
 
   saveMonthwisePoet(monthClass: MonthClass) {
-    const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+    
     if (monthClass.id > 0)
       
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetEntry/v1/update", monthClass);
@@ -404,11 +301,7 @@ export class ApiService {
     objGetPoetDTO = new GetPoetDTO()
     objGetPoetDTO.year = year;
     objGetPoetDTO.email = email;
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+     
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetEntry/v1/get", objGetPoetDTO);
   }
 
@@ -417,38 +310,22 @@ export class ApiService {
     objGetPoetDTO = new GetPoetDTO()
     objGetPoetDTO.year = year;
     objGetPoetDTO.email = email;
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+     
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgeTracking/v1/get", objGetPoetDTO);
   }
 
   getBudgetTrackingPoetData(monthClass: MonthClass) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+     
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgeTracking/v1/getPoetDetails", monthClass);
   }
 
   getBudgetTrackingMonthwiseData(monthClass: MonthClass) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+     
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgeTracking/v1/getMonthlySummmary", monthClass);
   }
 
   getBudgetTrackingMonthwiseHistory(monthClass: MonthClass) {
-    const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+    
     if (monthClass.serviceType === "Allocated Budget")
       
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgeTracking/v1/getAllocatedAmtMonDet", monthClass);
@@ -474,11 +351,7 @@ export class ApiService {
   }
 
   budgetBookingApproveReject(BudgetBooking:any) {
-    const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+    
     if (BudgetBooking.approveRejectStatus === true)
       
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/approved", BudgetBooking);
@@ -488,168 +361,102 @@ export class ApiService {
   }
 
   budgetBookingCancel(BudgetBooking:any) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+     
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/cancel",BudgetBooking);
   }
 
   L2BookingApproveReject(L2Approval:any) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+     
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/L2Approval",L2Approval);
   }
 
   getAllAttachements(bbheaderID:any) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+     
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/getAllDocument",bbheaderID);
   }
 
   getAttachements(attachementID:any) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+     
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/getDocument",attachementID);
   }
 
   updateAttachements(updateAttachement:any) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+     
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/updateAttachement",updateAttachement);
   }
 
   removeAttachement(updateAttachement:any) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+     
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/removeAttachement",updateAttachement);
   }
 
   deleteBB(deleteBudgetBooking:any) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+     
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/DeleteBB",deleteBudgetBooking);
   }
 
   UpdateDraftBB(deleteBudgetBooking:any) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+     
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/UpdateBB",deleteBudgetBooking);
   }
 
   resendEmail(bbheaderID:any) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+     
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/resendEmail", bbheaderID);
   }
 
   myPendingApproval(requestorName:any) {
    
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/myPendingApproval", requestorName , { headers });
+     
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/budgetBooking/v1/myPendingApproval", requestorName );
   }
 
   spendMonthlyWise(objDashboard: Dashboard) {
     
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/dashboard/v1/spendMonthlyWise", objDashboard , { headers});
+     
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/dashboard/v1/spendMonthlyWise", objDashboard );
   }
 
   budgetBalance(objDashboard: Dashboard) {
-    const username = 'BBFApi';
-    const password = 'BudgetB00k!ngF0rm';
-    const basicAuth = 'Basic ' + btoa(`${username}:${password}`);
+    // const username = 'BBFApi';
+    // const password = 'BudgetB00k!ngF0rm';
+    // const basicAuth = 'Basic ' + btoa(`${username}:${password}`);
 
     // Set the headers for the HTTP request
-    const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    });
+    // const headers = new HttpHeaders({
+    //   "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
+    //   "X-Requested-With": "XMLHttpRequest",
+    //   'Content-Type': 'application/json',
+    // });
     
     
-    return this.http.post('https://mafhbudgettrackerapi.maf.ae/api/dashboard/v1/budgetBalance', objDashboard,
-      { headers });
+    return this.http.post('https://mafhbudgettrackerapi.maf.ae/api/dashboard/v1/budgetBalance', objDashboard);
   }
 
   functionOverview(objDashboard: Dashboard) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/dashboard/v1/functionOverview", objDashboard,
-      { headers });
+     
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/dashboard/v1/functionOverview", objDashboard);
   
   }
 
   functionL2Overview(objDashboard: Dashboard) {
     
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
-    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/dashboard/v1/functionL2Overview", objDashboard , { headers });
+     
+    return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/dashboard/v1/functionL2Overview", objDashboard );
   }
   
   updatePOAmount(objUpdatePOAmount : UpdatePOAmount){
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+     
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/common/v1/POLineupdate", objUpdatePOAmount);
   }
 
   addPOAmount(objAddPOAmount: AddPOAmount){
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+     
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/common/v1/addPoLine", objAddPOAmount);
   }
 
   updateDate(objUpdateChange: UpdateChange) {
-     const headers = new HttpHeaders({
-      "Authorization": 'Basic QkJGQXBpOkJ1ZGdldEIwMGshbmdGMHJt',
-      "X-Requested-With": "XMLHttpRequest",
-      'Content-Type': 'application/json',
-    })
+     
     return this.http.post("https://mafhbudgettrackerapi.maf.ae/api/common/v1/UpdateDate", objUpdateChange);
   }
 }
