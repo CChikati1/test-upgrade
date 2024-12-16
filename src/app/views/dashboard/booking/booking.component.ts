@@ -9,12 +9,12 @@ import { Select2OptionData } from "ng-select2";
 import { BudgetBooking, Vendor, VendorSite, VendorSiteDetails, BudgetPoetNumber, BudgetAmount, BudgetPoetId, BudgetAttachment, DeleteBudgetBooking, travelPoet } from "../budgetBookingClass";
 import { BudgetBookingLines, updateAttachement } from "../budgetBookingClass";
 import { CurrencyRate } from "../budgetBookingClass";
-import { DataTableDirective } from "angular-datatables";
+import { DataTableDirective,DataTablesModule } from "angular-datatables";
 import { PoetClass } from "../PoetClass";
 import { DomSanitizer } from '@angular/platform-browser';
 import { AccordionModule } from "@coreui/angular";
 import { TabsModule } from "ngx-bootstrap/tabs";
-import { SweetAlert2Module  } from "@sweetalert2/ngx-sweetalert2";
+import { SweetAlert2LoaderService,SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { HighchartsChartModule } from "highcharts-angular";
 import { ExcelService } from "../../../excel.service";
@@ -27,9 +27,9 @@ declare const $:any;
   standalone: true,
   imports: [DecimalPipe,AccordionModule,DatePipe,
     TabsModule,SweetAlert2Module, NgSelectModule,ReactiveFormsModule,
-    HighchartsChartModule,CommonModule,FormsModule,NgbModule,TooltipModule],
+    HighchartsChartModule,CommonModule,FormsModule,NgbModule,TooltipModule,DataTablesModule],
   templateUrl: './booking.component.html',
-  providers:[ApiService,ExcelService,ToastrService,NgbModalConfig,NgbdDatepickerPopup, NgbModal],
+  providers:[ApiService,ExcelService,ToastrService,NgbModalConfig,NgbdDatepickerPopup, NgbModal, {provide:SweetAlert2LoaderService,useClass:SweetAlert2LoaderService }],
   styleUrl: './booking.component.scss'
 })
 export class BookingComponent {
@@ -139,7 +139,7 @@ export class BookingComponent {
   dataProjectTypes: any = [];
   databuyer: any = [];
   public dataYear: Array<Select2OptionData>;
-  @Inject(PLATFORM_ID) private platformId: Object;
+  
   
   constructor(
     private router: Router,
@@ -152,6 +152,7 @@ export class BookingComponent {
     private service: ApiService,
     private sanitizer: DomSanitizer,
     private excelService: ExcelService,
+    @Inject(PLATFORM_ID) private platformId: Object
     
   ) {
     let items:any = [];
@@ -197,6 +198,11 @@ export class BookingComponent {
         console.error('Error loading jQuery:', err);
       });
      
+    }
+    if (typeof window !== 'undefined') {
+      // Browser-specific code
+      (window as any).jQuery = $;
+      (window as any).$ = $;
     }
    
     this.isLoader = true;
@@ -252,6 +258,7 @@ export class BookingComponent {
   }
 
   GetPoetData(year: string) {
+    //alert("get GetPoetData satart");
     this.service.getPoet(year, this.loginUserName.toLowerCase()).subscribe(res => {
       this.objAccPoets = res as PoetClass[];
       let other:any = [];
@@ -261,6 +268,7 @@ export class BookingComponent {
       this.objAccPoets.map(item => { return { id: item.projectName, text: item.projectName }; }).forEach(item => projects.push(item));
       this.dataProjects = projects;
     });
+    //alert("get GetPoetData end");
   }
 
   clearFileDaily() {
@@ -299,33 +307,40 @@ export class BookingComponent {
   }
 
   GetVendorData() {
+    
     this.service.getVendors().subscribe(res => {
       let objPoets = res as Vendor[];
       let other:any = [];
       objPoets.map(item => { return { id: item.supplierId, text: item.vendorName }; }).forEach(item => other.push(item));
       this.dataVendor = other;
     });
+    
   }
 
   GetAribaAward() {
+    
     this.service.getAriba().subscribe(res => {
       let objAribaAwarded = res as any[];
       let other:any = [];
       objAribaAwarded.map(item => { return { id: item.flexValue, text: item.description }; }).forEach(item => other.push(item));
       this.dataAribaAwarded = other;
     });
+    
   }
 
   GetProjectValue() {
+    
     this.service.getProjectValue().subscribe(res => {
       let objProjectValue = res as any[];
       let other:any = [];
       objProjectValue.map(item => { return { id: item.flexValue, text: item.description }; }).forEach(item => other.push(item));
       this.dataProjectValue = other;
     });
+    
   }
 
   GetPaymentTerms() {
+    
     this.dataPaymentTerms = [];
     this.service.getPaymentTerms().subscribe(res => {
       let objPaymentTerms = res as any[];
@@ -333,6 +348,7 @@ export class BookingComponent {
       objPaymentTerms.map(item => { return { id: item.flexValue, text: item.description }; }).forEach(item => other.push(item));
       this.dataPaymentTerms = other;
     });
+    
   }
 
   changedProjectValue(e: any): void {
@@ -1380,25 +1396,29 @@ export class BookingComponent {
   public handleRefusalData(dismissMethod: Event): void { }
 
   selected(event:any) {
-    alert();
+    
   }
 
   getDataUsers() {
+    
     this.service.getUsers().subscribe(res => {
       this.objUsers = res;
       let other:any = [];
       this.objUsers.map((item:any) => { return { id: item.emailAddress.toLowerCase(), text: item.fullName }; }).forEach((item:any) => other.push(item));
       this.dataUsers = other;
     });
+    
   }
 
   getDataCurrency() {
+   
     this.service.getCurrency().subscribe(res => {
       this.objCurrency = res;
       let other:any = [];
       this.objCurrency.map((item:any) => { return { id: item.flexValue, text: item.description }; }).forEach((item:any) => other.push(item));
       this.dataCurrency = other;
     });
+  
   }
 
   createForm() {

@@ -33,7 +33,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Select2OptionData } from 'ng-select2';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { MonthClass } from '../MonthClass';
-import { DataTableDirective } from 'angular-datatables';
+import { DataTableDirective,DataTablesModule } from 'angular-datatables';
 import { ExcelService } from '../../../excel.service';
 import { AccordionModule } from '@coreui/angular';
 import { TabsModule } from 'ngx-bootstrap/tabs';
@@ -50,12 +50,12 @@ declare const $:any;
   standalone: true,
   imports: [DecimalPipe,AccordionModule,
     TabsModule,SweetAlert2Module,NgSelectModule,ReactiveFormsModule,
-    HighchartsChartModule,CommonModule,FormsModule,NgbModule ],
+    HighchartsChartModule,CommonModule,FormsModule,NgbModule,DataTablesModule ],
   templateUrl: './month.component.html',
   styleUrl: './month.component.scss',
   providers:[ApiService,ExcelService,ToastrService,NgbModalConfig, NgbModal, {provide:SweetAlert2LoaderService,useClass:SweetAlert2LoaderService } ],
 })
-export class MonthComponent {
+export class MonthComponent implements OnInit,AfterViewInit {
 
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
@@ -94,8 +94,9 @@ export class MonthComponent {
   isLoader: boolean;
   loginUserName: string ;
   datas: any = [];
-  @Inject(PLATFORM_ID) private platformId: Object
+  
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
     private router: Router,
     private toastr: ToastrService,
     private chRef: ChangeDetectorRef,
@@ -129,18 +130,30 @@ export class MonthComponent {
   //     console.log(dtInstance)
   //   );
   // }
-
+  ngAfterViewInit() {
+    if(isPlatformBrowser(this.platformId)){
+    import('jquery').then((jQueryModule) => {
+      const $=jQueryModule.default;
+      $('a').removeClass('liactive');
+     $('.liMonth').addClass('liactive');
+      // jQuery is now available for use in the browser
+     console.log('jQuery loaded in the browser');
+    });
+  }
+  }
   ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
     
+    if (isPlatformBrowser(this.platformId)) {
       import('jquery').then((jQueryModule) => {
         const $=jQueryModule.default;
         $('a').removeClass('liactive');
        $('.liMonth').addClass('liactive');
       
         // jQuery is now available for use in the browser
-       // //console.log('jQuery loaded in the browser');
-      });
+       console.log('jQuery loaded in the browser');
+      }).catch((err) => {
+        console.error('Error loading jQuery:', err);
+      });;
       
      
     }
@@ -175,6 +188,8 @@ export class MonthComponent {
   }
 
   vaidatePoetNumber(angForm: NgForm) {
+    console.log("vaidatePoetNumber");
+    console.log(angForm);
     let objLevel1 = [];
     objLevel1 = this.objMonthPoets.filter(
       (l:any) =>
@@ -290,6 +305,7 @@ export class MonthComponent {
   }
 
   GetData(year: String) {
+    
     this.service.getPoet(year, this.loginUserName.toLowerCase()).subscribe(res => {
       this.objPoets = res;
       const other:any = [];
@@ -384,6 +400,7 @@ export class MonthComponent {
           }
         ]
       });
+      this.chRef.detectChanges();
     });
   }
 
@@ -551,8 +568,8 @@ export class MonthComponent {
   }
 
   public changedPoet(e: any): void {
-    this.angForm.controls['POETNumber'].setValue(e.value);
-    this.FCdesc = e.value;
+    this.angForm.controls['POETNumber'].setValue(e.id);
+    this.FCdesc = e.text;
     let objLevel1 = [];
     objLevel1 = this.objPoets.filter((l:any) => l.poetId == this.angForm.value.POETNumber);
     if (objLevel1 != null && objLevel1.length > 0) {
@@ -562,11 +579,12 @@ export class MonthComponent {
       this.angForm.controls['Level4'].setValue(objLevel1[0].level4);
       this.angForm.controls['ProjectName'].setValue(objLevel1[0].poetId);
     }
+    this.chRef.detectChanges();
   }
 
   public changedProject(e: any): void {
-    this.angForm.controls['ProjectName'].setValue(e.value);
-    this.FCdesc = e.value;
+    this.angForm.controls['ProjectName'].setValue(e.id);
+    this.FCdesc = e.text;
     let objLevel1 = [];
     objLevel1 = this.objPoets.filter((l:any) => l.poetId == this.angForm.value.ProjectName);
     if (objLevel1 != null && objLevel1.length > 0) {

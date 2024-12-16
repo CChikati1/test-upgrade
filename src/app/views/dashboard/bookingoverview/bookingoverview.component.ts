@@ -20,7 +20,7 @@ import { NgbdDatepickerPopup } from '../datepicker-popup';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptor } from '../../_helpers/jwt.interceptor';
 // import { extendsDirectlyFromObject } from '@angular/core/src/render3/jit/directive';
-
+//import * as $ from 'jquery'
 declare const $:any;
 
 @Component({
@@ -127,9 +127,9 @@ export class BookingoverviewComponent {
   fileURL: string;
   public objPoetStatusData: any = [];
   public dataYear: Array<Select2OptionData>;
-  @Inject(PLATFORM_ID) private platformId: Object;
+  
   table1: any;
-  constructor(private chRef: ChangeDetectorRef, private fb: FormBuilder, config: NgbModalConfig,
+  constructor(@Inject(PLATFORM_ID) private platformId: Object,private chRef: ChangeDetectorRef, private fb: FormBuilder, config: NgbModalConfig,
     private modalService: NgbModal, private service: ApiService, private excelService: ExcelService) {
       let items:any = [];
       items.push({ id: '2019', text: '2019' });
@@ -156,7 +156,7 @@ export class BookingoverviewComponent {
       // Dynamically import jQuery
       import('jquery').then(($) => {
         // Use jQuery in the browser environment
-        //console.log('jQuery is available:', $);
+        console.log('jQuery is available:', $);
       }).catch(err => {
         console.error('Failed to load jQuery', err);
       });
@@ -265,6 +265,7 @@ export class BookingoverviewComponent {
       }
       this.objBookingOverview = res;
       this.chRef.detectChanges();
+      
       $(function () {
         if (flag) {
           $('#tblBookingOverview thead tr').clone(true).appendTo('#tblBookingOverview thead');

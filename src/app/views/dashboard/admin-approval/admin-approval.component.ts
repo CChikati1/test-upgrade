@@ -24,15 +24,14 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { HighchartsChartModule } from 'highcharts-angular';
 import { JwtInterceptor } from '../../_helpers';
 import Swal from 'sweetalert2';
-// import 'datatables.net';
-// import 'datatables.net-buttons';
+
 declare const $:any;
 @Component({
   selector: 'app-admin-approval',
   standalone: true,
   imports: [DecimalPipe,AccordionModule,
     TabsModule,SweetAlert2Module,NgSelectModule,ReactiveFormsModule,
-    HighchartsChartModule,CommonModule,FormsModule,NgbModule ],
+    HighchartsChartModule,CommonModule,FormsModule,NgbModule,DataTablesModule ],
   templateUrl: './admin-approval.component.html',
   styleUrl: './admin-approval.component.scss',
   providers:[ApiService,ToastrService,NgbModalConfig, NgbModal, {provide:SweetAlert2LoaderService,useClass:SweetAlert2LoaderService } ],
@@ -146,13 +145,16 @@ export class AdminApprovalComponent {
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
-    
-      import('jquery').then(($) => {
-        // jQuery is now available for use in the browser
-       // //console.log('jQuery loaded in the browser');
+      import('jquery').then((jQueryModule) => {
+        const $ = jQueryModule.default; // jQuery is loaded
+
+        // Execute jQuery code after it is loaded
+        $('a').removeClass('liactive');
+        $('.liAdminApproval').addClass('liactive');
+        
+      }).catch((err) => {
+        console.error('Error loading jQuery:', err);
       });
-      
-     
     }
     if (typeof window !== 'undefined') {
       // Browser-specific code
@@ -240,11 +242,11 @@ export class AdminApprovalComponent {
   }
 
   getUserName() {
-    //this.service.getUserName().subscribe((res) => {
-      // if (res != null && res != '') {
-      //   let user = res as any;
+    this.service.getUserName().subscribe((res) => {
+      if (res != null && res != '') {
+         let user = res as any;
         this.loginUserName ='veerender.kumar-e@maf.ae';// user.d.Email;
-      //}
+      }
       //this.service.getEmployee(this.loginUserName).subscribe((res) => {
        // if (res != null && res != '') {
          // let users = res as any;
@@ -261,7 +263,7 @@ export class AdminApprovalComponent {
           }
        // }
      // });
-   // });
+    });
   }
 
   public changedbbfNumber(e: any): void {
@@ -578,7 +580,8 @@ export class AdminApprovalComponent {
         });
       });
       this.chRef.detectChanges(); 
-      const table = $("#tblbooking").DataTable({
+      let table: any;  
+       table = $("#tblbooking").DataTable({
         dom: "Blfrtip",
         destroy: true,
         pageLength: 100,
@@ -602,17 +605,18 @@ export class AdminApprovalComponent {
           { width: "70px", targets: 3 },
           { width: "70px", targets: 4 },
           { width: "70px", targets: 5 }
-        ]
-        // initComplete: function (this: AdminApprovalComponent) {
-        //   this.initColumnSearch(table); // Pass the initialized table
-        // }.bind(this)
+        ],
+        initComplete: function (this: AdminApprovalComponent) {
+          this.initColumnSearch(table); // Pass the initialized table
+        }.bind(this)
         // initComplete: function () {
         //   this.api()
         //     .columns()
         //     .every( ()=> {
         //       var column = this;
-        //       var select = $('<select><option value=""></option></select>')
-        //         .appendTo($(column.footer()).empty())
+        //       let ele= $('<select><option value=""></option></select>') as JQuery<HTMLElement>
+        //       var select = 
+        //         ele.appendTo($(column.footer()).empty())
         //         .on("change",  (event:any)=> {
         //           var val = $.fn.dataTable.util.escapeRegex($(event.target).val());
         //           column.search(val ? "^" + val + "$" : "", true, false).draw();
@@ -629,6 +633,8 @@ export class AdminApprovalComponent {
   }
 
   private initColumnSearch(table: any): void {
+    setTimeout(() => {
+      if (table && table.columns) {
     table.columns().every((index: number) => {
       const column = table.column(index);
       const footer = $(column.footer());
@@ -644,6 +650,8 @@ export class AdminApprovalComponent {
         });
       }
     });
+  }
+  }, 0); 
   }
   changedYear(e: any): void {
     this.isLoader = true;
@@ -667,7 +675,6 @@ export class AdminApprovalComponent {
   }
 
   changeYear(item:any, content:any) {
-    alert("hh");
     this.yearForm = this.fb.group({
       year: ["", Validators.required],
       remarks: [""]

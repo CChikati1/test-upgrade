@@ -41,7 +41,7 @@ import { TabsModule } from "ngx-bootstrap/tabs";
   providers:[ApiService,ExcelService,ToastrService,NgbModalConfig,NgbdDatepickerPopup, NgbModal, {provide:SweetAlert2LoaderService,useClass:SweetAlert2LoaderService },RoundPipe],
    templateUrl: './budget-setup.component.html'
 })
-export class BudgetSetupComponent implements OnInit {
+export class BudgetSetupComponent implements OnInit,AfterViewInit {
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
 
@@ -90,9 +90,10 @@ export class BudgetSetupComponent implements OnInit {
   isLoader: boolean;
   loginUserName: string;
   dummyCheckBox: boolean = false;
-  @Inject(PLATFORM_ID) private platformId: Object
+ 
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
     private router: Router,
     private frmbuilder: FormBuilder,
     private toastr: ToastrService,
@@ -148,15 +149,29 @@ export class BudgetSetupComponent implements OnInit {
   //     console.log(dtInstance);
   //   });
   // } 
+ ngAfterViewInit(){
+  if (isPlatformBrowser(this.platformId)) {
+    // Dynamically import jQuery
+    import('jquery').then((jQueryModule) => {
+      const $ = jQueryModule.default;
+      const ele=$(".liSetup") as JQuery<HTMLElement>
+      $("a").removeClass("liactive");
+      ele.addClass("liactive");
+    }).catch(err => {
+      console.error('Failed to load jQuery', err);
+    });
+  }
 
+ }
 
   ngOnInit() {
   
     if (isPlatformBrowser(this.platformId)) {
       // Dynamically import jQuery
-      import('jquery').then(($) => {
-        // Use jQuery in the browser environment
-        //console.log('jQuery is available:', $);
+      import('jquery').then((jQueryModule) => {
+        const $ = jQueryModule.default;
+        $("a").removeClass("liactive");
+        $(".liSetup").addClass("liactive");
       }).catch(err => {
         console.error('Failed to load jQuery', err);
       });

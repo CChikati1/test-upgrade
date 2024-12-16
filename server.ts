@@ -24,6 +24,14 @@ export function app(): express.Express {
     maxAge: '1y',
     index: 'index.html',
   }));
+  const TIMEOUT = 60000; // Set timeout to 60 seconds
+
+// Middleware to handle timeout
+server.use((req, res, next) => {
+  req.setTimeout(TIMEOUT); // Set the request timeout
+  res.setTimeout(TIMEOUT); // Set the response timeout
+  next();
+});
 
   // All regular routes use the Angular engine
   server.get('**', (req, res, next) => {

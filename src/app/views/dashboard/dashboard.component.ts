@@ -37,7 +37,7 @@ import { NgSelectModule } from '@ng-select/ng-select'
 //  import  $ from 'jquery';
 // import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
 //declare const $:any;
-import * as $ from 'jquery';
+//import * as $ from 'jquery';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import Highcharts from 'highcharts';
 @Component({
@@ -153,10 +153,13 @@ export class DashboardComponent implements OnInit {
     
     if (isPlatformBrowser(this.platformId)) {
       
-    
-      import('jquery').then(($) => {
+      
+      import('jquery').then((jQueryModule) => {
+        
+      //  $('a').removeClass('liactive');
+      // $('.liMonth').addClass('liactive');
         // jQuery is now available for use in the browser
-       // //console.log('jQuery loaded in the browser');
+       console.log('jQuery loaded in the browser');
       });
       
      
@@ -246,22 +249,25 @@ items.push({id: 'VOC Programme', text: 'VOC Programme'});
   budgetStatusOptions:any;
   budgetChartOptions:any;
   ngAfterViewInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      // Dynamically import jQuery
-      import('jquery').then(($) => {
-        // Use jQuery in the browser environment
-        //console.log('jQuery is available:', $);
-      }).catch(err => {
-        console.error('Failed to load jQuery', err);
-      });
-    }
+    if(isPlatformBrowser(this.platformId)){
+    import('jquery').then((jQueryModule) => {
+      const $=jQueryModule.default;
+      $('a').removeClass('liactive');
+     $('.lidashboard').addClass('liactive');
+      // jQuery is now available for use in the browser
+     console.log('jQuery loaded in the browser');
+    });
+  }
   }
  async ngOnInit() {
-  
+  // $('a').removeClass('liactive');
+    // $('.lidashboard').addClass('liactive');
   if (typeof window !== 'undefined') {
       // Browser-specific code
       (window as any).jQuery = $;
       (window as any).$ = $;
+      // $('a').removeClass('liactive');
+    // $('.lidashboard').addClass('liactive');
       const Highcharts =await import('highcharts');
       this.highcharts = Highcharts;
        this.Highcharts1 = Highcharts.default;
@@ -960,10 +966,13 @@ items.push({id: 'VOC Programme', text: 'VOC Programme'});
   }
 
   getUserName() {
-   // this.service.getUserDetails().subscribe((res) => {
-     // //console.log(res);
-      //if (res != null && res != '') {
-       // let user = res as any;
+    this.service.getUserName().subscribe((res) => {
+     console.log(res);
+      if (res != null && res !='' ) {
+        // res.Email=res.Email.replace(/'/g, "");
+        // console.log(res.Email);
+         let user = res as any;
+         console.log(user.Email);
         this.loginUserName ='veerender.kumar-e@maf.ae';// user.d.Email;
         this.DisplayName ='Veerender Kumar';// user.d.Title;
         this.objDashboard = new Dashboard();
@@ -985,8 +994,8 @@ items.push({id: 'VOC Programme', text: 'VOC Programme'});
             this.getMyPendingApprovals();
          // }
         //});
-    //  }
-    //});
+     }
+    });
   }
 
 

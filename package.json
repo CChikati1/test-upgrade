@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --output-hashing none --aot --optimization --progress",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:test-upgrade": "node dist/test-upgrade/server/server.mjs"
