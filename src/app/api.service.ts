@@ -10,7 +10,7 @@ import { BudgetBookingLines } from "./views/dashboard/budgetBookingClass";
 import { environment } from "../environments/environment";
 import { of } from "rxjs";
 
-import {sp, spPost, SharePointQueryable} from '@pnp/sp/presets/all';
+import {sp, spPost, SharePointQueryable } from '@pnp/sp/presets/all';
 sp.setup({
   sp: {
     headers: {
@@ -44,39 +44,7 @@ export class ApiService {
   public getUsers() {
     return this.http.get("https://mafhbudgettrackerapidev.maf.ae/api/common/v1/getUsers");
   }
-  getUserDetails() {
-    const mockResponse = `<?xml version="1.0" encoding="utf-8"?>
-    <entry xml:base="https://mafptawasul.maf.ae/holding/_api/" xmlns="http://www.w3.org/2005/Atom" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:georss="http://www.georss.org/georss" xmlns:gml="http://www.opengis.net/gml">
-        <id>https://mafptawasul.maf.ae/holding/_api/Web/GetUserById(710)</id>
-        <category term="SP.User" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
-        <link rel="edit" href="Web/GetUserById(710)" />
-        <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Alerts" type="application/atom+xml;type=feed" title="Alerts" href="Web/GetUserById(710)/Alerts" />
-        <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Groups" type="application/atom+xml;type=feed" title="Groups" href="Web/GetUserById(710)/Groups" />
-        <title />
-        <updated>2024-12-03T03:30:20Z</updated>
-        <author><name /></author>
-        <content type="application/xml">
-            <m:properties>
-                <d:Id m:type="Edm.Int32">710</d:Id>
-                <d:IsHiddenInUI m:type="Edm.Boolean">false</d:IsHiddenInUI>
-                <d:LoginName>i:0#.w|domain\vkumar2</d:LoginName>
-                <d:Title>Veerender Kumar</d:Title>
-                <d:PrincipalType m:type="Edm.Int32">1</d:PrincipalType>
-                <d:Email>Veerender.Kumar-e@maf.ae</d:Email>
-                <d:IsEmailAuthenticationGuestUser m:type="Edm.Boolean">false</d:IsEmailAuthenticationGuestUser>
-                <d:IsShareByEmailGuestUser m:type="Edm.Boolean">false</d:IsShareByEmailGuestUser>
-                <d:IsSiteAdmin m:type="Edm.Boolean">false</d:IsSiteAdmin>
-                <d:UserId m:type="SP.UserIdInfo">
-                    <d:NameId>s-1-5-21-1407541682-534602969-1849977318-56055</d:NameId>
-                    <d:NameIdIssuer>urn:office:idp:activedirectory</d:NameIdIssuer>
-                </d:UserId>
-            </m:properties>
-        </content>
-    </entry>`;
-
-    // Return the hardcoded response as an observable
-    return of(mockResponse); // of() is an RxJS function that wraps the response in an observable
-  }
+  
   getUserName_online() {
     return sp.web.currentUser.get();
   }
@@ -85,7 +53,7 @@ export class ApiService {
   }
 
   getEmployee(empEmail:any) {
-    return this.http.get("https://mafptawasul.maf.ae/Holding/_api/web/lists/getByTitle('Employee')/items?$filter=Title eq '" + empEmail + "'", { headers: { Accept: "application/json;odata=verbose" } });
+    return this.http.get(this.sp_URL +"_api/web/lists/getByTitle('Employee')/items?$filter=Title eq '" + empEmail + "'", { headers: { Accept: "application/json;odata=verbose" } });
   }
 
   savePoet(PoetClass: PoetClass) {

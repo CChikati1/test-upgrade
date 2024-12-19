@@ -406,13 +406,13 @@ export class BookingoverviewComponent {
   }
 
   getUserName() {
-    // this.service.getUserName().subscribe((res) => {
-    //   if (res != null && res != '') {
-    //     let user = res as any;
-    this.loginUserName ='veerender.kumar-e@maf.ae';// user.d.Email;
+    this.service.getUserName().subscribe((res) => {
+      if (res != null && res != '') {
+        let user = res as any;
+      this.loginUserName = user.d.Email; //'veerender.kumar-e@maf.ae';//
         this.GetBudgetTrackingData(true, this.searchYear.controls["year"].value);
-    //   }
-    // });
+      }
+     });
   }
 
   getSpendBudget(Monthpoet:any) {

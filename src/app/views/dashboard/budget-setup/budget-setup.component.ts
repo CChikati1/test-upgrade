@@ -188,22 +188,22 @@ export class BudgetSetupComponent implements OnInit,AfterViewInit {
   }
 
   getUserName() {
-    // this.service.getUserName().subscribe(res => {
-    //   if (res != null && res !== "") {
-        // const user = res as any;
-        this.loginUserName ='veerender.kumar-e@maf.ae';// user.d.Email;
-        // this.DisplayName ='Veerender Kumar';// user.d.Title;
+    this.service.getUserName().subscribe(res => {
+      if (res != null && res !== "") {
+        const user = res as any;
+        this.loginUserName =user.d.Email;//  //'veerender.kumar-e@maf.ae'
+        // this.DisplayName = user.Title; //'Veerender Kumar';//
         this.GetData(true, this.searchYear.controls["year"].value);
-        // this.service.getEmployee(this.loginUserName).subscribe(response => {
-          // if (response != null && response !== "") {
-          //   const users = response as any;
-          //   const c = users.d.results as [];
-          //   if (c.length <= 0)
-          //     this.router.navigateByUrl("/dashboard/Booking");
-          // }
-        // });
-    //   }
-    // });
+        this.service.getEmployee(this.loginUserName).subscribe(response => {
+          if (response != null && response !== "") {
+            const users = response as any;
+            const c = users.d.results as [];
+            if (c.length <= 0)
+              this.router.navigateByUrl("/dashboard/Booking");
+          }
+         });
+      }
+     });
   }
 
   saveData(poetForm: FormGroup) {
@@ -356,10 +356,10 @@ export class BudgetSetupComponent implements OnInit,AfterViewInit {
       }
       if (this.poetUserID > 0) {
         this.user.id = this.poetUserID;
-        // this.user.startDate = this.signupForm.controls.UserStartDate.value;
+         this.user.startDate = this.signupForm.controls['UserStartDate'].value;
       } else {
         this.user.id = 0;
-        // this.user.startDate = datepipe.transform(new Date(), "yyyy-MM-dd");
+         this.user.startDate = datepipe.transform(new Date(), "yyyy-MM-dd") ?? '';
       }
       const objUserName = this.dataUsers.filter(
         item => item.id == this.user.userName
@@ -453,7 +453,7 @@ export class BudgetSetupComponent implements OnInit,AfterViewInit {
     this.objPoetClass.dummyPoet = poetForm.value.dummyPoetCheck;
     this.objPoetClass.futureSegment = poetForm.value.FutureSegment1;
     const datepipe = new DatePipe("en-US");
-    // this.objPoetClass.startDate = datepipe.transform(new Date(), "yyyy-MM-dd"); // angForm.value.StartDate;
+     this.objPoetClass.startDate = datepipe.transform(new Date(), "yyyy-MM-dd") ?? ''; // angForm.value.StartDate;
     if (poetForm.value.EndDate1 !== "" && poetForm.value.EndDate1 != null) {
       this.objPoetClass.endDate = poetForm.value.EndDate1.year + "-" +
         poetForm.value.EndDate1.month + "-" + poetForm.value.EndDate1.day;
@@ -774,7 +774,7 @@ export class BudgetSetupComponent implements OnInit,AfterViewInit {
     }
   }
 
-  onChangeLevel3(args: { target: { options: { [x: string]: { text: string; }; }; selectedIndex: string | number; }; }) {
+  onChangeLevel3(args: any) { //{ target: { options: { [x: string]: { text: string; }; }; selectedIndex: string | number; }; }
     this.level3Desc = args.target.options[args.target.selectedIndex].text;
     this.objLevel4Data = this.objLevel4.filter(
       (      item: { parentValue: string; }) => item.parentValue == "XXMAFH_BUDGET_TRACKER_LEVEL4"

@@ -972,9 +972,9 @@ items.push({id: 'VOC Programme', text: 'VOC Programme'});
         // res.Email=res.Email.replace(/'/g, "");
         // console.log(res.Email);
          let user = res as any;
-         console.log(user.Email);
-        this.loginUserName ='veerender.kumar-e@maf.ae';// user.d.Email;
-        this.DisplayName ='Veerender Kumar';// user.d.Title;
+         console.log(user.d.Email);
+        this.loginUserName = user.d.Email; //'veerender.kumar-e@maf.ae';// 
+        this.DisplayName =user.d.Title; //'Veerender Kumar';// 
         this.objDashboard = new Dashboard();
         this.objDashboard.spendType = this.searchForm.controls["budgetType"].value;
         this.objDashboard.year = this.searchForm.controls["year"].value;
@@ -982,18 +982,19 @@ items.push({id: 'VOC Programme', text: 'VOC Programme'});
         this.objDashboard.projectCategory  = this.searchForm.controls["projectCategory"].value;
         this.objDashboard.department=this.searchForm.controls["department"].value;
         this.objDashboard.email = this.loginUserName.toLowerCase();
-       // this.service.getEmployee(this.loginUserName).subscribe((res) => {
-          //if (res != null && res != '') {
-            // let users = res as any;
-            // let c: any = users.d.results as [];
-            // if (c[0].Role == "Super Admin")
+       this.service.getEmployee(this.loginUserName).subscribe((res) => {
+          if (res != null && res != '') {
+            
+            let users = res as any;
+            let c: any = users.d.results as [];
+            if (c[0].Role == "Super Admin")
                this.isSuperAdmin = true;
-            // else
-            //   this.isSuperAdmin = false;
+            else
+              this.isSuperAdmin = false;
             this.loadChart();
             this.getMyPendingApprovals();
-         // }
-        //});
+         }
+        });
      }
     });
   }

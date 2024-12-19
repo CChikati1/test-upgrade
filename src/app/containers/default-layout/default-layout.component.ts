@@ -20,7 +20,7 @@ export class DefaultLayoutComponent implements OnDestroy {
 
   navbarBrandFull = {
     
-    src: 'assets/Majid Al Futtaim Logo.png',
+    src: 'https://majidalfuttaim.sharepoint.com/sites/MAFApps/BudgetTracker/assets/Majid Al Futtaim Logo.png',
     width: 177,
     height: 35,
     alt: 'MAF Logo'
@@ -68,51 +68,49 @@ export class DefaultLayoutComponent implements OnDestroy {
     });
   }
 
-    console.log("Layout");
-    // this.service.getUserName().subscribe((res:any) => {
-    //   if (res != null && res != '') {
+    this.service.getUserName().subscribe((res:any) => {
+      if (res != null && res != '') {
         
-    //     let user = res as any;
+        let user = res as any;
        // alert(user.d.Email);
-        this.loginUserName ='veerender.kumar-e@maf.ae';// user.d.Email;
-      // this.DisplayName ='Veerender Kumar';// user.d.Title;
-      // this.loginUserName = user.d.Email;
-     // }
+        this.loginUserName =user.d.Email;// user.d.Email; // 'veerender.kumar-e@maf.ae';// 
+      //this.DisplayName ='Veerender Kumar';// user.d.Title;
+      //this.loginUserName = user.d.Email;
+     }
 
       this.isAdmin = false;
       this.isSuperAdmin = true;
       this.isUser = false;
 
-      // this.service.getEmployee(this.loginUserName).subscribe((res:any) => {
-      //   alert(this.isSuperAdmin);
-      //   if (res != null && res != '') {
-      //     let users = res as any;
-      //     const c: any  = users.d.results[0] as [];
-      //    let user_role = c.Role;
-      //     if(user_role != null && user_role.length > 0) {
-      //       if (user_role == 'Super Admin') {
-      //         this.isAdmin = false;
-      //         this.isSuperAdmin = true;
-      //         this.isUser = false;
-      //         alert(this.isSuperAdmin);
-      //       } else if (user_role == 'Admin') {
-      //         this.isAdmin = true;
-      //         this.isSuperAdmin = false;
-      //         this.isUser = false;
-      //        } else if (user_role == 'User') {
-      //         this.isAdmin = false;
-      //         this.isSuperAdmin = false;
-      //         this.isUser = true;
-      //       }
-      //     }
-      //   }
-      // }), (err:any) => {
-      //   alert("fsdf");
-      //   console.log("Error Occured " + err);
-      // };
-    // }), (err:any) => {
-    //   console.log("Error Occured " + err);
-    //  };
+      this.service.getEmployee(this.loginUserName).subscribe((res:any) => {
+        //alert(this.isSuperAdmin);
+        if (res != null && res != '') {
+          let users = res as any;
+          const c: any  = users.d.results[0] as [];
+         let user_role = c.Role;
+          if(user_role != null && user_role.length > 0) {
+            if (user_role == 'Super Admin') {
+              this.isAdmin = false;
+              this.isSuperAdmin = true;
+              this.isUser = false;
+            } else if (user_role == 'Admin') {
+              this.isAdmin = true;
+              this.isSuperAdmin = false;
+              this.isUser = false;
+             } else if (user_role == 'User') {
+              this.isAdmin = false;
+              this.isSuperAdmin = false;
+              this.isUser = true;
+            }
+          }
+        }
+      }), (err:any) => {
+       // alert("fsdf");
+        console.log("Error Occured " + err);
+      };
+    }), (err:any) => {
+      console.log("Error Occured " + err);
+     };
     // this.showSuccess();
   }
   showDashboardLinks(): boolean {

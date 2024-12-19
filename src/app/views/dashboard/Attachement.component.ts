@@ -62,7 +62,7 @@ export class AttachementComponent implements OnInit {
         this.service.getUserName().subscribe((res) => {
             if (res != null && res != '') {
                 let user = res as any;
-                this.loginUserName = user.Email;
+                this.loginUserName = user.d.Email;
             }
         });
     }

@@ -17,7 +17,10 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/test-upgrade",
+              "outputPath":  {
+                "base": "dist/test-upgrade"
+              },
+               "aot": true,
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -30,8 +33,7 @@
             ],
             
             "styles": [
-              "src/scss/styles.scss",
-             
+              "src/styles.scss",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/@coreui/icons/css/all.min.css",
               "node_modules/@coreui/coreui/scss/coreui.scss",
@@ -64,10 +66,16 @@
             ]
             
             
+            
           },
           "configurations": {
             "production": {
               "optimization": true,
+              "extractLicenses": true,
+              "sourceMap": false,
+               "outputHashing": "all",
+              "namedChunks": false,
+              
               "budgets": [
                 {
                   "type": "initial",
@@ -79,13 +87,13 @@
                   "maximumWarning": "6kB",
                   "maximumError": "10kB"
                 }
-              ],
-              "outputHashing": "all"
+              ]
+             
             },
             "development": {
               "optimization": true,
               "extractLicenses": false,
-              "sourceMap": false
+              "sourceMap": true
             }
           },
           "defaultConfiguration": "production"
@@ -103,7 +111,10 @@
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n"
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "buildTarget": "test-upgrade:build"
+          }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
@@ -123,7 +134,7 @@
               }
             ],
             "styles": [
-              "src/scss/styles.scss",
+              "src/styles.scss",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/@coreui/icons/css/all.min.css",
               "node_modules/@coreui/coreui/scss/coreui.scss",

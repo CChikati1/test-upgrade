@@ -187,16 +187,13 @@ export class MonthComponent implements OnInit,AfterViewInit {
     }
   }
 
-  vaidatePoetNumber(angForm: NgForm) {
-    console.log("vaidatePoetNumber");
-    console.log(angForm);
+  vaidatePoetNumber(angForm: any) {
     let objLevel1 = [];
     objLevel1 = this.objMonthPoets.filter(
       (l:any) =>
-        l.POET_NUMBER === angForm.value.POETNumber &&
+        l.POET_NUMBER === angForm.POETNumber &&
         l.M_HEADER_ID !== this.monthPoetMasterID
     );
-
     if (objLevel1 != null && objLevel1.length > 0) {
       return false;
     } else {
@@ -204,26 +201,26 @@ export class MonthComponent implements OnInit,AfterViewInit {
     }
   }
 
-  GetMonthPoeItem(angForm: NgForm): MonthClass {
+  GetMonthPoeItem(angForm: any): MonthClass {
     this.objMonthClass = new MonthClass();
     this.objMonthClass.createdBy = this.loginUserName;
     this.objMonthClass.lastUpdateBy = this.loginUserName;
-    this.objMonthClass.financialYear = angForm.value.FiscalYear;
-    this.objMonthClass.janBudget = angForm.value.January;
-    this.objMonthClass.febBudget = angForm.value.February;
-    this.objMonthClass.marBudget = angForm.value.March;
-    this.objMonthClass.aprBudget = angForm.value.April;
-    this.objMonthClass.mayBudget = angForm.value.May;
-    this.objMonthClass.junBudget = angForm.value.June;
-    this.objMonthClass.julBudget = angForm.value.July;
-    this.objMonthClass.augBudget = angForm.value.August;
-    this.objMonthClass.sepBudget = angForm.value.September;
-    this.objMonthClass.octBudget = angForm.value.October;
-    this.objMonthClass.novBudget = angForm.value.November;
-    this.objMonthClass.decBudget = angForm.value.December;
-    this.objMonthClass.Total = angForm.value.Total;
-    this.objMonthClass.financialBudget = angForm.value.YearlyBudget;
-    this.objMonthClass.yearlyBudget = angForm.value.YearlyBudget;    
+    this.objMonthClass.financialYear = angForm.FiscalYear;
+    this.objMonthClass.janBudget = angForm.January;
+    this.objMonthClass.febBudget = angForm.February;
+    this.objMonthClass.marBudget = angForm.March;
+    this.objMonthClass.aprBudget = angForm.April;
+    this.objMonthClass.mayBudget = angForm.May;
+    this.objMonthClass.junBudget = angForm.June;
+    this.objMonthClass.julBudget = angForm.July;
+    this.objMonthClass.augBudget = angForm.August;
+    this.objMonthClass.sepBudget = angForm.September;
+    this.objMonthClass.octBudget = angForm.October;
+    this.objMonthClass.novBudget = angForm.November;
+    this.objMonthClass.decBudget = angForm.December;
+    this.objMonthClass.Total = angForm.Total;
+    this.objMonthClass.financialBudget = angForm.YearlyBudget;
+    this.objMonthClass.yearlyBudget = angForm.YearlyBudget;    
     let objLevel1 = [];
     objLevel1 = this.objPoets.filter((l:any) => l.poetId == this.angForm.value.POETNumber);
     this.objMonthClass.projectName = objLevel1[0].projectName;    
@@ -283,8 +280,20 @@ export class MonthComponent implements OnInit,AfterViewInit {
     this.angForm.controls['Level2'].setValue(Monthpoet.level2);
     this.angForm.controls['Level3'].setValue(Monthpoet.level3);
     this.angForm.controls['Level4'].setValue(Monthpoet.level4);
-    this.angForm.controls['ProjectName'].setValue(Monthpoet.poetId);
-    this.angForm.controls['POETNumber'].setValue(Monthpoet.poetId);
+    const selectedProject = this.dataProjects.find(
+      (project) => project.text === Monthpoet.projectName
+    );
+    if (selectedProject) {
+      this.angForm.controls['ProjectName'].setValue(selectedProject.id);
+    }
+    const selectedPoetNumber = this.dataPOETNumber.find(
+      (project) => project.text.toString() == Monthpoet.poetNumber
+    );
+    if (selectedPoetNumber) {
+      this.angForm.controls['POETNumber'].setValue(selectedPoetNumber.id);
+    }
+    //this.angForm.controls['ProjectName'].setValue(Monthpoet.projectName); //poetId
+   // this.angForm.controls['POETNumber'].setValue(Monthpoet.poetNumber);   //poetId
     //this.angForm.controls['AvailableBudget'].setValue(Monthpoet.fyBudget);
     this.angForm.controls['YearlyBudget'].setValue(Monthpoet.yearlyBudget);
     this.angForm.controls['Difference'].setValue(this.getDifference(Monthpoet, content));
@@ -302,6 +311,7 @@ export class MonthComponent implements OnInit,AfterViewInit {
     this.angForm.controls['November'].setValue(Monthpoet.novBudget.toFixed(2));
     this.angForm.controls['December'].setValue(Monthpoet.decBudget.toFixed(2));
     this.modalService.open(content, { size: 'lg', centered: true });
+    this.chRef.detectChanges();
   }
 
   GetData(year: String) {
@@ -337,23 +347,23 @@ export class MonthComponent implements OnInit,AfterViewInit {
 
 
   getUserName() {
-    // this.service.getUserName().subscribe(res => {
-    //   if (res != null && res !== '') {
-        //const user = res as any;
-        this.loginUserName ='veerender.kumar-e@maf.ae';
+    this.service.getUserName().subscribe(res => {
+      if (res != null && res !== '') {
+        const user = res as any;
+        this.loginUserName = user.d.Email; //'veerender.kumar-e@maf.ae';
         this.GetData(this.searchYear.controls["year"].value);
         this.GetMonthPoetData(true, this.searchYear.controls["year"].value);
-        // this.service.getEmployee(this.loginUserName).subscribe(resposne => {
-        //   if (resposne != null && resposne !== '') {
-        //     const users = res as any;
-        //     const c = users.d as [];
-        //     if (c.length <= 0) {
-             // this.router.navigateByUrl('/dashboard/Booking');
-        //     }
-        //   }
-        // });
-    //   }
-    // });
+        this.service.getEmployee(this.loginUserName).subscribe(resposne => {
+          if (resposne != null && resposne !== '') {
+            const users = resposne as any;
+            const c = users.d.results as [];
+            if (c.length <= 0) {
+             this.router.navigateByUrl('/dashboard/Booking');
+            }
+          }
+        });
+      }
+     });
   }
 
   GetMonthPoetData(flag: boolean, year: string) {
@@ -362,6 +372,10 @@ export class MonthComponent implements OnInit,AfterViewInit {
       this.objMonthPoets = [];
       this.objMonthPoets = res;
       this.chRef.detectChanges();
+      const existingTable = $("#monthTable").DataTable();
+      if (existingTable) {
+        existingTable.destroy();
+      }
       if (flag) {
         let ele1=$('#monthTable thead tr') as JQuery<HTMLElement>;
         ele1.clone(true).appendTo('#monthTable thead');

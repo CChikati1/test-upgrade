@@ -14,7 +14,7 @@ import {
 } from 'rxjs';
 export const JwtInterceptor: HttpInterceptorFn = (req, next) => {
    
-        if(req.url.toString().indexOf("https://mafptawasul.maf.ae") == -1 )
+        if(req.url.toString().indexOf("https://mafptawasul.maf.ae") == -1  && req.url.toString().indexOf("https://majidalfuttaim.sharepoint.com/sites/SMBU") == -1)
         {    
                 req = req.clone({
                     headers: new HttpHeaders({

@@ -612,7 +612,7 @@
             <div class="col-sm-12 col-md-2 ">
               <div class="form-group" title="Select budget by Project Name">
                 <label style="width:100%" class="control-label">PROJECT NAME <span style="color:red;">*</span></label>
-                <ng-select formControlName="ProjectName" (change)="changedProject($event)" [ngStyle]="{ width: '160px' }"
+                <ng-select formControlName="projectName" (change)="changedProject($event)" [ngStyle]="{ width: '160px' }"
               bindLabel="text"
               bindValue="id" [items]="dataProjects" placeholder="Please select">
               </ng-select>  

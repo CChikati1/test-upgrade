@@ -245,13 +245,14 @@ export class AdminApprovalComponent {
     this.service.getUserName().subscribe((res) => {
       if (res != null && res != '') {
          let user = res as any;
-        this.loginUserName ='veerender.kumar-e@maf.ae';// user.d.Email;
+        this.loginUserName = user.d.Email; //'veerender.kumar-e@maf.ae';//
       }
-      //this.service.getEmployee(this.loginUserName).subscribe((res) => {
-       // if (res != null && res != '') {
-         // let users = res as any;
-         // const c: any = users.d.results[0] as [];
-          let user_role = 'Super Admin'; //c.Role;
+      this.service.getEmployee(this.loginUserName).subscribe((res) => {
+       if (res != null && res != '') {
+        
+         let users = res as any;
+         const c: any = users.d.results[0] as [];
+          let user_role = c.Role; //'Super Admin'; //
           if (user_role != null && user_role.length > 0) {
             if (user_role == 'Super Admin') {
               this.isSuperAdmin = true;
@@ -261,8 +262,8 @@ export class AdminApprovalComponent {
             else
               this.router.navigateByUrl("/dashboard/Booking");
           }
-       // }
-     // });
+       }
+     });
     });
   }
 

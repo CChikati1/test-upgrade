@@ -213,12 +213,12 @@ export class BookingComponent {
   }
 
   getUserName() {
-   // this.service.getUserName().subscribe(res => {
-      // if (res != null && res != "") {
-      //   let user = res as any;
-        //this.loginUserName = 'charles.awad@maf.ae'; user.d.Email;
-        this.loginUserName ='veerender.kumar-e@maf.ae';// user.d.Email;
-     // }
+   this.service.getUserName().subscribe(res => {
+      if (res != null && res != "") {
+        let user = res as any;
+       // this.loginUserName = 'charles.awad@maf.ae'; user.d.Email;
+        this.loginUserName = user.d.Email; //'veerender.kumar-e@maf.ae';//
+     }
       this.getDataUsers();
       this.getDataCurrency();
       this.GetVendorData();
@@ -226,11 +226,11 @@ export class BookingComponent {
       this.GetProjectValue();
       this.GetPaymentTerms();
       this.GetPoetData(this.searchYear.controls["year"].value);
-      // this.service.getEmployee(this.loginUserName).subscribe(res => {
-      //   if (res != null && res != '') {
-          // let users = res as any;
-          // const c: any = users.d.results[0] as [];
-          let user_role = 'Super Admin';// c.Role;
+       this.service.getEmployee(this.loginUserName).subscribe(res => {
+        if (res != null && res != '') {
+          let users = res as any;
+          const c: any = users.d.results[0] as [];
+          let user_role =  c.Role; //'Super Admin';//
           if (user_role != null && user_role.length > 0) {
             if (user_role == 'Super Admin') {
               this.isAdmin = false;
@@ -246,11 +246,11 @@ export class BookingComponent {
               this.isUser = true;
             }
           }
-       // }
+        }
         this.GetData(true, this.searchYear.controls["year"].value);
         setInterval(() => { this.refreshBBData(); }, 360000);
-     // });
-   // });
+      });
+    });
   }
 
   refreshBBData() {
@@ -354,7 +354,7 @@ export class BookingComponent {
   changedProjectValue(e: any): void {
     this.projectTypeDisabled = true;
     this.dataProjectTypes = [];
-    this.service.getProjectTypes(e.text).subscribe(res => {
+    this.service.getProjectTypes(e.id).subscribe(res => {
       let objProjectTypes = res as any[];
       let other:any = [];
       objProjectTypes.map(item => { return { id: item.flexValue, text: item.description }; }).forEach(item => other.push(item));
@@ -520,11 +520,10 @@ export class BookingComponent {
   }
 
   public changedvendor(e: any): void {
-    this.selected = e.text;
+    this.selected = e.id;
     let vendorSite = new VendorSite();
-    vendorSite.vendorID = e.text;
+    vendorSite.vendorID = e.id;
     vendorSite.currencyCode = this.bbfForm.value.currency;
-
     this.GetVendorDataSites(vendorSite);
   }
 
@@ -674,27 +673,27 @@ export class BookingComponent {
 
   createFormUser() {
     this.bbLinesForm = this.frmbuilder.group({
-      level1: [],
-      level2: [],
-      level3: [],
-      level4: [],
-      allocatedBudget: [],
-      availableActual: [],
-      chargeAccount: [],
+      level1: [''],
+      level2: [''],
+      level3: [''],
+      level4: [''],
+      allocatedBudget: [''],
+      availableActual: [''],
+      chargeAccount: [''],
       dummyPoetCheck: [false],
-      availableBudget: [],
-      bbheaderId: [],
-      creadtedBy: [],
-      lineAmount: [],
-      UserEndDate: [],
-      nextYearBBAmount: [],
+      availableBudget: [''],
+      bbheaderId:[''],
+      creadtedBy: [''],
+      lineAmount: [''],
+      UserEndDate: [''],
+      nextYearBBAmount: [''],
       poetNumber: ["", Validators.required],
       projectName: ["", Validators.required],
       quantity: ["1", Validators.required],
       unitPrice: ["0", Validators.required],
       uom: ["Each", Validators.required],
-      updateDate: [],
-      updatedBy: [],
+      updateDate: [''],
+      updatedBy: [''],
       dailyfile: [""],
       HoldingPercentage: [0],
       VenturesPercentage: [0],
@@ -705,11 +704,13 @@ export class BookingComponent {
       airTicket: [0],
       mealsEntertainment: [0],
       generalExpenses: [0],
-      lineDescription: []
+      lineDescription: ['']
     });
+    if(this.bbLinesForm){
     this.bbLinesForm.controls["chargeAccount"].setValue("NA");
     this.bbLinesForm.controls["dummyPoetCheck"].setValue(false);
-    this.bbLinesForm.invalid == false;
+     }
+     this.bbLinesForm.invalid == false;
     this.enableUserAdd = "APPLY";
     this.enableUserEdit = false;
     this.poetUserID = 0;
@@ -1362,7 +1363,6 @@ export class BookingComponent {
   fnAction() {
     //$(".buttons-excel").trigger("click");
     let datas:any = [];
-    console.log(this.objPoets)
     this.objPoets.forEach((item:any) => {
       let data = {
         'Booking Number': item.id,
@@ -1428,24 +1428,24 @@ export class BookingComponent {
     this.modaltitle = "CREATE A BOOKING REQUEST";
     this.bookingMasterID = 0;
     this.bbfForm = this.fb.group({
-      bbNumber: [],
-      bbDate: [],
+      bbNumber: [''],
+      bbDate: [''],
       bbStatus: ["Draft"],
       currency: ["AED", Validators.required],
       exchangeRate: ["1", Validators.required],
       exchangeRateType: ["Corporate"],
-      exchangeRateDate: [],
+      exchangeRateDate: [''],
       requestedBy: ["", Validators.required],
       justification: ["", Validators.required],
       poRequired: ["PO", Validators.required],
-      totalAmount: [],
-      vendorId: [],
-      vendorSiteId: [],
-      vendorName: [],
-      vendorSiteName: [],
+      totalAmount: [''],
+      vendorId: [''],
+      vendorSiteId: [''],
+      vendorName: [''],
+      vendorSiteName: [''],
       budgetStatus: ["BUDGETED", Validators.required],
       lineType: ["Fixed Price Services", Validators.required],
-      needByDate: [],
+      needByDate: [''],
       projectType: ["BUSINESS AS USUAL", Validators.required],
       JustifyEmergency: [""],
       justificationPaymentTerms: [""],
@@ -1463,7 +1463,10 @@ export class BookingComponent {
       lineJustification: ["", Validators.required]
     });
 
+    if(this.bbfForm){
+    
     let datepipe = new DatePipe("en-US");
+
     this.bbfForm.controls["bbDate"].setValue(
       datepipe.transform(new Date(), "yyyy-MM-dd")
     );
@@ -1486,6 +1489,7 @@ export class BookingComponent {
       day: dd
     });
     this.selectedCurreny = this.bbfForm.value.currency;
+  }
     this.isBtnEnabled = true;
     this.isBtnLater = true;
     this.objBudgetAttachments = [];

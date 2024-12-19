@@ -84,8 +84,8 @@ export class ApprovalComponent implements OnInit {
   }
 
   getMyPendingApprovals() {
-    //this.service.myPendingApproval(this.loginUserName.toLocaleLowerCase()).subscribe((res) => {
-    this.service.myPendingApproval('charles.awad@maf.ae').subscribe((res) => {
+    this.service.myPendingApproval(this.loginUserName.toLocaleLowerCase()).subscribe((res) => {
+   // this.service.myPendingApproval('charles.awad@maf.ae').subscribe((res) => {
       if (res != null && res != '') {
         let pendingApproval = res as any;
         this.objPendingApproval = pendingApproval;

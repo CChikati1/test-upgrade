@@ -72,13 +72,13 @@
   </div>
 
   <!-- Navigation -->
-  <ul *ngIf="isSuperAdmin && showDashboardLinks()" class="nav navbar-nav ml-auto">
+  <ul *ngIf="isSuperAdmin && showDashboardLinks() " class="nav navbar-nav ml-auto">
     <li class="nav-item px-3"><a class="nav-link lidashboard" href="/dashboard">Dashboard</a></li>
     <li class="nav-item px-3"><a class="nav-link liSetup" href="/dashboard/Setup">Budget Setup</a></li>
     <li class="nav-item px-3"><a class="nav-link liMonth" href="/dashboard/Month">Budget Schedule</a></li>
     <li class="nav-item px-3"><a class="nav-link liBooking" href="/dashboard/Booking">Budget Booking</a></li>
     <li class="nav-item px-3"><a class="nav-link liBudgetoverview" href="/dashboard/Budgetoverview">Budget Overview</a></li>
-    <li class="nav-item px-3"><a class="nav-link liAdminApproval" routerLink="/dashboard/AdminApproval">Admin</a></li>
+    <li class="nav-item px-3"><a class="nav-link liAdminApproval" href="/dashboard/AdminApproval">Admin</a></li>
     <!-- <li class="nav-item px-3"><a class="nav-link" routerLink="/dashboard/Datatable">Datatable</a></li> -->
   </ul>
 
