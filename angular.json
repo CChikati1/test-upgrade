@@ -35,13 +35,16 @@
             "styles": [
               "src/styles.scss",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/@coreui/icons/css/all.min.css",
-              "node_modules/@coreui/coreui/scss/coreui.scss",
               "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
-              "node_modules/datatables.net-dt/css/jquery.dataTables.css",
-              
-              "node_modules/ngx-toastr/toastr.css",
+              "node_modules/@coreui/icons/css/all.css",
+              "node_modules/@coreui/coreui/scss/coreui.scss",
+              "node_modules/font-awesome/css/font-awesome.css",
+               "node_modules/simple-line-icons/css/simple-line-icons.css",
               "node_modules/@ng-select/ng-select/themes/default.theme.css",
+              "node_modules/datatables.net-dt/css/jquery.dataTables.css",
+              "node_modules/select2/dist/css/select2.min.css",
+              "node_modules/ngx-toastr/toastr.css",
+              
               "node_modules/datatables.net-buttons-dt/css/buttons.dataTables.css",
               "node_modules/datatables.net-responsive-dt/css/responsive.dataTables.css",
               "node_modules/datatables.net-fixedcolumns-dt/css/fixedColumns.dataTables.css"
@@ -136,8 +139,7 @@
             "styles": [
               "src/styles.scss",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/@coreui/icons/css/all.min.css",
-              "node_modules/@coreui/coreui/scss/coreui.scss",
+             
               "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
               "node_modules/datatables.net-dt/css/jquery.dataTables.css",
               "node_modules/ngx-toastr/toastr.css",

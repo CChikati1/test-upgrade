@@ -19,7 +19,11 @@
                 bindValue="id"
                   formControlName="year"
                 placeholder="Please Select"
-                (change)="changedYear($event)">
+                (change)="changedYear($event)"
+                class ="ddlUser"
+                [clearable]="false"
+                [ngStyle]="{ width: '80px' }"
+                >
               </ng-select>
 
               <!-- <ng-select2 style="border:0px !important;" class="ddlUser" id="ddlselectYear" formControlName="year"

@@ -19,8 +19,8 @@ export class BudgetBooking {
     approveRejectStatus:boolean;
     lineType: string;
     budgetStatus: string;
-    vendorId: number; 
-    vendorSiteId: number; 
+    vendorId: string; //number; 
+    vendorSiteId: string; //number; 
     needByDate: string;
     projectType: string; 
     description: string;  

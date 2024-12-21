@@ -2,11 +2,24 @@
 @import "./scss/variables";
 
 // Import styles
-// @import "~@coreui/coreui/scss/coreui";
+//@import "~@coreui/coreui/scss/coreui";
+//@import "/node_modules/@coreui/coreui/scss/coreui";
+
+//@import '~flag-icon-css/css/flag-icon.css';
 
 // If you want to add something do it here
 @import "./scss/custom";
 
+.tabset .nav-link {
+    color: #8a1538 !important; 
+  }
+
+  .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected, .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected.ng-option-marked
+
+ {
+    background-color: #5897fb !important;
+    color: #fff !important;
+}
 
 .hide{
     display: none !important;
@@ -10781,7 +10794,11 @@ input[type=button].btn-block,input[type=reset].btn-block,input[type=submit].btn-
 }
 
 .nav-pills .nav-link {
-    border-radius: .25rem
+    border-radius: .25rem;
+    color: #8a1538;  
+}
+.nav-pills .nav-link:hover {
+    color: rgba(0,0,0,.7);
 }
 
 .nav-pills .nav-link.active,.nav-pills .show>.nav-link {
@@ -22478,8 +22495,16 @@ a.bg-gray-900:focus,a.bg-gray-900:hover,button.bg-gray-900:focus,button.bg-gray-
     clear: both;
     zoom:1}
 
+    
+.nav-link a,
+.nav-link a:hover,
+.nav-link a:visited {
+  color: #8a1538 !important; 
+}
+
+
 a,a:hover,a:visited {
-    color: #8a1538
+    color: #8a1538 ;
 }
 
 .app-header .navbar-nav {

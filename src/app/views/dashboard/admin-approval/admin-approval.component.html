@@ -18,7 +18,8 @@
                       [items]="dataYear" formControlName="year"
                     placeholder="Please Select"
                     (change)="changedYear($event)"
-                    [ngStyle]="{ width: '160px' }">
+                    [clearable]="false"
+  [ngStyle]="{ width: '80px' }" >
                   </ng-select>
                   <!-- <ng-select2 style="border:0px !important;" class="ddlUser" id="ddlselectYear" formControlName="year"
                     (valueChanged)="changedYear($event)" [placeholder]="'Please select'" [width]="80px">
@@ -526,11 +527,11 @@
               <div class="col-md-2">
                 <div class="form-group" >
                   <label style="width:100%" class="control-label">Year</label>
-                  <ng-select
-  formControlName="year"
-  placeholder="Please select Year">
-  <ng-option *ngFor="let year of years" [value]="year">{{ year }}</ng-option>
-</ng-select>
+                  <ng-select  [clearable]="false" [ngStyle]="{ width: '160px' }"
+                    formControlName="year"
+                    placeholder="Please select Year">
+                       <ng-option *ngFor="let year of years" [value]="year">{{ year }}</ng-option>
+                      </ng-select>
                   <!-- <ng-select2 formControlName="year"  [width]="160px"
                      [placeholder]="'Please select Year'">
                      <option value="2021">2021</option>
@@ -619,7 +620,7 @@
                   <div class="col-sm-12 col-md-3">
                     <div class="form-group">
                       <label style="width:100%" class="control-label">Approval For</label>
-                      <ng-select [ngStyle]="{ width: '240px' }" formControlName="approverID" bindLabel="text"
+                      <ng-select  [ngStyle]="{ width: '240px' }" formControlName="approverID" bindLabel="text"
                       bindValue="id"  [items]="dataPendingBBApproval"
                         placeholder="Please select"> </ng-select>
                       <!-- <ng-select2 [width]="240px" formControlName="approverID" [data]="dataPendingBBApproval"

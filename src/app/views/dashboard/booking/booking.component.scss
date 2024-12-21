@@ -1,0 +1,12 @@
+tbody th,
+table.dataTable tbody td {
+  padding: 2px 5px !important;
+}
+table.dataTable.nowrap th {
+  white-space: normal;
+  //  width:200px !important;
+}
+table.dataTable.nowrap td {
+  white-space: normal;
+  //  width:200px !important;
+}

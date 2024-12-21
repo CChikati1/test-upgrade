@@ -17,7 +17,9 @@ import { NgxSpinnerModule } from 'ngx-spinner';
   styleUrl: './default-layout.component.scss'
 })
 export class DefaultLayoutComponent implements OnDestroy {
+  activeLink: string = ''; 
 
+  
   navbarBrandFull = {
     
     src: 'https://majidalfuttaim.sharepoint.com/sites/MAFApps/BudgetTracker/assets/Majid Al Futtaim Logo.png',
@@ -55,7 +57,9 @@ export class DefaultLayoutComponent implements OnDestroy {
     }
   }
 
-  
+  setActive(link: string) {
+    this.activeLink =  link; 
+  }
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
     this.element = this.document.body;

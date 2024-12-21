@@ -20,7 +20,9 @@
                 bindValue="id"
                  formControlName="year"
                 placeholder="Please Select"
-                (change)="changedYear($event)">
+                (change)="changedYear($event)" 
+                [clearable]="false"
+                [ngStyle]="{ width: '80px' }">
               </ng-select>
 
               

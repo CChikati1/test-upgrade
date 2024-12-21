@@ -22,12 +22,15 @@
                   
 
                     <ng-select
+                    [clearable]="false"
   [items]="dataYear"
   bindLabel="text"
   bindValue="id"
    formControlName="year"
   placeholder="Please Select"
-  (change)="changedYear($event)">
+  (change)="changedYear($event)" 
+  [ngStyle]="{ width: '80px' }"
+  >
 </ng-select>
                  
                 </div>
@@ -36,35 +39,60 @@
               <div class="col-sm-12 col-md-1">
                 <div class="form-group">
                   <label style="width:100%" class="control-label">Month</label>
-                    <ng-select   bindLabel="text"
-  bindValue="id" formControlName="month" [items]="dataMonth" (change)="changedMonth($event)" placeholder="Please Select">                      
+                    <ng-select   
+                    [clearable]="false"
+                    bindLabel="text"
+                    bindValue="id" 
+                    formControlName="month" 
+                    [items]="dataMonth" 
+                    (change)="changedMonth($event)" 
+                    placeholder="Please Select"
+                    [ngStyle]="{ width: '70px' }">                      
                     </ng-select>
                 </div>
               </div>
               <div class="col-sm-12 col-md-3">
                 <div class="form-group">
                   <label style="width:100%" class="control-label">Department</label>
-                  <ng-select   bindLabel="text"
-  bindValue="id" formControlName="department"  [items]="dataDepartment"
-                    (change)="changedDepartment($event)" placeholder="Please Select">
+                  <ng-select  
+                  [clearable]="false"
+                   bindLabel="text"
+                    bindValue="id" 
+                    formControlName="department"  
+                    [items]="dataDepartment"
+                    (change)="changedDepartment($event)" 
+                    placeholder="Please Select"
+                    [ngStyle]="{ width: '160px' }">
                   </ng-select>
                 </div>
               </div>
               <div class="col-sm-12 col-md-3">
                 <div class="form-group">
                   <label style="width:100%" class="control-label">Budget Type</label>
-                  <ng-select   bindLabel="text"
-  bindValue="id" formControlName="budgetType"  [items]="dataBudgetType"
-                    (change)="changedBudgetType($event)" placeholder="Please Select">
+                  <ng-select  
+                  [clearable]="false"
+                   bindLabel="text"
+                    bindValue="id" 
+                    formControlName="budgetType" 
+                     [items]="dataBudgetType"
+                    (change)="changedBudgetType($event)" 
+                    placeholder="Please Select"
+                    [ngStyle]="{ width: '160px' }">
                   </ng-select>
                 </div>
               </div>
               <div class="col-sm-12 col-md-3">
                 <div class="form-group">
                   <label style="width:100%" class="control-label">Project Category</label>
-                  <ng-select   bindLabel="text"
-  bindValue="id" formControlName="projectCategory"  [items]="dataProjectCategory"
-                    (change)="changedProjectCategory($event)" placeholder="Please Select">
+                  <ng-select  
+                  [clearable]="false"
+                   bindLabel="text"
+                  bindValue="id" 
+                  formControlName="projectCategory"  
+                  [items]="dataProjectCategory"
+                    (change)="changedProjectCategory($event)" 
+                    placeholder="Please Select"
+                    [ngStyle]="{ width: '160px' }">
                   </ng-select>
                 </div>
               </div>
@@ -309,7 +337,7 @@
           </div>
         </div>
       </tab>
-      <tab heading="My Approvals">
+      <tab heading="My Approvals" style="color: #8a1538;">
         <div class="tblHtscroll">
           <div class="row">
             <div class="col-md-12">

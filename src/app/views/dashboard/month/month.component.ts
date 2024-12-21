@@ -310,7 +310,7 @@ export class MonthComponent implements OnInit,AfterViewInit {
     this.angForm.controls['October'].setValue(Monthpoet.octBudget.toFixed(2));
     this.angForm.controls['November'].setValue(Monthpoet.novBudget.toFixed(2));
     this.angForm.controls['December'].setValue(Monthpoet.decBudget.toFixed(2));
-    this.modalService.open(content, { size: 'lg', centered: true });
+    this.modalService.open(content, { size: 'lg', centered: true,backdrop:false });
     this.chRef.detectChanges();
   }
 
@@ -612,7 +612,7 @@ export class MonthComponent implements OnInit,AfterViewInit {
 
   open(content:any) {
     this.createForm();
-    this.modalService.open(content, { size: 'lg', centered: true });
+    this.modalService.open(content, { size: 'lg', centered: true,backdrop:false });
   }
 }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild, ChangeDetectorRef, SecurityContext, Inject, PLATFORM_ID, Pipe } from "@angular/core";
+import { Component, OnInit, ElementRef, ViewChild, ChangeDetectorRef, SecurityContext, Inject, PLATFORM_ID, Pipe, ViewEncapsulation } from "@angular/core";
 import { Router } from "@angular/router";
 import { NgbModalConfig, NgbModal, NgbDateStruct, NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormBuilder, FormGroup, Validators, NgForm, ReactiveFormsModule, FormsModule } from "@angular/forms";
@@ -21,6 +21,8 @@ import { ExcelService } from "../../../excel.service";
 import { NgbdDatepickerPopup} from '../datepicker-popup';
 import { TooltipModule  } from 'ngx-bootstrap/tooltip';
 
+
+
 declare const $:any;
 @Component({
   selector: 'app-booking',
@@ -30,7 +32,9 @@ declare const $:any;
     HighchartsChartModule,CommonModule,FormsModule,NgbModule,TooltipModule,DataTablesModule],
   templateUrl: './booking.component.html',
   providers:[ApiService,ExcelService,ToastrService,NgbModalConfig,NgbdDatepickerPopup, NgbModal, {provide:SweetAlert2LoaderService,useClass:SweetAlert2LoaderService }],
-  styleUrl: './booking.component.scss'
+  styleUrl: './booking.component.scss',
+  encapsulation: ViewEncapsulation.None,
+
 })
 export class BookingComponent {
 
@@ -185,6 +189,18 @@ export class BookingComponent {
   //     console.log(dtInstance)
   //   );
   // }
+  ngAfterViewInit() {
+    if(isPlatformBrowser(this.platformId)){
+    import('jquery').then((jQueryModule) => {
+      const $=jQueryModule.default;
+      $('a').removeClass('liactive');
+     $('.liBooking').addClass('liactive');
+     $('.modal').css('overflow-y', 'auto');
+      // jQuery is now available for use in the browser
+     console.log('jQuery loaded in the browser');
+    });
+  }
+  }
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
@@ -389,11 +405,13 @@ export class BookingComponent {
   }
 
   saveData(angForm: any, isSubmitted: boolean) {
+    debugger;
     this.isLoader = true;
     if (this.bbLinesForm.valid) {
       this.addBudgetLines(this.bbLinesForm);
     }
     this.addBudget(angForm);
+    console.log(this.objBudgetBooking);
     this.saveDatatoBudgetBooking(this.objBudgetBooking, isSubmitted);
   }
 
@@ -961,7 +979,7 @@ export class BookingComponent {
       this.bbfForm.value.goodsServicesDelivered != " " &&
       this.bbfForm.value.invoiceReceived != " " &&
       this.bbfForm.value.procurementSourcing != " " &&
-      this.bbfForm.value.vendorSiteId  > 0 
+      this.bbfForm.value.vendorSiteId  > '0' 
     ) {
       ret = false;
     }
@@ -1035,24 +1053,25 @@ export class BookingComponent {
     });
   }
 
-  addBudget(bbfForm: NgForm): BudgetBooking {
+  addBudget(bbfForm: any): BudgetBooking {
+    console.log(bbfForm);
     this.objBudgetBooking = new BudgetBooking();
     this.objBudgetBooking.createdBy = this.loginUserName;
     this.objBudgetBooking.lastUpdatedBy = this.loginUserName;
-    this.objBudgetBooking.currency = bbfForm.value.currency;
-    this.objBudgetBooking.exchangeRateType = bbfForm.value.exchangeRateType;
-    if (bbfForm.value.exchangeRateDate != null) {
+    this.objBudgetBooking.currency = bbfForm.currency;
+    this.objBudgetBooking.exchangeRateType = bbfForm.exchangeRateType;
+    if (bbfForm.exchangeRateDate != null) {
       this.objBudgetBooking.exchangeRateDate =
-        bbfForm.value.exchangeRateDate.year +
+        bbfForm.exchangeRateDate.year +
         "-" +
         this.pad(Number(this.bbfForm.value.exchangeRateDate.month), 2) +
         "-" +
         this.pad(Number(this.bbfForm.value.exchangeRateDate.day), 2);
     }
-    this.objBudgetBooking.exchangeRate = bbfForm.value.exchangeRate;
-    this.objBudgetBooking.requestedBy = bbfForm.value.requestedBy;
-    this.objBudgetBooking.poRequired = bbfForm.value.poRequired;
-    this.objBudgetBooking.description = bbfForm.value.justification;
+    this.objBudgetBooking.exchangeRate = bbfForm.exchangeRate;
+    this.objBudgetBooking.requestedBy = bbfForm.requestedBy;
+    this.objBudgetBooking.poRequired = bbfForm.poRequired;
+    this.objBudgetBooking.description = bbfForm.justification;
     this.objBudgetBooking.justification = this.additionalInfoForm.value.lineJustification;
     this.objBudgetBooking.bbStatus = "Draft";
     if (this.bbfForm.value.needByDate == null) {
@@ -1185,6 +1204,7 @@ export class BookingComponent {
     let budgetPoetId = new BudgetPoetId();
     if (poet.id > 0) {
       budgetPoetId.id = poet.id;
+      console.log(poet);
       this.service.sendApproval(budgetPoetId).subscribe(res => {
         let result: any;
         result = res;
@@ -1262,6 +1282,12 @@ export class BookingComponent {
   GetData(isonint: boolean, year: string) {
     this.isLoader = true;
     this.service.getBudgetbyUser(this.loginUserName, this.isSuperAdmin, year).subscribe(res => {
+      console.log(res);
+      if (!isonint) {
+        const table: any = $("#tblbooking").DataTable();
+        table.destroy();
+        this.chRef.detectChanges();
+      }
       if (isonint) {
         this.objPoets = res as BudgetBooking[];
         this.chRef.detectChanges();
@@ -1306,9 +1332,13 @@ export class BookingComponent {
       }
   let ele1=$("#tblbooking thead tr:eq(0) th") as JQuery<HTMLElement>;
   ele1.each(function (i:any) {
-        $("input", this).on("keyup change", function () {
-          if (table.column(i).search() !== ele1.val) {
-            table.column(i).search(ele1.val).draw();
+        $("input", this).on("keyup change", (event:any)=> {
+
+          if (table.column(i).search() !== event.target.value) {
+            table
+              .column(i)
+              .search(event.target.value)
+              .draw();
           }
         });
       });
@@ -1317,6 +1347,7 @@ export class BookingComponent {
         dom: "Blfrtip",
         destroy: true,
         pageLength: 100,
+        searching:true,
         paging: false,
         order: [[1, "desc"]],
         buttons: [
@@ -1355,7 +1386,11 @@ export class BookingComponent {
         //       });
         //     });
         // }
+       
       });
+      this.objPoets.forEach(a=>{
+        a.attachment='1';
+      })
       this.isLoader = false;
     });
   }
@@ -1417,6 +1452,7 @@ export class BookingComponent {
       let other:any = [];
       this.objCurrency.map((item:any) => { return { id: item.flexValue, text: item.description }; }).forEach((item:any) => other.push(item));
       this.dataCurrency = other;
+      //console.log(this.dataCurrency);
     });
   
   }
@@ -1528,10 +1564,10 @@ export class BookingComponent {
       this.createFormUser();
       let objPoetUser: BudgetBookingLines[] = [];
       this.objPoetUserData = objPoetUser;
-      this.modalService.open(content, { size: "lg", centered: true });
+      this.modalService.open(content, { size: "lg", centered: true , backdrop: false });
     }
     else {
-      this.modalService.open(StopCreatingBBF, { size: "lg", centered: true });
+      this.modalService.open(StopCreatingBBF, { size: "lg", centered: true , backdrop: false });
     }
   }
 
@@ -1540,7 +1576,7 @@ export class BookingComponent {
     this.objPoetStatusData = [];
     this.service.getApprovalList(id).subscribe(res => {
       this.objPoetStatusData = res;
-      this.modalService.open(content1, { size: "lg", centered: true });
+      this.modalService.open(content1, { size: "lg", centered: true , backdrop: false });
     });
   }
 
@@ -1648,7 +1684,8 @@ export class BookingComponent {
     this.getAllAttachements();
     this.getPoetUserData();
     this.isLoader = false;
-    this.modalService.open(content, { size: "lg", centered: true });
+    this.modalService.open(content, { size: "lg", centered: true , backdrop: false
+    });
   }
 
   editBookingLines(poet:any) {

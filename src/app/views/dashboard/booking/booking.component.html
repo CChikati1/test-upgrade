@@ -13,6 +13,7 @@
           <div class="col-sm-12 col-md-1">
             <form [formGroup]='searchYear'>
                 <ng-select style="border:0px !important;"
+                [clearable]="false"
                 [items]="dataYear"
                 class="ddlUser" 
                 id="ddlselectYear"
@@ -40,7 +41,7 @@
         <button class="btn  btn-outline-primary" (click)="open(content,StopCreatingBBF)">Create New</button> &nbsp;
         <button type="button" (click)="fnAction()" class="btn  btn-outline-primary">Export</button>
         <br />
-        <table id="tblbooking" class="table table-bordered table-responsive-sm display">
+        <table id="tblbooking"  class="table table-bordered table-responsive-sm display">
           <thead>
             <tr>
               <th style="color:white;" title="Edit Booking" text="Edit or View the saved or submitted Booking">Edit</th>
@@ -93,7 +94,7 @@
               <td class=" text-right">{{ poet.total | number:'1.2-3' }}</td>
               <td class=" text-center">
                 <button *ngIf="poet.bbStatus == 'Draft' &&  poet.total != null && 
-                  poet.vendorId != 0 && 
+                  poet.vendorId != '0' && 
                   toNumber(poet.attachment) > 0 && 
                   poet.procurementSourcing != ' ' &&
                   poet.buyerValue != ' ' &&
