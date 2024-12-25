@@ -22,8 +22,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { SweetAlert2LoaderService, SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { HighchartsChartModule } from 'highcharts-angular';
-import { JwtInterceptor } from '../../_helpers';
-import Swal from 'sweetalert2';
+
 
 declare const $:any;
 @Component({
@@ -312,7 +311,7 @@ export class AdminApprovalComponent {
 
   open(content:any) {
     this.createUserForm();
-    this.modalService.open(content, { size: 'lg', centered: true });
+    this.modalService.open(content, { size: 'lg', centered: true ,backdrop: false});
   }
 
 
@@ -328,7 +327,7 @@ export class AdminApprovalComponent {
     this.userForm.controls['mgrEmail'].setValue(item.mgrEmail);
     this.userForm.controls['teamName'].setValue(item.teamName);
     this.userForm.controls['userName'].setValue(item.userName);
-    this.modalService.open(content, { size: 'lg', centered: true });
+    this.modalService.open(content, { size: 'lg', centered: true , backdrop: false});
   }
 
 
@@ -664,7 +663,7 @@ export class AdminApprovalComponent {
   }
 
   splitPO(item:any, content:any) {
-    this.modalService.open(content, { size: 'lg', centered: true });
+    this.modalService.open(content, { size: 'lg', centered: true , backdrop: false});
   }
 
   reducePO(poet:any, content:any) {
@@ -672,7 +671,7 @@ export class AdminApprovalComponent {
     this.clearPOAdjustmentsForm();
     this.addPoLineClear();
     this.getPoetUserLinesData(poet);
-    this.modalService.open(content, { size: 'lg', centered: true });
+    this.modalService.open(content, { size: 'lg', centered: true, backdrop: false });
   }
 
   changeYear(item:any, content:any) {
@@ -681,7 +680,7 @@ export class AdminApprovalComponent {
       remarks: [""]
     });
     this.poetMasterID = item.id;
-    this.modalService.open(content, { size: 'lg', centered: true });
+    this.modalService.open(content, { size: 'lg', centered: true, backdrop: false });
   }
 
   UpdateChangeYear() {

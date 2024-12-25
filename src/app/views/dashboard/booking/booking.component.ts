@@ -270,6 +270,9 @@ export class BookingComponent {
   }
 
   refreshBBData() {
+    const table: any = $("#tblbooking").DataTable();
+    table.destroy();
+    this.chRef.detectChanges();
     this.GetData(false, this.searchYear.controls["year"].value);
   }
 
@@ -406,12 +409,16 @@ export class BookingComponent {
 
   saveData(angForm: any, isSubmitted: boolean) {
     debugger;
+    console.log(this.bbLinesForm);
     this.isLoader = true;
     if (this.bbLinesForm.valid) {
       this.addBudgetLines(this.bbLinesForm);
     }
     this.addBudget(angForm);
     console.log(this.objBudgetBooking);
+    const table: any = $("#tblbooking").DataTable();
+    table.destroy();
+    this.chRef.detectChanges();
     this.saveDatatoBudgetBooking(this.objBudgetBooking, isSubmitted);
   }
 
@@ -430,11 +437,19 @@ export class BookingComponent {
       deleteBudgetBooking.bbHeaderID = this.bookingMasterID;
       deleteBudgetBooking.comments = '';
       this.service.UpdateDraftBB(deleteBudgetBooking).subscribe((res) => {
+        const table: any = $("#tblbooking").DataTable();
+        table.destroy();
+        this.chRef.detectChanges();
         this.saveDatatoBudgetBooking(this.objBudgetBooking, true);
       })
     }
     else
+    {
+      const table: any = $("#tblbooking").DataTable();
+      table.destroy();
+      this.chRef.detectChanges();
       this.saveDatatoBudgetBooking(this.objBudgetBooking, false);
+    }
   }
 
   public changedProject(e: any): void {
@@ -979,7 +994,7 @@ export class BookingComponent {
       this.bbfForm.value.goodsServicesDelivered != " " &&
       this.bbfForm.value.invoiceReceived != " " &&
       this.bbfForm.value.procurementSourcing != " " &&
-      this.bbfForm.value.vendorSiteId  > '0' 
+      this.bbfForm.value.vendorSiteId  > 0 
     ) {
       ret = false;
     }
@@ -1054,24 +1069,23 @@ export class BookingComponent {
   }
 
   addBudget(bbfForm: any): BudgetBooking {
-    console.log(bbfForm);
     this.objBudgetBooking = new BudgetBooking();
     this.objBudgetBooking.createdBy = this.loginUserName;
     this.objBudgetBooking.lastUpdatedBy = this.loginUserName;
-    this.objBudgetBooking.currency = bbfForm.currency;
-    this.objBudgetBooking.exchangeRateType = bbfForm.exchangeRateType;
-    if (bbfForm.exchangeRateDate != null) {
+    this.objBudgetBooking.currency = bbfForm.value.currency;
+    this.objBudgetBooking.exchangeRateType = bbfForm.value.exchangeRateType;
+    if (bbfForm.value.exchangeRateDate != null) {
       this.objBudgetBooking.exchangeRateDate =
-        bbfForm.exchangeRateDate.year +
+        bbfForm.value.exchangeRateDate.year +
         "-" +
         this.pad(Number(this.bbfForm.value.exchangeRateDate.month), 2) +
         "-" +
         this.pad(Number(this.bbfForm.value.exchangeRateDate.day), 2);
     }
-    this.objBudgetBooking.exchangeRate = bbfForm.exchangeRate;
-    this.objBudgetBooking.requestedBy = bbfForm.requestedBy;
-    this.objBudgetBooking.poRequired = bbfForm.poRequired;
-    this.objBudgetBooking.description = bbfForm.justification;
+    this.objBudgetBooking.exchangeRate = bbfForm.value.exchangeRate;
+    this.objBudgetBooking.requestedBy = bbfForm.value.requestedBy;
+    this.objBudgetBooking.poRequired = bbfForm.value.poRequired;
+    this.objBudgetBooking.description = bbfForm.value.justification;
     this.objBudgetBooking.justification = this.additionalInfoForm.value.lineJustification;
     this.objBudgetBooking.bbStatus = "Draft";
     if (this.bbfForm.value.needByDate == null) {
@@ -1158,6 +1172,9 @@ export class BookingComponent {
               if (result === true) {
                 this.bbfForm.reset();
                 this.modalService.dismissAll();
+                const table: any = $("#tblbooking").DataTable();
+                table.destroy();
+                this.chRef.detectChanges();
                 this.refreshBBData();
               } else {
                 this.toastr.error(result, "Error Occured", {
@@ -1174,6 +1191,9 @@ export class BookingComponent {
           });
         }
         else {
+          const table: any = $("#tblbooking").DataTable();
+    table.destroy();
+    this.chRef.detectChanges();
           this.refreshBBData();
           this.delay(1000).then(any => {
             setTimeout(() => {
@@ -1209,6 +1229,9 @@ export class BookingComponent {
         let result: any;
         result = res;
         if (result === true) {
+          const table: any = $("#tblbooking").DataTable();
+    table.destroy();
+    this.chRef.detectChanges();
           this.refreshBBData();
           this.modalService.dismissAll();
         } else {
@@ -1242,6 +1265,9 @@ export class BookingComponent {
         let result: any;
         result = res;
         if (result.flag == true) {
+          const table: any = $("#tblbooking").DataTable();
+    table.destroy();
+    this.chRef.detectChanges();
           this.refreshBBData();
           this.modalService.dismissAll();
         } else {
@@ -1251,6 +1277,9 @@ export class BookingComponent {
             progressAnimation: "decreasing",
             easeTime: 300
           });
+          const table: any = $("#tblbooking").DataTable();
+    table.destroy();
+    this.chRef.detectChanges();
           this.refreshBBData();
         }
       });
@@ -1258,12 +1287,16 @@ export class BookingComponent {
   }
 
   Delete(poet:any, comments:any) {
+    console.log(poet);
     this.isLoader = true;
     let objDeleteBudgetBooking = new DeleteBudgetBooking();
-    if (poet.id > 0) {
+    if (Number(poet.id) > 0) {
       objDeleteBudgetBooking.bbHeaderID = poet.id;
       objDeleteBudgetBooking.comments = comments;
       this.service.deleteBB(objDeleteBudgetBooking).subscribe(res => {
+        const table: any = $("#tblbooking").DataTable();
+    table.destroy();
+    this.chRef.detectChanges();
         this.refreshBBData();
         this.modalService.dismissAll();
       });
@@ -1475,8 +1508,8 @@ export class BookingComponent {
       justification: ["", Validators.required],
       poRequired: ["PO", Validators.required],
       totalAmount: [''],
-      vendorId: [''],
-      vendorSiteId: [''],
+      vendorId: [0],
+      vendorSiteId: [0],
       vendorName: [''],
       vendorSiteName: [''],
       budgetStatus: ["BUDGETED", Validators.required],
@@ -1684,6 +1717,7 @@ export class BookingComponent {
     this.getAllAttachements();
     this.getPoetUserData();
     this.isLoader = false;
+    console.log(this.bbfForm);
     this.modalService.open(content, { size: "lg", centered: true , backdrop: false
     });
   }

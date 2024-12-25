@@ -34,15 +34,15 @@ export class ApiService {
   ) { }
 
   public getMasterData() {
-    return this.http.get("https://mafhbudgettrackerapidev.maf.ae/api/common/v1/getMasterData" );
+    return this.http.get(this.Root_URL+"common/v1/getMasterData" );
   }
 
   public getFinanceCategories() {
-    return this.http.get("https://mafhbudgettrackerapidev.maf.ae/api/common/v1/getFinanceCategories");
+    return this.http.get(this.Root_URL+"common/v1/getFinanceCategories");
   }
 
   public getUsers() {
-    return this.http.get("https://mafhbudgettrackerapidev.maf.ae/api/common/v1/getUsers");
+    return this.http.get("https://mafhbudgettrackerapi.maf.ae/api/common/v1/getUsers");
   }
   
   getUserName_online() {
@@ -58,9 +58,9 @@ export class ApiService {
 
   savePoet(PoetClass: PoetClass) {
     if (PoetClass.poetId > 0)
-      return this.http.post<PoetClass>("https://mafhbudgettrackerapidev.maf.ae/api/POET/v1/update", PoetClass);
+      return this.http.post<PoetClass>(this.Root_URL+"POET/v1/update", PoetClass);
     else
-      return this.http.post<PoetClass>("https://mafhbudgettrackerapidev.maf.ae/api/POET/v1/save", PoetClass);
+      return this.http.post<PoetClass>(this.Root_URL+"POET/v1/save", PoetClass);
   }
 
   getPoet(year: String, email: String) {
@@ -69,184 +69,184 @@ export class ApiService {
     objGetPoetDTO.year = year;
     objGetPoetDTO.email = email;
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/POET/v1/get", objGetPoetDTO);
+    return this.http.post(this.Root_URL+"POET/v1/get", objGetPoetDTO);
   }
 
   savecmbUsers(cmbUser: cmbUser) {
     
     if (cmbUser.userID > 0)
-      return this.http.post<PoetClass>("https://mafhbudgettrackerapidev.maf.ae/api/cmbUsers/v1/updateCMBUsers", cmbUser);
+      return this.http.post<PoetClass>(this.Root_URL+"cmbUsers/v1/updateCMBUsers", cmbUser);
     else
-      return this.http.post<PoetClass>("https://mafhbudgettrackerapidev.maf.ae/api/cmbUsers/v1/insertCMBUsers", cmbUser);
+      return this.http.post<PoetClass>(this.Root_URL+"cmbUsers/v1/insertCMBUsers", cmbUser);
   }
 
   getcmbUsers() {
     
-    return this.http.get("https://mafhbudgettrackerapidev.maf.ae/api/cmbUsers/v1/getCMBUsers");
+    return this.http.get(this.Root_URL+"cmbUsers/v1/getCMBUsers");
   }
 
   getBudget(year: String) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/getAllBB", year);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/getAllBB", year);
   }
 
   getPendingApproval() {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/PendingApproval", "");
+    return this.http.post(this.Root_URL+"budgetBooking/v1/PendingApproval", "");
   }
 
   createPR(id:any) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/createPR", id);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/createPR", id);
   }
 
   getBBPendingApproval(id:any) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/BBPendingApproval", id);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/BBPendingApproval", id);
   }
 
   getBudgetbyUser(user:any, isAdmin: boolean, year: string) {
     if (isAdmin) {
        
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/getAllBB", year);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/getAllBB", year);
     } else {
       let objBudgetUserYear: BudgetUserYear = new BudgetUserYear();
       objBudgetUserYear.year = year
       objBudgetUserYear.userName = user
        
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/getAllBBbyUser", objBudgetUserYear);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/getAllBBbyUser", objBudgetUserYear);
     }
   }
 
   getBBbyId(bbheaderID:any) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/getBBbyId", bbheaderID);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/getBBbyId", bbheaderID);
   }
 
   getCMBUser(emailAddress:any){
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/common/v1/getCMBUser", emailAddress);
+    return this.http.post(this.Root_URL+"common/v1/getCMBUser", emailAddress);
   }
 
   getApprovalDetails(id:any) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/getApprovalDetails", id);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/getApprovalDetails", id);
   }
 
 
   getCancellationDetails(id:any) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/getCancellationDetails", id);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/getCancellationDetails", id);
   }
 
 
   getBudgetLines(BudgetBooking:any) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/getBBlines", BudgetBooking);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/getBBlines", BudgetBooking);
   }
 
   public saveBudget(BudgetBooking: BudgetBooking) {
     
     if (BudgetBooking.id > 0)
       
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/UpdateDataBB", BudgetBooking);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/UpdateDataBB", BudgetBooking);
     else
        
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/SaveDataBB", BudgetBooking);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/SaveDataBB", BudgetBooking);
   }
 
   public sendApproval(budget:any) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/sendApproval", budget);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/sendApproval", budget);
   }
 
   public getApprovalList(id:any) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/getApprovalList", id);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/getApprovalList", id);
   }
 
   public saveBudgetLines(BudgetBookingLines: BudgetBookingLines) {
     
     if (BudgetBookingLines.id > 0)
       
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/UpdateDataBBLines", BudgetBookingLines);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/UpdateDataBBLines", BudgetBookingLines);
     else
     
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/SaveDataBBLines", BudgetBookingLines);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/SaveDataBBLines", BudgetBookingLines);
   }
 
   public getTeams() {
     
-    return this.http.get("https://mafhbudgettrackerapidev.maf.ae/api/common/v1/getTeamName");
+    return this.http.get(this.Root_URL+"common/v1/getTeamName");
   }
 
   public getVendors() {
-    return this.http.get("https://mafhbudgettrackerapidev.maf.ae/api/common/v1/getVendor");
+    return this.http.get(this.Root_URL+"common/v1/getVendor");
   }
 
   public getAriba() {
-    return this.http.get("https://mafhbudgettrackerapidev.maf.ae/api/common/v1/getAriba");
+    return this.http.get(this.Root_URL+"common/v1/getAriba");
   }
 
   public getPaymentTerms() {
-    return this.http.get("https://mafhbudgettrackerapidev.maf.ae/api/common/v1/getPaymentTerms");
+    return this.http.get(this.Root_URL+"common/v1/getPaymentTerms");
   }
 
   public getProjectValue() {
-    return this.http.get("https://mafhbudgettrackerapidev.maf.ae/api/common/v1/getProjectValue");
+    return this.http.get(this.Root_URL+"common/v1/getProjectValue");
   }
 
   public getProjectTypes(projectValue: string) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/common/v1/getProjectTypes", projectValue);
+    return this.http.post(this.Root_URL+"common/v1/getProjectTypes", projectValue);
   }
 
   public getBuyer(procrumentValue: string) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/common/v1/getBuyer", procrumentValue);
+    return this.http.post(this.Root_URL+"common/v1/getBuyer", procrumentValue);
   }
 
   public getVendorsSites(VendorSite:any) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/common/v1/getVendorSite", VendorSite);
+    return this.http.post(this.Root_URL+"common/v1/getVendorSite", VendorSite);
   }
 
   public getBudgetAmount(BudgetPoetNumber:any) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/common/v1/getBudgetAmount", BudgetPoetNumber);
+    return this.http.post(this.Root_URL+"common/v1/getBudgetAmount", BudgetPoetNumber);
   }
 
   public getCurrency() {
-    return this.http.get("https://mafhbudgettrackerapidev.maf.ae/api/common/v1/getCurrencyCode");
+    return this.http.get(this.Root_URL+"common/v1/getCurrencyCode");
   }
 
   public getCurrencyRate(CurrencyRate:any) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/common/v1/getRate", CurrencyRate);
+    return this.http.post(this.Root_URL+"common/v1/getRate", CurrencyRate);
   }
 
   public saveUserData(user: User) {
     //if (user.id > 0)
        
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/POET/v1/UpdatePoetUserAssignment", user);
+    //return this.http.post(this.Root_URL+"POET/v1/UpdatePoetUserAssignment", user);
     //else
        
-   // return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/POET/v1/SavePoetUserAssignment", user);
+    return this.http.post(this.Root_URL+"POET/v1/SavePoetUserAssignment", user);
   }
 
   public deleteUserData(user: User) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/POET/v1/deletePoetUserAssignment", user);
+    return this.http.post(this.Root_URL+"POET/v1/deletePoetUserAssignment", user);
   }
 
   public fileUpload(BudgetAttachment:any) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/UploadDocument", BudgetAttachment);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/UploadDocument", BudgetAttachment);
   }
 
   public getPoetUserData(user:any) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/POET/v1/getPoetUserAssignment", user);
+    return this.http.post(this.Root_URL+"POET/v1/getPoetUserAssignment", user);
   }
 
   public getUserBudgetData(user:any) {
@@ -258,10 +258,10 @@ export class ApiService {
     
     if (monthClass.id > 0)
       
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetEntry/v1/update", monthClass);
+    return this.http.post(this.Root_URL+"budgetEntry/v1/update", monthClass);
     else
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetEntry/v1/save", monthClass);
+    return this.http.post(this.Root_URL+"budgetEntry/v1/save", monthClass);
   }
 
   getMonthwisePoet(year: String, email: String) {
@@ -270,7 +270,7 @@ export class ApiService {
     objGetPoetDTO.year = year;
     objGetPoetDTO.email = email;
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetEntry/v1/get", objGetPoetDTO);
+    return this.http.post(this.Root_URL+"budgetEntry/v1/get", objGetPoetDTO);
   }
 
   getBudgetTrackingData(year: String, email: String) {
@@ -278,43 +278,43 @@ export class ApiService {
     objGetPoetDTO = new GetPoetDTO()
     objGetPoetDTO.year = year;
     objGetPoetDTO.email = email;
-     
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgeTracking/v1/get", objGetPoetDTO);
+     const url=this.Root_URL+"";
+    return this.http.post(url+"budgeTracking/v1/get", objGetPoetDTO);
   }
 
   getBudgetTrackingPoetData(monthClass: MonthClass) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgeTracking/v1/getPoetDetails", monthClass);
+    return this.http.post(this.Root_URL+"budgeTracking/v1/getPoetDetails", monthClass);
   }
 
   getBudgetTrackingMonthwiseData(monthClass: MonthClass) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgeTracking/v1/getMonthlySummmary", monthClass);
+    return this.http.post(this.Root_URL+"budgeTracking/v1/getMonthlySummmary", monthClass);
   }
 
   getBudgetTrackingMonthwiseHistory(monthClass: MonthClass) {
     
     if (monthClass.serviceType === "Allocated Budget")
       
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgeTracking/v1/getAllocatedAmtMonDet", monthClass);
+    return this.http.post(this.Root_URL+"budgeTracking/v1/getAllocatedAmtMonDet", monthClass);
     else if (monthClass.serviceType === "Booked Amount")
    
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgeTracking/v1/getBookedAmtMonDet", monthClass);
+    return this.http.post(this.Root_URL+"budgeTracking/v1/getBookedAmtMonDet", monthClass);
     else if (monthClass.serviceType === "Internal Spent")
       
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgeTracking/v1/getIntMonBkdDet", monthClass);
+    return this.http.post(this.Root_URL+"budgeTracking/v1/getIntMonBkdDet", monthClass);
     else if (monthClass.serviceType === "Invoice Amount")
       
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgeTracking/v1/getInvMonBkdDet", monthClass);
+    return this.http.post(this.Root_URL+"budgeTracking/v1/getInvMonBkdDet", monthClass);
     else if (monthClass.serviceType === "PO Amount")
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgeTracking/v1/getPoMonBkdDet", monthClass);
+    return this.http.post(this.Root_URL+"budgeTracking/v1/getPoMonBkdDet", monthClass);
     else if (monthClass.serviceType === "PR Amount")
       
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgeTracking/v1/getPrMonBkdDet", monthClass);
+    return this.http.post(this.Root_URL+"budgeTracking/v1/getPrMonBkdDet", monthClass);
     else if (monthClass.serviceType === "Receipt Amount")
       
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgeTracking/v1/getRcptMonBkdDet", monthClass);
+    return this.http.post(this.Root_URL+"budgeTracking/v1/getRcptMonBkdDet", monthClass);
     else return;
   }
 
@@ -322,61 +322,61 @@ export class ApiService {
     
     if (BudgetBooking.approveRejectStatus === true)
       
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/approved", BudgetBooking);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/approved", BudgetBooking);
     else
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/rejected", BudgetBooking);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/rejected", BudgetBooking);
   }
 
   budgetBookingCancel(BudgetBooking:any) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/cancel",BudgetBooking);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/cancel",BudgetBooking);
   }
 
   L2BookingApproveReject(L2Approval:any) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/L2Approval",L2Approval);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/L2Approval",L2Approval);
   }
 
   getAllAttachements(bbheaderID:any) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/getAllDocument",bbheaderID);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/getAllDocument",bbheaderID);
   }
 
   getAttachements(attachementID:any) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/getDocument",attachementID);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/getDocument",attachementID);
   }
 
   updateAttachements(updateAttachement:any) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/updateAttachement",updateAttachement);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/updateAttachement",updateAttachement);
   }
 
   removeAttachement(updateAttachement:any) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/removeAttachement",updateAttachement);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/removeAttachement",updateAttachement);
   }
 
   deleteBB(deleteBudgetBooking:any) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/DeleteBB",deleteBudgetBooking);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/DeleteBB",deleteBudgetBooking);
   }
 
   UpdateDraftBB(deleteBudgetBooking:any) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/UpdateBB",deleteBudgetBooking);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/UpdateBB",deleteBudgetBooking);
   }
 
   resendEmail(bbheaderID:any) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/resendEmail", bbheaderID);
+    return this.http.post(this.Root_URL+"budgetBooking/v1/resendEmail", bbheaderID);
   }
 
   myPendingApproval(requestorName:any) {
    
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/budgetBooking/v1/myPendingApproval", requestorName );
+    return this.http.post(this.Root_URL+"budgetBooking/v1/myPendingApproval", requestorName );
   }
 
   spendMonthlyWise(objDashboard: Dashboard) {
@@ -415,16 +415,16 @@ export class ApiService {
   
   updatePOAmount(objUpdatePOAmount : UpdatePOAmount){
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/common/v1/POLineupdate", objUpdatePOAmount);
+    return this.http.post(this.Root_URL+"common/v1/POLineupdate", objUpdatePOAmount);
   }
 
   addPOAmount(objAddPOAmount: AddPOAmount){
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/common/v1/addPoLine", objAddPOAmount);
+    return this.http.post(this.Root_URL+"common/v1/addPoLine", objAddPOAmount);
   }
 
   updateDate(objUpdateChange: UpdateChange) {
      
-    return this.http.post("https://mafhbudgettrackerapidev.maf.ae/api/common/v1/UpdateDate", objUpdateChange);
+    return this.http.post(this.Root_URL+"common/v1/UpdateDate", objUpdateChange);
   }
 }

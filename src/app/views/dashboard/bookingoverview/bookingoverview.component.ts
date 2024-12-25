@@ -17,8 +17,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { HighchartsChartModule } from 'highcharts-angular';
 import { RoundPipe } from '../round.pipe';
 import { NgbdDatepickerPopup } from '../datepicker-popup';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { JwtInterceptor } from '../../_helpers/jwt.interceptor';
+
 // import { extendsDirectlyFromObject } from '@angular/core/src/render3/jit/directive';
 //import * as $ from 'jquery'
 declare const $:any;
@@ -461,8 +460,9 @@ export class BookingoverviewComponent {
   }
 
   monthWise(Monthpoet:any, content:any) {
+    console.log(Monthpoet);
     this.GetMonthOverviewData(Monthpoet);
-    this.modalService.open(content, { size: 'lg', centered: true });
+    this.modalService.open(content, { size: 'lg', centered: true, backdrop: false });
     this.applyHideClassForPOETHistory = true;
     this.applyHideClassForMonthWise = false;
     this.applyHideClassForMonthwiseHistory = true;
@@ -487,7 +487,7 @@ export class BookingoverviewComponent {
     this.objMonthClass.month = "";
     this.objMonthClass.year = this.searchYear.controls["year"].value;
     this.service.getBudgetTrackingPoetData(this.objMonthClass).subscribe((res) => {
-      this.modalService.open(content, { size: 'lg', centered: true });
+      this.modalService.open(content, { size: 'lg', centered: true, backdrop: false });
       this.applyHideClassForPOETHistory = false;
       this.applyHideClassForMonthWise = true;
       this.applyHideClassForMonthwiseHistory = true;

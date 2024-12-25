@@ -71,10 +71,10 @@
           <tbody>
             <tr *ngFor="let poet of objPoets">
               <td>
-                <a style="cursor: pointer;" *ngIf="poet.bbStatus == 'PR Created' || poet.bbStatus == 'Pending Approval'"
+                <a style="cursor: pointer; text-decoration: none;" *ngIf="poet.bbStatus == 'PR Created' || poet.bbStatus == 'Pending Approval'"
                   (click)="editPoet(poet,content,true)">
-                  <i class="cui-speech"></i> View </a>
-                <a style="cursor: pointer;" *ngIf="poet.bbStatus != 'Pending Approval' && poet.bbStatus != 'PR Created'"
+                  <i class="cil-speech"></i> View </a>
+                <a style="cursor: pointer;text-decoration: none;" *ngIf="poet.bbStatus != 'Pending Approval' && poet.bbStatus != 'PR Created'"
                   (click)="editPoet(poet,content,false)">
                   <i class="fa fa-edit"></i> Edit </a>
               </td>
@@ -94,7 +94,7 @@
               <td class=" text-right">{{ poet.total | number:'1.2-3' }}</td>
               <td class=" text-center">
                 <button *ngIf="poet.bbStatus == 'Draft' &&  poet.total != null && 
-                  poet.vendorId != '0' && 
+                  poet.vendorId != 0 && 
                   toNumber(poet.attachment) > 0 && 
                   poet.procurementSourcing != ' ' &&
                   poet.buyerValue != ' ' &&
@@ -163,7 +163,7 @@
                   icon: 'warning',
                   showConfirmButton:true,
                   showCancelButton:true  }" (confirm)="Resend(poet)" (cancel)="handleRefusalData($event)">
-                  <i _ngcontent-c2="" class="cui-action-redo"></i>
+                  <i _ngcontent-c2="" class="cil-action-redo"></i>
                 </button>
               </td>
               <td>{{ poet.errorDesc }}</td>
@@ -1016,7 +1016,7 @@
     allowOutsideClick:false, 
     icon: 'warning',
     showConfirmButton:true,
-    showCancelButton:true  }" (confirm)="saveData(bbfForm.value,false)" (cancel)="handleRefusalData($event)">
+    showCancelButton:true  }" (confirm)="saveData(bbfForm,false)" (cancel)="handleRefusalData($event)">
       SAVE FOR LATER
       <!-- <i class="fa fa-spinner fa-spin fa-fw" *ngIf="loading"></i> -->
     </button>
@@ -1026,7 +1026,7 @@
     allowOutsideClick:false, 
     icon: 'warning',
     showConfirmButton:true,
-    showCancelButton:true  }" (confirm)="ReSaveData(bbfForm.value,false)" (cancel)="handleRefusalData($event)">SAVE</button>
+    showCancelButton:true  }" (confirm)="ReSaveData(bbfForm,false)" (cancel)="handleRefusalData($event)">SAVE</button>
     <button type="button" class="btn btn-outline-dark" (click)="c('Save click')">CANCEL</button>
   </div>
 </ng-template>

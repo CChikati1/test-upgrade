@@ -26,8 +26,7 @@ import { Select2OptionData } from "ng-select2";
 import { SweetAlert2LoaderService, SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
 import { HighchartsChartModule } from "highcharts-angular";
 import { RoundPipe } from "../round.pipe";
-import { JwtInterceptor } from "../../_helpers/jwt.interceptor";
-import { HTTP_INTERCEPTORS } from "@angular/common/http";
+
 import { NgbdDatepickerPopup } from "../datepicker-popup";
 import { AccordionModule } from "ngx-bootstrap/accordion";
 import { TabsModule } from "ngx-bootstrap/tabs";
@@ -786,10 +785,11 @@ export class BudgetSetupComponent implements OnInit,AfterViewInit {
     this.createFormUser();
     const objPoetUser: User[] = [];
     this.objPoetUserData = objPoetUser;
-    this.modalService.open(content, { size: "lg", centered: true });
+    this.modalService.open(content, { size: "lg", centered: true,  backdrop: false});
   }
 
   editPoet(poet: any, content: any) {
+    console.log(poet);
     this.createPoetForm();
     this.modaltitle = "Update POET Master Data";
     this.poetMasterID = poet.poetId;
@@ -830,7 +830,7 @@ export class BudgetSetupComponent implements OnInit,AfterViewInit {
     this.poetForm.controls["FinanceCategoryType"].setValue(poet.spendType);
     this.dummyCheckBox= poet.dummyPoet;
     this.getPoetUserData();
-    this.modalService.open(content, { size: "lg", centered: true });
+    this.modalService.open(content, { size: "lg", centered: true, backdrop: false });
   }
 
   editPoetUser(poet: { id: number; startDate: string | number | Date; userName: string; teamName: string; }) {

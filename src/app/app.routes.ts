@@ -6,7 +6,6 @@ import { MonthComponent } from './views/dashboard/month/month.component';
 import { BookingComponent } from './views/dashboard/booking/booking.component';
 import { BookingoverviewComponent } from './views/dashboard/bookingoverview/bookingoverview.component';
 import { BudgetSetupComponent } from './views/dashboard/budget-setup/budget-setup.component';
-import { DataTableExampleComponent } from './views/dashboard/data-table-example/data-table-example.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
@@ -24,7 +23,6 @@ export const routes: Routes = [
       { path:'dashboard/Booking',component:BookingComponent},
       { path:'dashboard/Budgetoverview', component:BookingoverviewComponent },
       { path:'dashboard/Setup',component:BudgetSetupComponent },
-      { path:'dashboard/Datatable',component:DataTableExampleComponent }   
     ]
   },
 ];

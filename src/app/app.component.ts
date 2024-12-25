@@ -6,8 +6,7 @@ import { delay, filter, map, tap } from 'rxjs/operators';
 
 import { ColorModeService } from '@coreui/angular';
 import { IconSetService } from '@coreui/icons-angular';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { JwtInterceptor } from './views/_helpers';
+
 
 // import { iconSubset } from './icons/icon-subset';
 

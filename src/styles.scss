@@ -13,6 +13,16 @@
 .tabset .nav-link {
     color: #8a1538 !important; 
   }
+  .cil-speech:before {
+    content: "\ebd3";
+  }
+  .cil-action-redo:before {
+  content: "\ea04";
+}
+  
+  .cui-speech:before {
+    content: "\e94f"
+}
 
   .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected, .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected.ng-option-marked
 
@@ -20,6 +30,15 @@
     background-color: #5897fb !important;
     color: #fff !important;
 }
+  c-footer {
+    height: 40px;
+    background-color: #f8f9fa;
+    text-align: center;
+    line-height: 40px; /* Vertically center text */
+    font-size: 11px;
+  }
+  
+
 
 .hide{
     display: none !important;
@@ -1513,6 +1532,7 @@ a.badge-dark.focus,a.badge-dark:focus {
     font-size: 13px;
     border-radius: 50%;
     position: relative;
+    user-select: none; 
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none
@@ -1663,6 +1683,7 @@ a.badge-dark.focus,a.badge-dark:focus {
     margin-bottom: 10px;
     cursor: pointer;
     text-transform: uppercase;
+    user-select: none; 
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none
@@ -1949,7 +1970,7 @@ bs-datepicker-container,bs-daterangepicker-container {
 
 [class*=" cui-"],[class^=cui-] {
     font-family: CoreUI-Icons-Linear-Free!important;
-    speak: none;
+    // speak: none;
     font-style: normal;
     font-weight: 400;
     font-variant: normal;
@@ -2291,9 +2312,7 @@ bs-datepicker-container,bs-daterangepicker-container {
     content: "\e94e"
 }
 
-.cui-speech:before {
-    content: "\e94f"
-}
+
 
 .cui-speedometer:before {
     content: "\e950"

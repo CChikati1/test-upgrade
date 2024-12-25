@@ -40,8 +40,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { SweetAlert2LoaderService, SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { HighchartsChartModule } from 'highcharts-angular';
-import { JwtInterceptor } from '../../_helpers/jwt.interceptor';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+
 
 
 declare const $:any;
@@ -256,6 +255,9 @@ export class MonthComponent implements OnInit,AfterViewInit {
         }
         this.modalService.dismissAll();
         this.angForm.reset();
+        const table: any = $("#monthTable").DataTable();
+        table.destroy();
+        this.chRef.detectChanges();
         setTimeout(() => {
           this.isLoader = false; 
           this.GetMonthPoetData(false, this.searchYear.controls["year"].value);
@@ -369,10 +371,11 @@ export class MonthComponent implements OnInit,AfterViewInit {
   GetMonthPoetData(flag: boolean, year: string) {
     this.isLoader = true
     this.service.getMonthwisePoet(year, this.loginUserName.toLowerCase()).subscribe(res => {
-      this.objMonthPoets = [];
       this.objMonthPoets = res;
       this.chRef.detectChanges();
-      const existingTable = $("#monthTable").DataTable();
+      //this.objMonthPoets = [];
+     
+      const existingTable:any = $("#monthTable").DataTable();
       if (existingTable) {
         existingTable.destroy();
       }
@@ -388,6 +391,7 @@ export class MonthComponent implements OnInit,AfterViewInit {
             } else {
               $(this).html('<input type="text" placeholder="Search ' + title + '" />');
               $("input", this).on("keyup change", function (event:any) {
+                const table = $("#monthTable").DataTable();
                 if (table.column(i).search() !== event.target.value) {
                   table.column(i).search(event.target.value).draw();
                 }
@@ -396,7 +400,7 @@ export class MonthComponent implements OnInit,AfterViewInit {
           }
         });
       }
-      let table = $("#monthTable").DataTable({
+       $("#monthTable").DataTable({
         dom: "Blfrtip",
         destroy: true,
         pageLength: 100,
@@ -416,6 +420,7 @@ export class MonthComponent implements OnInit,AfterViewInit {
       });
       this.chRef.detectChanges();
     });
+    //this.isLoader =false;
   }
 
   fnAction(): void {

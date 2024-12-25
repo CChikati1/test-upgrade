@@ -13,8 +13,14 @@ import {
     Observable
 } from 'rxjs';
 export const JwtInterceptor: HttpInterceptorFn = (req, next) => {
-   
-        if(req.url.toString().indexOf("https://mafptawasul.maf.ae") == -1  && req.url.toString().indexOf("https://majidalfuttaim.sharepoint.com/sites/SMBU") == -1)
+   console.log(req.url.toString());
+   const excludedUrls = [
+    "https://mafptawasul.maf.ae",
+    "https://majidalfuttaim.sharepoint.com/sites/SMBU",
+  ];
+  
+  const isExcluded = excludedUrls.some((url) => req.url.startsWith(url));
+        if(!isExcluded)
         {    
                 req = req.clone({
                     headers: new HttpHeaders({
@@ -24,6 +30,7 @@ export const JwtInterceptor: HttpInterceptorFn = (req, next) => {
                     })
                 });
         }
+        console.log(req);
         return next(req);
     
 }
