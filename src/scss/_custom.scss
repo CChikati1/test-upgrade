@@ -85,7 +85,7 @@
   background-color: transparent;
 }
 
-.app-footer {
+.footer {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -112,6 +112,10 @@
   border-color: none;
   box-shadow: none;
 }
+.form-control:disabled,.form-control[readonly] {
+  background-color: #e4e7ea;
+  opacity: 1
+}
 
 .swal2-popup .swal2-styled.swal2-confirm {
   background-color: #8a1538 !important;
@@ -130,7 +134,7 @@
   margin-left: 25px;
 }
 
-.app-footer {
+.footer {
   flex: 0 0 34px;
 }
 
@@ -202,6 +206,21 @@
 .modal-body {
   max-height: calc(100vh - 200px);
   overflow-y: auto;
+}
+.modal-header .close {
+  padding: 1rem;
+  margin: -1rem -1rem -1rem auto
+}
+.card {
+  margin-bottom: 1.5rem;
+}
+.form-check-input {
+  position: absolute;
+  margin-top: .3rem;
+  margin-left: -1.25rem;
+}
+.form-group {
+  margin-bottom: 1rem;
 }
 
 .divloader {
@@ -318,6 +337,7 @@
 
 .app,
 app-dashboard,
+app-default-layout,
 app-root {
   overflow: hidden !important;
 }
@@ -333,6 +353,9 @@ a {
 a:hover,
 a:visited {
   color: #8a1538;
+}
+.tabset .nav-link {
+  color: #8a1538 !important; 
 }
 
 .ml-auto .navbar-nav {
@@ -369,3 +392,46 @@ a:visited {
 .nav-link active {
   background-color: rgb(49, 38, 29) !important;
 }
+.nav-pills .nav-link{
+  color: #8a1538;
+}
+.tab-content {
+  margin-top: -1px;
+  background: #fff;
+  border: 1px solid #c8ced3
+}
+.tab-content .tab-pane {
+  padding: 1rem;
+}
+.tab-content>.active {
+  display: block;
+}
+.card-header {
+  padding: .75rem 1.25rem;
+  margin-bottom: 0;
+  background-color: #f0f3f5;
+  border-bottom: 1px solid #c8ced3;
+}
+.card-body {
+  flex: 1 1 auto;
+  padding: 1.25rem;
+}
+.btn{
+  height: 37px;;
+}
+.row {
+  width: 99%;
+}
+label {
+  display: inline-block;
+  margin-bottom: .5rem;
+}
+.table-bordered, .table-bordered td, .table-bordered th {
+  border: 1px solid #c8ced3;
+}
+.table td, .table th {
+  padding: .75rem;
+  vertical-align: top;
+  border-top: 1px solid #c8ced3;
+}
+

@@ -64,10 +64,12 @@
 </c-footer> -->
 
 
-<c-header style="background-color: rgb(49, 38, 29);" >
+<c-header style="background-color: rgb(49, 38, 29); height: 70px;" class="app-header" >
   <!-- Brand Logo -->
   <div c-header-brand>
-    <img [src]="navbarBrandFull.src" alt="MAF Logo" width="177" height="35">
+    <a class="navbar-brand">
+    <img class="navbar-brand-full"  [src]="navbarBrandFull.src" alt="MAF Logo" width="177" height="35">
+  </a>
     <span class="ml-2">Dashboard</span>
   </div>
 
@@ -95,7 +97,7 @@
   </ul>
 </c-header>
 
-<div class="app-body">
+<div class="app-body" >
   <main class="main">
     <ngx-spinner bdOpacity="0.1" bdColor="lightgray" size="large" type="ball-scale-multiple" style="background-color: lightgray;"></ngx-spinner>
     <div class="container-fluid">

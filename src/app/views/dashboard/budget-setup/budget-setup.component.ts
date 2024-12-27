@@ -30,12 +30,13 @@ import { RoundPipe } from "../round.pipe";
 import { NgbdDatepickerPopup } from "../datepicker-popup";
 import { AccordionModule } from "ngx-bootstrap/accordion";
 import { TabsModule } from "ngx-bootstrap/tabs";
+import { TooltipModule } from "ngx-bootstrap/tooltip";
 @Component({
-  selector: 'app-dashboard',
+  selector: 'app-budget-setup',
   standalone: true,
   imports: [DecimalPipe,AccordionModule,
     TabsModule,SweetAlert2Module,NgSelectModule,ReactiveFormsModule,
-    HighchartsChartModule,CommonModule 
+    HighchartsChartModule,CommonModule,FormsModule,NgbModule,TooltipModule,DataTablesModule
   ],
   providers:[ApiService,ExcelService,ToastrService,NgbModalConfig,NgbdDatepickerPopup, NgbModal, {provide:SweetAlert2LoaderService,useClass:SweetAlert2LoaderService },RoundPipe],
    templateUrl: './budget-setup.component.html'
@@ -51,7 +52,7 @@ export class BudgetSetupComponent implements OnInit,AfterViewInit {
   poetForm: FormGroup;
   date: { year: number; month: number };
   model: NgbDateStruct;
-  minDate = {};
+  minDate: NgbDateStruct;
   objLevels: any;
   objLevel1: any;
   objLevel2: any;
@@ -727,7 +728,7 @@ export class BudgetSetupComponent implements OnInit,AfterViewInit {
       Reviewer2: ["", Validators.required],
       StartDate: ["", Validators.required],
       EndDate: [""],
-      EndDate1: [],
+      EndDate1: [""],
       dummyPoetCheck: [false],
       HoldingPercentage: [0],
       VenturesPercentage: [0],

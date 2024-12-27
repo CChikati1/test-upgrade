@@ -315,7 +315,7 @@
               [clearable]="true"
               [searchable]="false"
               [dropdownPosition]="'auto'"
-              [style]="{ width: '160px' }"
+              [style]="{ width: '100%' }"
               formControlName="FinanceCategory"
               (change)="changed($event)">
             </ng-select>
@@ -433,6 +433,7 @@
           <div class="col-sm-12 col-md-3 ">
             <div class="form-group">
               <label style="width:100%" class="control-label">Start Date</label>
+              
               <input class="form-control" readonly formControlName="StartDate">
               <div
                 *ngIf="poetForm.controls['StartDate'].invalid && (poetForm.controls['StartDate'].dirty || poetForm.controls['StartDate'].touched)"
@@ -466,11 +467,11 @@
             <div class="form-group">
               <label style="width:100%" class="control-label">End Date</label>
               <div class="input-group">
-                <!-- <input class="form-control" readonly placeholder="yyyy-mm-dd" name="dp" [minDate]="minDate"
-                  ngbDatepicker formControlName="EndDate1" #d1="ngbDatepicker"> -->
+                <input class="form-control" readonly placeholder="yyyy-mm-dd" name="dp" [minDate]="minDate"
+                  ngbDatepicker formControlName="EndDate1" #d1="ngbDatepicker">
                 <div class="input-group-append">
-                  <!-- <button class="btn btn-outline-secondary calendar fa fa-calendar" (click)="d1.toggle()"
-                    type="button"></button> -->
+                  <button class="btn btn-outline-secondary calendar fa fa-calendar" (click)="d1.toggle()"
+                    type="button"></button>
                 </div>
               </div>
             </div>
