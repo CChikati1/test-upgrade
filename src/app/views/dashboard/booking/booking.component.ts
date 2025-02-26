@@ -165,7 +165,8 @@ export class BookingComponent {
     items.push({ id: '2021', text: '2021' });
     items.push({ id: '2022', text: '2022' });
     items.push({ id: '2023', text: '2023' });
-    items.push({ id: '2024', text: '2024' })
+    items.push({ id: '2024', text: '2024' });
+items.push({ id: '2025', text: '2025' })
     this.dataYear = items;
     config.backdrop = "static";
     config.keyboard = false;
@@ -197,7 +198,6 @@ export class BookingComponent {
      $('.liBooking').addClass('liactive');
      $('.modal').css('overflow-y', 'auto');
       // jQuery is now available for use in the browser
-     console.log('jQuery loaded in the browser');
     });
   }
   }
@@ -408,14 +408,11 @@ export class BookingComponent {
   }
 
   saveData(angForm: any, isSubmitted: boolean) {
-    debugger;
-    console.log(this.bbLinesForm);
     this.isLoader = true;
     if (this.bbLinesForm.valid) {
       this.addBudgetLines(this.bbLinesForm);
     }
     this.addBudget(angForm);
-    console.log(this.objBudgetBooking);
     const table: any = $("#tblbooking").DataTable();
     table.destroy();
     this.chRef.detectChanges();
@@ -1224,7 +1221,6 @@ export class BookingComponent {
     let budgetPoetId = new BudgetPoetId();
     if (poet.id > 0) {
       budgetPoetId.id = poet.id;
-      console.log(poet);
       this.service.sendApproval(budgetPoetId).subscribe(res => {
         let result: any;
         result = res;
@@ -1287,7 +1283,6 @@ export class BookingComponent {
   }
 
   Delete(poet:any, comments:any) {
-    console.log(poet);
     this.isLoader = true;
     let objDeleteBudgetBooking = new DeleteBudgetBooking();
     if (Number(poet.id) > 0) {
@@ -1315,7 +1310,6 @@ export class BookingComponent {
   GetData(isonint: boolean, year: string) {
     this.isLoader = true;
     this.service.getBudgetbyUser(this.loginUserName, this.isSuperAdmin, year).subscribe(res => {
-      console.log(res);
       if (!isonint) {
         const table: any = $("#tblbooking").DataTable();
         table.destroy();
@@ -1717,7 +1711,6 @@ export class BookingComponent {
     this.getAllAttachements();
     this.getPoetUserData();
     this.isLoader = false;
-    console.log(this.bbfForm);
     this.modalService.open(content, { size: "lg", centered: true , backdrop: false
     });
   }

@@ -88,7 +88,7 @@
     <li class="nav-item px-3"><a class="nav-link lidashboard" (click)="setActive('dashboard')" [ngClass]="{'active-link': activeLink === 'dashboard'}" [routerLink]="'dashboard'">Dashboard</a></li>
     <li class="nav-item px-3"><a class="nav-link liBooking" (click)="setActive('Booking')" [ngClass]="{'active-link': activeLink === 'Booking'}" [routerLink]="'dashboard/Booking'">Budget Booking</a></li>
     <li class="nav-item px-3"><a class="nav-link liBudgetoverview" (click)="setActive('Overview')" [ngClass]="{'active-link': activeLink === 'Overview'}" [routerLink]="'dashboard/Budgetoverview'">Budget Overview</a></li>
-  </ul>
+  </ul>     
 
   <ul *ngIf="isUser && showDashboardLinks()" class="nav navbar-nav ml-auto">
     <li class="nav-item px-3"><a class="nav-link lidashboard" (click)="setActive('dashboard')" [ngClass]="{'active-link': activeLink === 'dashboard'}" [routerLink]="'dashboard'">Dashboard</a></li>

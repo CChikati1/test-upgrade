@@ -70,7 +70,6 @@ export class AttachementComponent implements OnInit {
     downloadFile() {
         let attachmentId : any = { "attachementId" : this.attachementID };
         this.service.getAttachements(attachmentId).subscribe(res => {
-            debugger;
             let response: any = res;
             let byteCharacters = atob(response.imageData);
             let byteNumbers = new Array(byteCharacters.length);

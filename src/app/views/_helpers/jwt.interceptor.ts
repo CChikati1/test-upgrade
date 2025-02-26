@@ -13,7 +13,6 @@ import {
     Observable
 } from 'rxjs';
 export const JwtInterceptor: HttpInterceptorFn = (req, next) => {
-   console.log(req.url.toString());
    const excludedUrls = [
     "https://mafptawasul.maf.ae",
     "https://majidalfuttaim.sharepoint.com/sites/SMBU",
@@ -30,7 +29,6 @@ export const JwtInterceptor: HttpInterceptorFn = (req, next) => {
                     })
                 });
         }
-        console.log(req);
         return next(req);
     
 }

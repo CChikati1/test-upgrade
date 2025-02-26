@@ -159,7 +159,6 @@ export class DashboardComponent implements OnInit {
       //  $('a').removeClass('liactive');
       // $('.liMonth').addClass('liactive');
         // jQuery is now available for use in the browser
-       console.log('jQuery loaded in the browser');
       });
       
      
@@ -171,7 +170,8 @@ export class DashboardComponent implements OnInit {
     items.push({ id: '2021', text: '2021' });
     items.push({ id: '2022', text: '2022' });
     items.push({ id: '2023', text: '2023' });
-    items.push({ id: '2024', text: '2024' })
+    items.push({ id: '2024', text: '2024' });
+    items.push({ id: '2025', text: '2025' })
     this.dataYear = items;
     items= [];
     items.push({ id: 'ALL', text: 'ALL' });
@@ -255,7 +255,6 @@ items.push({id: 'VOC Programme', text: 'VOC Programme'});
       $('a').removeClass('liactive');
      $('.lidashboard').addClass('liactive');
       // jQuery is now available for use in the browser
-     console.log('jQuery loaded in the browser');
     });
   }
   }
@@ -357,7 +356,7 @@ items.push({id: 'VOC Programme', text: 'VOC Programme'});
       this.objDashboard.month =  "'JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'";
     else 
         this.objDashboard.month =  this.searchForm.controls["month"].value;
-    this.objDashboard.department = e.text;
+    this.objDashboard.department = e.id;
     this.objDashboard.email = this.loginUserName.toLowerCase();
     this.loadChart();
   }
@@ -967,12 +966,10 @@ items.push({id: 'VOC Programme', text: 'VOC Programme'});
 
   getUserName() {
     this.service.getUserName().subscribe((res) => {
-     console.log(res);
       if (res != null && res !='' ) {
         // res.Email=res.Email.replace(/'/g, "");
         // console.log(res.Email);
          let user = res as any;
-         console.log(user.d.Email);
         this.loginUserName = user.d.Email; //'veerender.kumar-e@maf.ae';// 
         this.DisplayName =user.d.Title; //'Veerender Kumar';// 
         this.objDashboard = new Dashboard();

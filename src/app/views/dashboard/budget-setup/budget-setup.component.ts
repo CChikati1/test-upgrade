@@ -120,7 +120,8 @@ export class BudgetSetupComponent implements OnInit,AfterViewInit {
     items.push({ id: '2021', text: '2021' });
     items.push({ id: '2022', text: '2022' });
     items.push({ id: '2023', text: '2023' });
-    items.push({ id: '2024', text: '2024' })
+    items.push({ id: '2024', text: '2024' });
+    items.push({ id: '2025', text: '2025' });
     this.dataYear = items;
     // this.searchYear.controls["year"].setValue("2024");
     let category:any = [];
@@ -535,6 +536,7 @@ export class BudgetSetupComponent implements OnInit,AfterViewInit {
             } else {
               $(this).html('<input type="text" placeholder="Search ' + title + '" />');
               $("input", this).on("keyup change", function (event:any) {
+                const table = $("#poetMaster").DataTable();
                 if (table.column(i).search() !== event.target.value) {
                   table.column(i).search(event.target.value).draw();
                 }
@@ -691,7 +693,6 @@ export class BudgetSetupComponent implements OnInit,AfterViewInit {
   }
 
   getDataUsers() {
-    debugger;
     this.service.getUsers().subscribe(res => {
       this.objUsers = res;
       const other: any[] = [];
@@ -767,7 +768,6 @@ export class BudgetSetupComponent implements OnInit,AfterViewInit {
 
 
   public changedYear(e: any): void {
-    debugger;
     if(e != undefined)
     {
     this.GetData(false, e.text);
@@ -775,8 +775,10 @@ export class BudgetSetupComponent implements OnInit,AfterViewInit {
   }
 
   onChangeLevel3(args: any) { //{ target: { options: { [x: string]: { text: string; }; }; selectedIndex: string | number; }; }
-    this.level3Desc = args.target.options[args.target.selectedIndex].text;
+  
+    this.level3Desc =args.description; // args.target.options[args.target.selectedIndex].text;
     this.objLevel4Data = this.objLevel4.filter(
+
       (      item: { parentValue: string; }) => item.parentValue == "XXMAFH_BUDGET_TRACKER_LEVEL4"
     );
   }
@@ -790,7 +792,6 @@ export class BudgetSetupComponent implements OnInit,AfterViewInit {
   }
 
   editPoet(poet: any, content: any) {
-    console.log(poet);
     this.createPoetForm();
     this.modaltitle = "Update POET Master Data";
     this.poetMasterID = poet.poetId;

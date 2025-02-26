@@ -113,7 +113,8 @@ export class MonthComponent implements OnInit,AfterViewInit {
     items.push({ id: '2021', text: '2021' });
     items.push({ id: '2022', text: '2022' });
     items.push({ id: '2023', text: '2023' });
-    items.push({ id: '2024', text: '2024' })
+    items.push({ id: '2024', text: '2024' });
+items.push({ id: '2025', text: '2025' })
     this.dataYear = items;
     config.backdrop = 'static';
     config.keyboard = false;
@@ -136,7 +137,6 @@ export class MonthComponent implements OnInit,AfterViewInit {
       $('a').removeClass('liactive');
      $('.liMonth').addClass('liactive');
       // jQuery is now available for use in the browser
-     console.log('jQuery loaded in the browser');
     });
   }
   }
@@ -149,7 +149,6 @@ export class MonthComponent implements OnInit,AfterViewInit {
        $('.liMonth').addClass('liactive');
       
         // jQuery is now available for use in the browser
-       console.log('jQuery loaded in the browser');
       }).catch((err) => {
         console.error('Error loading jQuery:', err);
       });;
@@ -453,7 +452,7 @@ export class MonthComponent implements OnInit,AfterViewInit {
       };
       this.datas.push(data);
     });
-    this.excelService.exportAsExcelFile(this.datas, 'Budget Setup');
+    this.excelService.exportAsExcelFile(this.datas, 'Budget Schedule');
   }
 
   public handleRefusalData(dismissMethod: Event): void {

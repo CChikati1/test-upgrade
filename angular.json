@@ -78,7 +78,7 @@
               "optimization": true,
               "extractLicenses": true,
               "sourceMap": false,
-               "outputHashing": "all",
+               "outputHashing": "none",
               "namedChunks": false,
               
               "budgets": [

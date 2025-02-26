@@ -136,7 +136,8 @@ export class BookingoverviewComponent {
       items.push({ id: '2021', text: '2021' });
       items.push({ id: '2022', text: '2022' });
       items.push({ id: '2023', text: '2023' });
-      items.push({ id: '2024', text: '2024' })
+      items.push({ id: '2024', text: '2024' });
+      items.push({ id: '2025', text: '2025' })
       this.dataYear = items;
 
       config.backdrop = 'static';
@@ -155,7 +156,6 @@ export class BookingoverviewComponent {
       // Dynamically import jQuery
       import('jquery').then(($) => {
         // Use jQuery in the browser environment
-        console.log('jQuery is available:', $);
       }).catch(err => {
         console.error('Failed to load jQuery', err);
       });
@@ -460,7 +460,6 @@ export class BookingoverviewComponent {
   }
 
   monthWise(Monthpoet:any, content:any) {
-    console.log(Monthpoet);
     this.GetMonthOverviewData(Monthpoet);
     this.modalService.open(content, { size: 'lg', centered: true, backdrop: false });
     this.applyHideClassForPOETHistory = true;

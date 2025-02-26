@@ -126,7 +126,8 @@ export class AdminApprovalComponent {
     items.push({ id: '2021', text: '2021' });
     items.push({ id: '2022', text: '2022' });
     items.push({ id: '2023', text: '2023' });
-    items.push({ id: '2024', text: '2024' })
+    items.push({ id: '2024', text: '2024' });
+items.push({ id: '2025', text: '2025' })
     this.dataYear = items;
     this.isBrowser = isPlatformBrowser(this.platformId);
     config.backdrop = 'static';
@@ -568,7 +569,6 @@ export class AdminApprovalComponent {
         this.chRef.detectChanges();
         this.objPoets = res as BudgetBooking[];
         this.objPoets = this.objPoets.filter(l => l.bbStatus == "PR Created");
-        console.log(this.objPoets);
         this.chRef.detectChanges();
       }
       let ele=$("#tblbooking thead tr:eq(0) th") as JQuery<HTMLElement>;
